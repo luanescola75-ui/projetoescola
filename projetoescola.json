@@ -1,0 +1,22 @@
+{
+  "banco": {
+    "estoque": [
+      {
+        "nome": "conta free fire gemada",
+        "descricao": "todas as roupas",
+        "preco": 450,
+        "imagem": "https://i.postimg.cc/g05R4DrH/images.jpg",
+        "categoria": "Contas"
+      },
+      {
+        "nome": "conta rara brawl stars",
+        "descricao": "tudo liberado",
+        "preco": 650,
+        "imagem": "https://i.postimg.cc/gcX5yVYz/997617698-conta-brawl-stars-rara-e-gemada-full-acesso-XYZR.webp",
+        "categoria": "Contas"
+      }
+    ],
+    "usuarios": []
+  },
+  "carrinho": []
+}

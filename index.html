@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AlphaFoxXP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="cssescola.css">
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    
+
+
+  </style>
+</head>
+ <!-- Carrinho Avançado -->
+<div id="carrinho-panel" style="display:none; position:fixed; top:0; right:0; width:360px; height:100%; background:#f9f9f9; border-left:2px solid #ccc; box-shadow:-4px 0 10px rgba(0,0,0,0.15); padding:16px; z-index:1000; overflow-y:auto;">
+  <h2 style="margin-top:0;">🛒 Seu Carrinho</h2>
+  <ul id="lista-carrinho" style="list-style:none; padding:0; margin:0;"></ul>
+  <hr />
+  <p id="total-carrinho" style="font-size:18px; font-weight: bold;">Total: R$ 0,00</p>
+  <button onclick="window.location.href='https://codepen.io/Escola-Garden/full/NPqBMgM'" style="background:#4CAF50; color:#fff; border:none; padding:12px 20px; border-radius:6px; width:100%; font-size:16px; cursor:pointer;">💳 Pagar</button>
+</button>
+  <button onclick="limparCarrinho()" style="margin-top:10px; background:#f44336; color:#fff; border:none; padding:10px 20px; border-radius:6px; width:100%; cursor:pointer;">🗑️ Limpar Carrinho</button>
+  <button onclick="fecharCarrinho()" style="margin-top:10px; background:#999; color:#fff; border:none; padding:10px 20px; border-radius:6px; width:100%; cursor:pointer;">Fechar</button>
+</div>
+
+<!-- Toast Notifications -->
+<div id="toast-container" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+"></div>
+
+</div>
+
+<body>
+  <header>
+    <div class="logo">
+      <img src="https://i.postimg.cc/brfXwKJR/DALL-E-2024-11-16-14-19-55-A-modern-and-stylish-3-D-logo-with-the-name-Alpha-Fox-XP-in-bold-sleek.webp" alt="Logo" />
+      <span class="title">AlphaFoxXP</span>
+    </div>
+    <div class="actions">
+      <i class="ri-search-line" id="search-icon" title="Buscar"></i>
+      <i class="ri-user-line" onclick="alert('Login de usuário em breve!')" title="Login"></i>
+      <i class="ri-admin-line" id="admin-access" title="Acesso Admin"></i>
+      <i class="ri-shopping-cart-line" title="Carrinho"></i>
+      <i class="ri-menu-3-line" id="menu-toggle" title="Menu"></i>
+    </div>
+   <nav id="menu-items">
+  <button onclick="window.location.href='https://codepen.io/luan-escola-the-scripter/pen/ogjGOyw'">Início</button>
+  <button onclick="window.location.href='https://codepen.io/luan-escola-the-scripter/pen/ogjGOyw'">Configuração</button>
+  <button onclick="window.location.href='https://codepen.io/luan-escola-the-scripter/pen/ogjGOyw'">Loja</button>
+  <button onclick="window.location.href='https://codepen.io/luan-escola-the-scripter/pen/ogjGOyw'">Sobre</button>
+  <button onclick="window.location.href='https://codepen.io/luan-escola-the-scripter/pen/ogjGOyw'">Suporte</button>
+</nav>
+
+    <div id="search-box"><input type="text" id="search-input" placeholder="Buscar produtos..."></div>
+  </header>
+
+<div class="dividerPremium">
+  <div class="title">Comprar contas</div>
+  <p>teste do github</p>
+</div>
+
+
+  <section class="categorias">
+    <span class="active" data-cat="todos">Todos</span>
+    <span data-cat="Games">Games</span>
+    <span data-cat="Gift Cards">Gift Cards</span>
+    <span data-cat="Contas">Contas</span>
+    <span data-cat="Ofertas">Ofertas</span>
+    <span data-cat="Novidades">Novidades</span>
+  </section>
+
+  <main>
+    <div class="vitrine-grid" id="product-list"></div>
+  </main>
+
+  <!-- Painel Admin Modal -->
+  <div id="admin-panel-bg" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
+    <div id="admin-panel">
+      <header>
+        <h2 id="admin-panel-title">Painel Admin</h2>
+        <button id="admin-close-btn" aria-label="Fechar painel admin">&times;</button>
+      </header>
+      <nav>
+        <button id="btn-controle-estoque">Controle de Estoque</button>
+        <button id="btn-controle-usuarios">Controle de Usuários</button>
+      </nav>
+<div class="admin-panel">
+  <h2>Painel Administrativo</h2>
+  <button onclick="abrirEstoque()">📦 Controle de Estoque</button>
+  <button onclick="abrirUsuarios()">👤 Controle de Usuários</button>
+  <button onclick="baixarDados()">💾 Salvar Dados em JSON</button> <!-- botão novo -->
+</div>
+
+      <!-- Controle de Estoque -->
+      <section id="controle-estoque">
+        <form id="novo-produto-form" aria-label="Adicionar novo produto">
+          <input type="text" id="input-nome" placeholder="Título do anúncio" required autocomplete="off" />
+          <textarea id="input-descricao" placeholder="Descrição do anúncio" required></textarea>
+          <input type="number" id="input-preco" placeholder="Valor do produto (somente número)" required step="0.01" min="0" />
+          <input type="url" id="input-imagem" placeholder="URL da imagem" required autocomplete="off" />
+          <button type="submit">Publicar Novo Anúncio</button>
+        </form>
+        <table aria-label="Lista de anúncios ativos">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Descrição</th>
+              <th>Preço</th>
+              <th>Imagem</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="estoque-tbody">
+            <!-- Produtos listados aqui -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Controle de Usuários -->
+      <section id="controle-usuarios">
+        <p>Funcionalidade de controle de usuários em desenvolvimento.</p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // --- Banco de dados simulado via localStorage ---
+    const DB_KEY = 'AlphaFoxXP_DB';
+    function carregarDB() {
+      const db = localStorage.getItem(DB_KEY);
+      if (!db) {
+        const inicial = { estoque: [], usuarios: [] };
+        localStorage.setItem(DB_KEY, JSON.stringify(inicial));
+        return inicial;
+      }
+      return JSON.parse(db);
+    }
+    function salvarDB(db) {
+      localStorage.setItem(DB_KEY, JSON.stringify(db));
+    }
+    let db = carregarDB();
+
+    // --- Render Vitrine de produtos ---
+    let produtos = db.estoque;
+    const productList = document.getElementById('product-list');
+    const categorias = document.querySelectorAll('.categorias span');
+    let filtroCategoria = 'todos';
+
+    function renderVitrine() {
+      productList.innerHTML = '';
+      const listaFiltrada = filtroCategoria === 'todos' 
+        ? produtos 
+        : produtos.filter(p => p.categoria === filtroCategoria);
+
+      if (listaFiltrada.length === 0) {
+        productList.innerHTML = '<p style="color:#ff5722; font-weight:700; text-align:center;">Nenhum produto encontrado.</p>';
+        return;
+      }
+
+      listaFiltrada.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${p.imagem}" alt="${p.nome}">
+          <h3>${p.nome}</h3>
+          <p>R$ ${p.preco.toFixed(2)}</p>
+          <button>Comprar</button>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    // --- Busca dinâmica ---
+    document.getElementById('search-input').addEventListener('input', function() {
+      const termo = this.value.toLowerCase();
+      const listaFiltrada = produtos.filter(p =>
+        p.nome.toLowerCase().includes(termo) || 
+        (p.descricao && p.descricao.toLowerCase().includes(termo))
+      );
+      productList.innerHTML = '';
+      if (listaFiltrada.length === 0) {
+        productList.innerHTML = '<p style="color:#ff5722; font-weight:700; text-align:center;">Nenhum produto encontrado.</p>';
+        return;
+      }
+            listaFiltrada.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${p.imagem}" alt="${p.nome}">
+          <h3>${p.nome}</h3>
+          <p>R$ ${p.preco.toFixed(2)}</p>
+          <button>Comprar</button>
+        `;
+        productList.appendChild(div);
+      });
+    });
+
+    // --- Troca filtro categoria ---
+    categorias.forEach(cat => {
+      cat.addEventListener('click', () => {
+        categorias.forEach(c => c.classList.remove('active'));
+        cat.classList.add('active');
+        filtroCategoria = cat.dataset.cat;
+        renderVitrine();
+      });
+    });
+
+    renderVitrine();
+
+    // --- Mostrar/Esconder busca ---
+    const searchIcon = document.getElementById('search-icon');
+    const searchBox = document.getElementById('search-box');
+    searchIcon.addEventListener('click', () => {
+      if (searchBox.style.display === 'block') {
+        searchBox.style.display = 'none';
+        document.getElementById('search-input').value = '';
+        renderVitrine();
+      } else {
+        searchBox.style.display = 'block';
+        document.getElementById('search-input').focus();
+      }
+    });
+
+    // --- Menu toggle ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuItems = document.getElementById('menu-items');
+    menuToggle.addEventListener('click', () => {
+      menuItems.style.display = menuItems.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // --- Painel Admin ---
+    const adminPanelBg = document.getElementById('admin-panel-bg');
+    const adminCloseBtn = document.getElementById('admin-close-btn');
+    const adminAccess = document.getElementById('admin-access');
+    const btnEstoque = document.getElementById('btn-controle-estoque');
+    const btnUsuarios = document.getElementById('btn-controle-usuarios');
+    const controleEstoque = document.getElementById('controle-estoque');
+    const controleUsuarios = document.getElementById('controle-usuarios');
+
+    adminAccess.addEventListener('click', () => {
+      const senha = prompt('Acesso Restrito - Insira o código de segurança:');
+      if (senha === '454') {
+        adminPanelBg.style.display = 'flex';
+        mostrarTelaAdmin('estoque');
+      } else {
+        alert('Código inválido!');
+      }
+    });
+
+    adminCloseBtn.addEventListener('click', () => {
+      adminPanelBg.style.display = 'none';
+      limparCamposProduto();
+    });
+
+    btnEstoque.addEventListener('click', () => mostrarTelaAdmin('estoque'));
+    btnUsuarios.addEventListener('click', () => mostrarTelaAdmin('usuarios'));
+
+    function mostrarTelaAdmin(tela) {
+      if (tela === 'estoque') {
+        controleEstoque.style.display = 'flex';
+        controleUsuarios.style.display = 'none';
+        carregarTabelaEstoque();
+      } else if (tela === 'usuarios') {
+        controleEstoque.style.display = 'none';
+        controleUsuarios.style.display = 'flex';
+      }
+    }
+
+    // --- Controle de Estoque ---
+    const estoqueTbody = document.getElementById('estoque-tbody');
+    const formNovoProduto = document.getElementById('novo-produto-form');
+    const inputNome = document.getElementById('input-nome');
+    const inputDescricao = document.getElementById('input-descricao');
+    const inputPreco = document.getElementById('input-preco');
+    const inputImagem = document.getElementById('input-imagem');
+
+    function carregarTabelaEstoque() {
+      estoqueTbody.innerHTML = '';
+      db.estoque.forEach((produto, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${produto.nome}</td>
+          <td>${produto.descricao}</td>
+          <td>R$ ${produto.preco.toFixed(2)}</td>
+          <td><img src="${produto.imagem}" alt="${produto.nome}" style="width:50px; height:30px; object-fit:cover; border-radius:4px;"></td>
+          <td>
+            <button onclick="editarProduto(${idx})" title="Editar">✏️</button>
+            <button onclick="removerProduto(${idx})" title="Remover">🗑️</button>
+          </td>
+        `;
+        estoqueTbody.appendChild(tr);
+      });
+    }
+
+    window.editarProduto = function(index) {
+      const p = db.estoque[index];
+      inputNome.value = p.nome;
+      inputDescricao.value = p.descricao;
+      inputPreco.value = p.preco;
+      inputImagem.value = p.imagem;
+      formNovoProduto.dataset.editIndex = index;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.removerProduto = function(index) {
+      if (confirm('Deseja realmente remover este produto?')) {
+        db.estoque.splice(index, 1);
+        salvarDB(db);
+        produtos = db.estoque;
+        carregarTabelaEstoque();
+        renderVitrine();
+      }
+    };
+
+    function limparCamposProduto() {
+      inputNome.value = '';
+      inputDescricao.value = '';
+      inputPreco.value = '';
+      inputImagem.value = '';
+      delete formNovoProduto.dataset.editIndex;
+    }
+
+    formNovoProduto.addEventListener('submit', e => {
+      e.preventDefault();
+      const nome = inputNome.value.trim();
+      const descricao = inputDescricao.value.trim();
+      const preco = parseFloat(inputPreco.value);
+      const imagem = inputImagem.value.trim();
+      if (!nome || !descricao || isNaN(preco) || preco < 0 || !imagem) {
+        alert('Preencha todos os campos corretamente.');
+        return;
+      }
+
+      const novoProduto = {
+        nome,
+        descricao,
+        preco,
+        imagem,
+        categoria: detectarCategoria(nome, descricao)
+      };
+
+      if (formNovoProduto.dataset.editIndex !== undefined) {
+        // Editar produto
+        const idx = parseInt(formNovoProduto.dataset.editIndex);
+        db.estoque[idx] = novoProduto;
+        alert('Produto atualizado com sucesso!');
+      } else {
+        // Novo produto
+        db.estoque.push(novoProduto);
+        alert('Produto adicionado com sucesso!');
+      }
+      salvarDB(db);
+      produtos = db.estoque;
+      carregarTabelaEstoque();
+      renderVitrine();
+      limparCamposProduto();
+    });
+
+    // Função simples para tentar detectar categoria (ajuste conforme desejar)
+    function detectarCategoria(nome, descricao) {
+      const texto = (nome + ' ' + descricao).toLowerCase();
+      if (texto.includes('game') || texto.includes('jogo')) return 'Games';
+      if (texto.includes('gift card')) return 'Gift Cards';
+      if (texto.includes('conta')) return 'Contas';
+      if (texto.includes('oferta')) return 'Ofertas';
+      if (texto.includes('novo')) return 'Novidades';
+      return 'Outros';
+    }
+    // --- Carrinho Avançado + Toast ---
+let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+function salvarCarrinho() {
+  localStorage.setItem('carrinho', JSON.stringify(carrinho));
+}
+
+function mostrarToast(mensagem, tempo = 3000) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.innerHTML = mensagem;
+  toast.style.cssText = `
+    background: #333;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+  `;
+
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+    setTimeout(() => container.removeChild(toast), 400);
+  }, tempo);
+}
+
+function adicionarAoCarrinho(produto) {
+  const existente = carrinho.find(p => p.nome === produto.nome);
+  if (existente) {
+    existente.quantidade += 1;
+  } else {
+    carrinho.push({ ...produto, quantidade: 1 });
+  }
+  salvarCarrinho();
+  renderCarrinho();
+  mostrarToast(`✅ <b>${produto.nome}</b> adicionado ao carrinho.`);
+}
+
+function removerDoCarrinho(index) {
+  carrinho.splice(index, 1);
+  salvarCarrinho();
+  renderCarrinho();
+}
+
+function alterarQuantidade(index, delta) {
+  carrinho[index].quantidade += delta;
+  if (carrinho[index].quantidade <= 0) {
+    removerDoCarrinho(index);
+  } else {
+    salvarCarrinho();
+    renderCarrinho();
+  }
+}
+
+function limparCarrinho() {
+  if (confirm('Tem certeza que deseja limpar o carrinho?')) {
+    carrinho = [];
+    salvarCarrinho();
+    renderCarrinho();
+    mostrarToast('🧹 Carrinho limpo com sucesso.');
+  }
+}
+
+function pagarCarrinho() {
+  if (carrinho.length === 0) {
+    alert('Seu carrinho está vazio.');
+    return;
+  }
+
+  let resumo = 'Resumo da compra:\n';
+  carrinho.forEach(item => {
+    resumo += `${item.quantidade}x ${item.nome} - R$ ${(item.preco * item.quantidade).toFixed(2)}\n`;
+  });
+  resumo += `\nTotal: R$ ${calcularTotal().toFixed(2)}`;
+
+  alert(resumo + '\n\nPagamento simulado com sucesso!');
+  carrinho = [];
+  salvarCarrinho();
+  renderCarrinho();
+  fecharCarrinho();
+  mostrarToast('💳 Pagamento realizado com sucesso!');
+}
+
+function calcularTotal() {
+  return carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
+}
+
+function renderCarrinho() {
+  const lista = document.getElementById('lista-carrinho');
+  const totalEl = document.getElementById('total-carrinho');
+  lista.innerHTML = '';
+
+  if (carrinho.length === 0) {
+    lista.innerHTML = '<li style="color:#777;">Seu carrinho está vazio.</li>';
+    totalEl.textContent = 'Total: R$ 0,00';
+    return;
+  }
+
+  carrinho.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.style.display = 'flex';
+    li.style.gap = '10px';
+    li.style.marginBottom = '12px';
+    li.style.alignItems = 'center';
+
+    li.innerHTML = `
+      <img src="${item.imagem}" alt="${item.nome}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;">
+      <div style="flex-grow:1">
+        <strong>${item.nome}</strong><br>
+        <small>R$ ${item.preco.toFixed(2)} x ${item.quantidade} = <b>R$ ${(item.preco * item.quantidade).toFixed(2)}</b></small>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <button onclick="alterarQuantidade(${index}, 1)" style="padding:0 6px; font-size:16px;">+</button>
+        <span>${item.quantidade}</span>
+        <button onclick="alterarQuantidade(${index}, -1)" style="padding:0 6px; font-size:16px;">−</button>
+      </div>
+      <button onclick="removerDoCarrinho(${index})" title="Remover item" style="background:none; border:none; color:red; font-weight:bold; font-size:18px;">×</button>
+    `;
+    lista.appendChild(li);
+  });
+
+  totalEl.textContent = 'Total: R$ ' + calcularTotal().toFixed(2);
+}
+
+function abrirCarrinho() {
+  renderCarrinho();
+  document.getElementById('carrinho-panel').style.display = 'block';
+}
+
+function fecharCarrinho() {
+  document.getElementById('carrinho-panel').style.display = 'none';
+}
+
+// Abrir carrinho ao clicar no ícone
+document.querySelector('.ri-shopping-cart-line').addEventListener('click', abrirCarrinho);
+
+// Render produtos com botão de adicionar ao carrinho
+function renderVitrineComCarrinho() {
+  productList.innerHTML = '';
+  const listaFiltrada = filtroCategoria === 'todos'
+    ? produtos
+    : produtos.filter(p => p.categoria === filtroCategoria);
+
+  if (listaFiltrada.length === 0) {
+    productList.innerHTML = '<p style="color:#ff5722; font-weight:700; text-align:center;">Nenhum produto encontrado.</p>';
+    return;
+  }
+
+  listaFiltrada.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <img src="${p.imagem}" alt="${p.nome}">
+      <h3>${p.nome}</h3>
+      <p>R$ ${p.preco.toFixed(2)}</p>
+      <button onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>Adicionar ao Carrinho</button>
+    `;
+    productList.appendChild(div);
+  });
+}
+
+// Substitui renderização padrão
+renderVitrine = renderVitrineComCarrinho;
+renderVitrine();
+
+function baixarDados() {
+  const dados = {
+    banco: carregarDB(),
+    carrinho: carrinho
+  };
+
+  const conteudo = JSON.stringify(dados, null, 2);
+
+  const blob = new Blob([conteudo], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+a.download = "projetoescola.json"; // 🔥 nome fixo do arquivo
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+  </script>
+  
+</body>
+</html>
