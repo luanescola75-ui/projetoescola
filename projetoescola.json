@@ -2,17 +2,45 @@
   "banco": {
     "estoque": [
       {
-        "nome": "conta free fire gemada",
-        "descricao": "todas as roupas",
-        "preco": 450,
+        "nome": "conta free fire",
+        "descricao": "conta de free fire muito  gemada",
+        "preco": 750,
         "imagem": "https://i.postimg.cc/g05R4DrH/images.jpg",
         "categoria": "Contas"
       },
       {
-        "nome": "conta rara brawl stars",
-        "descricao": "tudo liberado",
-        "preco": 650,
+        "nome": "CONTA BRAWL STARS ANTIGA",
+        "descricao": "CONTA BRAWL STARS ANTIGA E GEMADA 34K DE TROFÉUS 72 BRAWLERS",
+        "preco": 450,
         "imagem": "https://i.postimg.cc/gcX5yVYz/997617698-conta-brawl-stars-rara-e-gemada-full-acesso-XYZR.webp",
+        "categoria": "Contas"
+      },
+      {
+        "nome": "conta pubg",
+        "descricao": "muito rara",
+        "preco": 600,
+        "imagem": "https://i.postimg.cc/MpqfbYJg/911770031-conta-pubg-mobile-9-M5-I.webp",
+        "categoria": "Contas"
+      },
+      {
+        "nome": "marreta fleethefacillty",
+        "descricao": "vende-se marreta",
+        "preco": 40,
+        "imagem": "https://i.postimg.cc/fTF88jFr/f570181ee3fdb30dd777289a1475b8f1-sm.jpg",
+        "categoria": "Outros"
+      },
+      {
+        "nome": "conta fortnite",
+        "descricao": "conta muito rara e cara",
+        "preco": 450,
+        "imagem": "https://i.postimg.cc/sxPZ5zkz/954235147-conta-fortnite-season-2-140-skins-PAX2.webp",
+        "categoria": "Contas"
+      },
+      {
+        "nome": "conta de free fire",
+        "descricao": "conta free fire muito gemada",
+        "preco": 670,
+        "imagem": "https://i.postimg.cc/vBsYfnb1/926934432-conta-ff-mega-gemada-6-PUX.webp",
         "categoria": "Contas"
       }
     ],

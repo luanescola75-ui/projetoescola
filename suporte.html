@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suporte ao Cliente | AlphaFoxXP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      color: #fff;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(26, 26, 26, 0.8));
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(255, 107, 53, 0.2);
+      border: 1px solid rgba(255, 107, 53, 0.3);
+    }
+
+    .contact-form h2,
+    .faq-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #ff6b35;
+      text-align: center;
+    }
+
+    form label {
+      display: block;
+      margin: 15px 0 8px;
+      font-weight: bold;
+      color: #ff8c42;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid rgba(255, 107, 53, 0.3);
+      border-radius: 10px;
+      background: rgba(45, 45, 45, 0.8);
+      color: #fff;
+      margin-bottom: 20px;
+      outline: none;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #ff6b35;
+      box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+      transform: translateY(-2px);
+    }
+
+    button {
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      color: #1a1a1a;
+      border: none;
+      padding: 15px 30px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+    }
+
+    .loading-animation {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 107, 53, 0.3);
+      border-top-color: #ff6b35;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #confirmationMessage {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      color: #ff6b35;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 15px;
+      background: rgba(255, 107, 53, 0.1);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 107, 53, 0.3);
+    }
+
+    .faq-section {
+      margin-top: 40px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .faq {
+      background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(26, 26, 26, 0.8));
+      border-radius: 15px;
+      margin-bottom: 15px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+    }
+
+    .faq:hover {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(45, 45, 45, 0.9));
+      border-color: #ff6b35;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+    }
+
+    .faq-question {
+      font-weight: bold;
+      color: #ff6b35;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-question::after {
+      content: '+';
+      font-size: 1.5rem;
+      color: #ff8c42;
+      transition: transform 0.3s ease;
+    }
+
+    .faq.open .faq-question::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      display: none;
+      margin-top: 15px;
+      color: #cccccc;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 107, 53, 0.2);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .faq.open .faq-answer {
+      display: block;
+    }
+
+    .live-chat {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      color: #1a1a1a;
+      padding: 12px 20px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+      font-weight: bold;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .live-chat:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+    }
+
+    .live-chat img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid #1a1a1a;
+    }
+
+    .chat-box {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: linear-gradient(135deg, rgba(45, 45, 45, 0.95), rgba(26, 26, 26, 0.95));
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      width: 350px;
+      max-height: 450px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 107, 53, 0.3);
+      z-index: 999;
+    }
+
+    .chat-box header {
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      color: #1a1a1a;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .chat-content {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .chat-content p {
+      margin: 10px 0;
+      font-size: 0.95rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      line-height: 1.4;
+    }
+
+    .chat-content p:nth-child(odd) {
+      background: rgba(255, 107, 53, 0.1);
+      border-left: 3px solid #ff6b35;
+    }
+
+    .user-input {
+      display: flex;
+      border-top: 1px solid rgba(255, 107, 53, 0.3);
+    }
+
+    .user-input input {
+      flex: 1;
+      border: none;
+      padding: 12px;
+      background: transparent;
+      color: #fff;
+      margin: 0;
+    }
+
+    .user-input button {
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      color: #1a1a1a;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .back-button {
+      margin-top: 30px;
+      background: transparent;
+      border: 2px solid #ff6b35;
+      color: #ff6b35;
+      font-weight: bold;
+      padding: 12px 25px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .back-button:hover {
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      color: #1a1a1a;
+      transform: translateY(-2px);
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff6b35;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      .chat-box {
+        width: 90%;
+        right: 5%;
+        bottom: 90px;
+      }
+      
+      .live-chat {
+        right: 20px;
+        bottom: 20px;
+        padding: 10px 15px;
+      }
+
+      .live-chat span {
+        display: none;
+      }
+    }
+
+    /* Animação de entrada */
+    .container {
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🔥 Suporte ao Cliente - AlphaFoxXP</h1>
+  </header>
+
+  <div class="container">
+    <!-- Formulário de Contato -->
+    <section class="contact-form">
+      <h2>Entre em Contato Conosco</h2>
+      <form id="contactForm" onsubmit="showConfirmation(event)">
+        <label for="name">Nome Completo:</label>
+        <input type="text" id="name" required placeholder="Digite seu nome completo">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" required placeholder="Digite seu melhor email">
+
+        <label for="message">Mensagem:</label>
+        <textarea id="message" rows="5" required placeholder="Descreva como podemos te ajudar..."></textarea>
+
+        <button type="submit">🚀 Enviar Mensagem</button>
+      </form>
+      <div class="loading-animation" id="loadingAnimation"></div>
+      <p id="confirmationMessage">✅ Obrigado! Em breve retornaremos o contato.</p>
+    </section>
+
+    <!-- Botão de Voltar -->
+     <button class="back-button" onclick="window.history.back()">← Voltar</button>
+
+
+  <!-- Seção de FAQ -->
+  <section class="faq-section">
+    <h2>❓ Perguntas Frequentes</h2>
+    <div class="faq">
+      <div class="faq-question">Como posso contratar um serviço de segurança?</div>
+      <div class="faq-answer">Para contratar nossos serviços, entre em contato pelo formulário acima ou utilize o chat ao vivo. Nossa equipe está pronta para atendê-lo 24/7.</div>
+    </div>
+    <div class="faq">
+      <div class="faq-question">Quais áreas a AlphaFoxXP atende?</div>
+      <div class="faq-answer">Atendemos em várias regiões do Brasil. Consulte nossa equipe para verificar disponibilidade em sua área específica.</div>
+    </div>
+    <div class="faq">
+      <div class="faq-question">Quais são os serviços oferecidos?</div>
+      <div class="faq-answer">Oferecemos vigilância privada, escolta armada, segurança pessoal, monitoramento 24h e consultoria em segurança.</div>
+    </div>
+    <div class="faq">
+      <div class="faq-question">Qual o horário de atendimento do suporte?</div>
+      <div class="faq-answer">Nosso suporte está disponível 24 horas por dia, todos os dias da semana, incluindo feriados.</div>
+    </div>
+    <div class="faq">
+      <div class="faq-question">Como posso cancelar um serviço?</div>
+      <div class="faq-answer">Para cancelamentos, entre em contato diretamente pelo nosso suporte ou utilize o formulário acima. Respeitamos todos os termos contratuais.</div>
+    </div>
+    <div class="faq">
+      <div class="faq-question">Vocês oferecem orçamento gratuito?</div>
+      <div class="faq-answer">Sim! Oferecemos orçamento gratuito e personalizado para todos os nossos serviços. Entre em contato conosco.</div>
+    </div>
+  </section>
+
+  <!-- Chat ao Vivo -->
+  <div class="live-chat" onclick="toggleChat()">
+    <img src="https://i.postimg.cc/28phW4K9/2c592eab-be95-4e28-be48-39a0f8223187.webp" alt="Foto do Assistente Virtual">
+    <span>SafeBot</span>
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <header>🤖 SafeBot - Assistente Virtual</header>
+    <div class="chat-content" id="chatContent">
+      <p><strong>SafeBot:</strong> Olá! 👋 Como posso ajudar você hoje?</p>
+    </div>
+    <div class="user-input">
+      <input type="text" id="userMessage" placeholder="Digite sua mensagem...">
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleChat() {
+      const chatBox = document.getElementById("chatBox");
+      chatBox.style.display = chatBox.style.display === "none" || chatBox.style.display === "" ? "flex" : "none";
+    }
+
+    function getAutoReply(message) {
+      const lowerMessage = message.toLowerCase();
+      const responses = {
+        "oi": "Oi! 👋 Como posso ajudar você hoje?",
+        "olá": "Olá! 😊 Como posso ajudar?",
+        "ola": "Olá! 😊 Como posso te ajudar?",
+        "opa": "Opa! 🔥 Como posso te ajudar?",
+        "bom dia": "Bom dia! ☀️ Como posso te ajudar?",
+        "boa tarde": "Boa tarde! 🌅 Como posso te ajudar?",
+        "boa noite": "Boa noite! 🌙 Como posso te ajudar?",
+        "qual seu nome": "Sou a SafeBot 🤖, IA desenvolvida para te ajudar com dúvidas rápidas sobre a AlphaFoxXP.",
+        "quem é você": "Sou a SafeBot 🤖, assistente virtual da AlphaFoxXP, aqui para te ajudar!",
+        "como trocar minha senha": "Vá até 'Esqueci minha senha' na aba de login ou entre em contato com nosso suporte online. 🔐",
+        "cancelar serviço": "Para cancelar seu serviço, entre em contato pelo formulário acima ou via suporte. 📞",
+        "ajuda": "Claro! 🆘 O que você precisa saber?",
+        "suporte": "Nosso suporte está disponível 24/7. 🕐 Como posso ajudar?",
+        "entendi": "Fico feliz! 😊 Posso ajudar com mais alguma coisa?",
+        "preço": "Para informações sobre preços 💰, entre em contato com nossa equipe comercial pelo formulário.",
+        "horário": "Nosso atendimento funciona 24 horas por dia ⏰, todos os dias da semana.",
+        "contrato": "Para informações sobre contratos 📋, utilize nosso formulário de contato.",
+        "emergência": "Em caso de emergência 🚨, ligue imediatamente para 190 ou nosso número de emergência.",
+        "obrigado": "De nada! 😊 Fico feliz em ajudar. Precisa de mais alguma coisa?",
+        "tchau": "Até logo! 👋 Obrigado por escolher a AlphaFoxXP!",
+        "bye": "Até logo! 👋 Tenha um ótimo dia!",
+        "sim": "Ótimo! 👍 Em que posso te ajudar?",
+        "não": "Tudo bem! 😊 Obrigado por escolher a AlphaFoxXP!",
+        "segurança": "Oferecemos diversos serviços de segurança 🛡️: vigilância, escolta, segurança pessoal e mais!",
+        "orçamento": "Oferecemos orçamento gratuito! 💰 Entre em contato pelo formulário acima."
+      };
+
+      for (let key in responses) {
+        if (lowerMessage.includes(key)) {
+          return responses[key];
+        }
+      }
+      return "Desculpe, não entendi sua mensagem. 🤔 Pode reformular ou entre em contato com nosso suporte humano pelo formulário acima.";
+    }
+
+    function sendMessage() {
+      const userMessage = document.getElementById("userMessage").value;
+      const chatContent = document.getElementById("chatContent");
+
+      if (userMessage.trim() === "") return;
+
+      const userMsg = document.createElement("p");
+      userMsg.innerHTML = `<strong>Você:</strong> ${userMessage}`;
+      chatContent.appendChild(userMsg);
+
+      document.getElementById("userMessage").value = "";
+
+      // Simular digitação do bot
+      setTimeout(() => {
+        const botReply = getAutoReply(userMessage);
+        const botMsg = document.createElement("p");
+        botMsg.innerHTML = `<strong>SafeBot:</strong> ${botReply}`;
+        chatContent.appendChild(botMsg);
+        chatContent.scrollTop = chatContent.scrollHeight;
+      }, 500);
+
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    // Permitir envio com Enter
+    document.getElementById("userMessage").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    });
+
+    function showConfirmation(event) {
+      event.preventDefault();
+      
+      // Validar campos
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+      
+      if (!name || !email || !message) {
+        alert("⚠️ Por favor, preencha todos os campos!");
+        return;
+      }
+      
+      document.getElementById("loadingAnimation").style.display = "block";
+      
+      setTimeout(() => {
+        document.getElementById("loadingAnimation").style.display = "none";
+        document.getElementById("confirmationMessage").style.display = "block";
+        document.getElementById("contactForm").reset(); // Limpar formulário
+      }, 2000);
+    }
+
+    // FAQ Toggle
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        q.parentElement.classList.toggle('open');
+      });
+    });
+
+    // Animação de entrada suave
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 100);
+    });
+  </script>
+
+</body>
+</html>

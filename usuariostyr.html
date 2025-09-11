@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel do Administrador - JN Security</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+      color: #fff;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #ff6a00, #ffae00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #bbb;
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 25px rgba(255, 102, 0, 0.2);
+    }
+
+    th, td {
+      padding: 18px 16px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.06);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ffb347;
+    }
+
+    td {
+      font-size: 0.95rem;
+      color: #f1f1f1;
+    }
+
+    select {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    select:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    button {
+      background: linear-gradient(145deg, #ff6a00, #ffb347);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(145deg, #ffc266, #ff944d);
+      box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
+    }
+
+    .status-ativo {
+      color: #00ffab;
+      font-weight: bold;
+      text-shadow: 0 0 5px #00ffab55;
+    }
+
+    .status-suspenso {
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 5px #ffd70055;
+    }
+
+    .status-banido {
+      color: #ff4d4d;
+      font-weight: bold;
+      text-shadow: 0 0 5px #ff4d4d55;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      }
+      td {
+        text-align: left;
+        padding: 10px;
+        position: relative;
+      }
+      td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #ffb347;
+        display: block;
+        margin-bottom: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Painel do Administrador</h1>
+  <p>Usuários Registrados</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Usuário</th>
+        <th>Email</th>
+        <th>Nível</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="userTableBody"></tbody>
+  </table>
+
+  <script>
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+
+    function salvarUsuarios() {
+      localStorage.setItem('users', JSON.stringify(users));
+      carregarTabela();
+    }
+
+    function alterarStatus(username, novoStatus) {
+      const user = users.find(u => u.username === username);
+      if (user) {
+        user.status = novoStatus;
+        salvarUsuarios();
+      }
+    }
+
+    function alterarNivel(username, novoNivel) {
+      const user = users.find(u => u.username === username);
+      if (user) {
+        user.nivel = parseInt(novoNivel);
+        salvarUsuarios();
+      }
+    }
+
+    function carregarTabela() {
+      const tbody = document.getElementById('userTableBody');
+      tbody.innerHTML = '';
+
+      users.forEach(user => {
+        const status = user.status || 'ativo';
+        const nivel = user.nivel || 1;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td data-label="Usuário">${user.username}</td>
+          <td data-label="Email">${user.email}</td>
+          <td data-label="Nível">
+            <select onchange="alterarNivel('${user.username}', this.value)">
+              <option value="1" ${nivel === 1 ? 'selected' : ''}>Nível 1</option>
+              <option value="2" ${nivel === 2 ? 'selected' : ''}>Nível 2</option>
+              <option value="3" ${nivel === 3 ? 'selected' : ''}>Nível 3</option>
+            </select>
+          </td>
+          <td data-label="Status" class="status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</td>
+          <td data-label="Ações">
+            <button onclick="alterarStatus('${user.username}', 'ativo')">Ativar</button>
+            <button onclick="alterarStatus('${user.username}', 'suspenso')">Suspender</button>
+            <button onclick="alterarStatus('${user.username}', 'banido')">Banir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    carregarTabela();
+  </script>
+</body>
+</html>

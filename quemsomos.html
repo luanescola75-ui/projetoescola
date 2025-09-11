@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós - AlphaFoxXP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="sobre-nos">
+        <div class="sobre-container">
+            <div class="sobre-card">
+                <div class="card-icon">🦊</div>
+                <h2>Quem Somos</h2>
+                <p>AlphaFoxXP é uma plataforma especializada em vendas de contas de jogos e serviços online premium. Entregamos rapidez, segurança e confiabilidade para nossos clientes.</p>
+            </div>
+
+            <div class="sobre-card">
+                <div class="card-icon">🌐</div>
+                <h2>Onde Atuamos</h2>
+                <p>Operamos 100% online, atendendo clientes de todo o Brasil com suporte digital eficiente e pagamentos seguros, garantindo praticidade e confiança em cada transação.</p>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="window.history.back()">Voltar</button>
+    </section>
+
+    <style>
+        /* Reset e configurações globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            background: #0d0d0f;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: #ff5722;
+        }
+
+        /* Customização da scrollbar */
+        body::-webkit-scrollbar {
+            width: 8px;
+            background: #0d0d0f;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background-color: #ff5722;
+        }
+
+        /* Seção Sobre Nós */
+        .sobre-nos {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #0d0d0f 0%, #1a1a1a 100%);
+            position: relative;
+        }
+
+        /* Efeito de partículas no fundo */
+        .sobre-nos::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 87, 34, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 87, 34, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sobre-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Cards */
+        .sobre-card {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            padding: 40px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 87, 34, 0.2);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 87, 34, 0.1);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        /* Efeito de brilho no hover */
+        .sobre-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 87, 34, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .sobre-card:hover::before {
+            opacity: 1;
+            animation: shine 0.6s ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .sobre-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 
+                0 25px 60px rgba(255, 87, 34, 0.3),
+                0 0 0 1px rgba(255, 87, 34, 0.4),
+                inset 0 1px 0 rgba(255, 87, 34, 0.2);
+            border-color: rgba(255, 87, 34, 0.5);
+        }
+
+        /* Ícones dos cards */
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            color: #ff5722;
+            text-shadow: 
+                0 0 20px rgba(255, 87, 34, 0.8),
+                0 0 40px rgba(255, 87, 34, 0.4);
+            display: block;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 3;
+        }
+
+        .sobre-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            text-shadow: 
+                0 0 30px rgba(255, 87, 34, 1),
+                0 0 60px rgba(255, 87, 34, 0.6);
+        }
+
+        /* Títulos dos cards */
+        .sobre-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff5722;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 87, 34, 0.6);
+            position: relative;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+
+        .sobre-card:hover h2 {
+            color: #ff6b3d;
+            text-shadow: 0 0 25px rgba(255, 87, 34, 0.8);
+        }
+
+        /* Texto dos cards */
+        .sobre-card p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ff8a50;
+            position: relative;
+            z-index: 3;
+            transition: color 0.3s ease;
+        }
+
+        .sobre-card:hover p {
+            color: #ffab80;
+        }
+
+        /* Botão de voltar */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 60px auto 0 auto;
+            padding: 16px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ff5722;
+            background: linear-gradient(145deg, transparent, rgba(255, 87, 34, 0.05));
+            border: 2px solid #ff5722;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 87, 34, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .back-btn:hover::before {
+            left: 100%;
+        }
+
+        .back-btn:hover {
+            background: #ff5722;
+            color: #0d0d0d;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 8px 25px rgba(255, 87, 34, 0.4),
+                0 0 0 3px rgba(255, 87, 34, 0.2);
+            border-color: #ff6b3d;
+        }
+
+        .back-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .sobre-nos {
+                padding: 60px 15px;
+            }
+            
+            .sobre-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                max-width: 500px;
+            }
+            
+            .sobre-card {
+                padding: 35px 25px;
+            }
+            
+            .card-icon {
+                font-size: 3rem;
+                margin-bottom: 20px;
+            }
+            
+            .sobre-card h2 {
+                font-size: 1.7rem;
+            }
+            
+            .sobre-card p {
+                font-size: 1rem;
+            }
+            
+            .back-btn {
+                margin-top: 40px;
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sobre-nos {
+                padding: 40px 10px;
+            }
+            
+            .sobre-container {
+                max-width: 100%;
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .sobre-card {
+                padding: 30px 20px;
+                border-radius: 15px;
+            }
+            
+            .card-icon {
+                font-size: 2.5rem;
+            }
+            
+            .sobre-card h2 {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+
+            .sobre-card p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .back-btn {
+                padding: 12px 25px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Animações de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sobre-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .sobre-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .back-btn {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        /* Efeitos adicionais para melhor experiência */
+        .sobre-card {
+            backdrop-filter: blur(10px);
+        }
+
+        /* Prevenção de seleção de texto nos ícones */
+        .card-icon {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        /* Smooth scroll para navegadores que suportam */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading state para fontes */
+        .sobre-card h2,
+        .sobre-card p,
+        .back-btn {
+            font-display: swap;
+        }
+    </style>
+</body>
+</html>

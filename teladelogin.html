@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - JN Security</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="loginh.css">
+
+</head>
+<body>
+  <div class="login-container" id="loginForm">
+    <h2>Login</h2>
+    <div style="position: relative;">
+      <i class="fas fa-user input-icon"></i>
+      <input type="text" id="username" placeholder="Usuário" required>
+    </div>
+    <div class="password-container">
+      <i class="fas fa-lock input-icon"></i>
+      <input type="password" id="password" placeholder="Senha" required>
+      <i class="fas fa-eye" id="togglePassword"></i>
+    </div>
+    <button id="loginButton">Entrar</button>
+    <div class="message" id="loginMessage" role="alert"></div>
+    <div class="link">Não tem uma conta? <a href="#" id="showCadastro">Criar conta</a></div>
+    <div class="link">Esqueceu sua senha? <a href="#" id="showChangePassword">Trocar senha</a></div>
+  </div>
+
+  <div class="login-container" id="cadastroForm" style="display: none;">
+    <h2>Criar Conta</h2>
+    <div style="position: relative;">
+      <i class="fas fa-user input-icon"></i>
+      <input type="text" id="newUsername" placeholder="Usuário" required>
+    </div>
+    <div style="position: relative;">
+      <i class="fas fa-id-card input-icon"></i>
+      <input type="text" id="cpf" placeholder="CPF (XXX.XXX.XXX-XX)" maxlength="14" required oninput="formatCPF(this)">
+    </div>
+    <div style="position: relative;">
+      <i class="fas fa-envelope input-icon"></i>
+      <input type="email" id="email" placeholder="E-mail" required>
+    </div>
+    <div class="password-container">
+      <i class="fas fa-lock input-icon"></i>
+      <input type="password" id="newPassword" placeholder="Senha (mínimo 6 caracteres)" required>
+      <i class="fas fa-eye" id="toggleNewPassword"></i>
+    </div>
+    <button id="registerButton">Registrar</button>
+    <div class="message" id="cadastroMessage" role="alert"></div>
+    <div class="link">Já tem uma conta? <a href="#" id="showLogin">Login</a></div>
+  </div>
+
+  <div class="login-container" id="changePasswordForm" style="display: none;">
+    <h2>Trocar Senha</h2>
+    <div style="position: relative;">
+      <i class="fas fa-id-card input-icon"></i>
+      <input type="text" id="changeCpf" placeholder="Digite seu CPF" maxlength="14" required oninput="formatCPF(this)">
+    </div>
+    <div style="position: relative;">
+      <i class="fas fa-user input-icon"></i>
+      <input type="text" id="changeUsername" placeholder="Digite seu Usuário" required>
+    </div>
+    <div class="password-container">
+      <i class="fas fa-lock input-icon"></i>
+      <input type="password" id="newChangePassword" placeholder="Nova Senha (mínimo 6 caracteres)" required>
+      <i class="fas fa-eye" id="toggleNewChangePassword"></i>
+    </div>
+    <button id="changePasswordButton">Alterar Senha</button>
+    <div class="message" id="changePasswordMessage" role="alert"></div>
+    <div class="link">Voltar ao login? <a href="#" id="showLoginFromChangePassword">Login</a></div>
+  </div>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    function validarCPF(cpf) {
+      const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+      return regex.test(cpf);
+    }
+
+    function formatCPF(cpfInput) {
+      cpfInput.value = cpfInput.value
+        .replace(/\D/g, '')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    document.getElementById('loginButton').addEventListener('click', function() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const user = users.find(u => u.username === username);
+
+      if (user) {
+        if (user.status === 'banido') {
+          document.getElementById('loginMessage').textContent = 'Sua conta foi banida.';
+          return;
+        }
+        if (user.status === 'suspenso') {
+          document.getElementById('loginMessage').textContent = 'Sua conta está suspensa.';
+          return;
+        }
+        if (user.password === password) {
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          window.location.href = 'https://codepen.io/luan-escola-the-scripter/full/PwqBBoY'; // redirecionamento
+        } else {
+          document.getElementById('loginMessage').textContent = 'Senha incorreta.';
+        }
+      } else {
+        document.getElementById('loginMessage').textContent = 'Usuário não encontrado.';
+      }
+    });
+
+    document.getElementById('showCadastro').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('cadastroForm').style.display = 'block';
+    });
+
+    document.getElementById('registerButton').addEventListener('click', function() {
+      const newUsername = document.getElementById('newUsername').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const cpf = document.getElementById('cpf').value;
+      const email = document.getElementById('email').value;
+
+      if (!validarCPF(cpf)) {
+        document.getElementById('cadastroMessage').textContent = 'CPF inválido.';
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        document.getElementById('cadastroMessage').textContent = 'A senha deve ter no mínimo 6 caracteres.';
+        return;
+      }
+
+      if (users.find(u => u.username === newUsername)) {
+        document.getElementById('cadastroMessage').textContent = 'Usuário já existe.';
+        return;
+      } else if (users.find(u => u.cpf === cpf)) {
+        document.getElementById('cadastroMessage').textContent = 'CPF já cadastrado.';
+        return;
+      }
+
+      users.push({
+        username: newUsername,
+        password: newPassword,
+        cpf: cpf,
+        email: email,
+        nivel: 1,
+        status: 'ativo'
+      });
+
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Conta criada com sucesso!');
+      document.getElementById('cadastroForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    });
+
+    document.getElementById('showLogin').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('cadastroForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    });
+
+    document.getElementById('showChangePassword').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('changePasswordForm').style.display = 'block';
+    });
+
+    document.getElementById('changePasswordButton').addEventListener('click', function() {
+      const cpf = document.getElementById('changeCpf').value;
+      const username = document.getElementById('changeUsername').value;
+      const newPassword = document.getElementById('newChangePassword').value;
+      const user = users.find(u => u.cpf === cpf && u.username === username);
+
+      if (!validarCPF(cpf)) {
+        document.getElementById('changePasswordMessage').textContent = 'CPF inválido.';
+        return;
+      }
+
+      if (!user) {
+                document.getElementById('changePasswordMessage').textContent = 'Usuário e CPF não encontrados.';
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        document.getElementById('changePasswordMessage').textContent = 'A senha deve ter no mínimo 6 caracteres.';
+        return;
+      }
+
+      user.password = newPassword;
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Senha alterada com sucesso! Você pode fazer login agora.');
+      document.getElementById('changePasswordForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    });
+
+    document.getElementById('showLoginFromChangePassword').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.getElementById('changePasswordForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    });
+
+    function togglePasswordVisibility(passwordInput, toggleIcon) {
+      toggleIcon.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+          passwordInput.type = 'password';
+          toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+      });
+    }
+
+    togglePasswordVisibility(document.getElementById('password'), document.getElementById('togglePassword'));
+    togglePasswordVisibility(document.getElementById('newPassword'), document.getElementById('toggleNewPassword'));
+    togglePasswordVisibility(document.getElementById('newChangePassword'), document.getElementById('toggleNewChangePassword'));
+  </script>
+</body>
+</html>
