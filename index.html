@@ -355,17 +355,56 @@
             });
         }
 
-        async function renderProdutosAdmin() {
-            const listaProdutos = document.getElementById("listaProdutos");
-            listaProdutos.innerHTML = "<p>Carregando produtos...</p>";
-            
-            const data = await carregarEstoque();
-            listaProdutos.innerHTML = "";
+       async function renderProdutosAdmin() {
+    const listaProdutos = document.getElementById("listaProdutos");
+    listaProdutos.innerHTML = "<p>Carregando produtos...</p>";
+    
+    const data = await carregarEstoque();
+    listaProdutos.innerHTML = "";
 
-            if (Object.keys(data).length === 0) {
-                listaProdutos.innerHTML = "<p>Nenhum produto cadastrado.</p>";
-                return;
-            }
+    if (Object.keys(data).length === 0) {
+        listaProdutos.innerHTML = "<p>Nenhum produto cadastrado.</p>";
+        return;
+    }
+
+    // Atualiza array global
+    produtos = Object.entries(data).map(([id, produto]) => ({
+        id,
+        ...produto
+    }));
+
+    // Renderizar cards no painel admin
+    Object.entries(data).forEach(([id, produto]) => {
+        const div = document.createElement("div");
+        div.classList.add("produto-admin-card");
+        div.innerHTML = `
+            <div class="produto-admin-image">
+                <img src="${produto.imagem}" alt="${produto.nome}">
+            </div>
+            <div class="produto-admin-info">
+                <h3>${produto.nome}</h3>
+                <p>${produto.descricao}</p>
+                <div class="produto-admin-meta">
+                    <span class="preco">R$ ${parseFloat(produto.preco).toFixed(2)}</span>
+                    <span class="categoria">${produto.categoria || 'Sem categoria'}</span>
+                </div>
+                <div class="produto-admin-actions">
+                    <button onclick="editarProduto('${id}')" class="btn-edit">
+                        <i class="ri-edit-line"></i> Editar
+                    </button>
+                    <button onclick="removerProduto('${id}')" class="btn-delete">
+                        <i class="ri-delete-bin-line"></i> Remover
+                    </button>
+                </div>
+            </div>
+        `;
+        listaProdutos.appendChild(div);
+    });
+
+    // Atualiza vitrine principal sempre que carregar admin
+    renderVitrine();
+}
+
 
             Object.entries(data).forEach(([id, produto]) => {
                 const div = document.createElement("div");
