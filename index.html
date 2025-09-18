@@ -167,22 +167,33 @@
 
             <!-- Controle de Estoque -->
             <section id="controle-estoque" class="admin-section">
-                <form id="novo-produto-form" class="produto-form" aria-label="Adicionar novo produto">
+                <form id="formProduto" class="produto-form" aria-label="Adicionar novo produto">
                     <div class="form-group">
-                        <label for="input-nome">Título do Produto</label>
-                        <input type="text" id="input-nome" placeholder="Digite o título do anúncio" required autocomplete="off" />
+                        <label for="nome">Título do Produto</label>
+                        <input type="text" id="nome" placeholder="Digite o título do anúncio" required autocomplete="off" />
                     </div>
                     <div class="form-group">
-                        <label for="input-descricao">Descrição</label>
-                        <textarea id="input-descricao" placeholder="Descrição detalhada do produto" required></textarea>
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" placeholder="Descrição detalhada do produto" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="input-preco">Preço (R$)</label>
-                        <input type="number" id="input-preco" placeholder="0.00" required step="0.01" min="0" />
+                        <label for="preco">Preço (R$)</label>
+                        <input type="number" id="preco" placeholder="0.00" required step="0.01" min="0" />
                     </div>
                     <div class="form-group">
-                        <label for="input-imagem">URL da Imagem</label>
-                        <input type="url" id="input-imagem" placeholder="https://exemplo.com/imagem.jpg" required autocomplete="off" />
+                        <label for="imagem">URL da Imagem</label>
+                        <input type="url" id="imagem" placeholder="https://exemplo.com/imagem.jpg" required autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Games">Games</option>
+                            <option value="Gift Cards">Gift Cards</option>
+                            <option value="Contas">Contas</option>
+                            <option value="Ofertas">Ofertas</option>
+                            <option value="Novidades">Novidades</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn-submit">
                         <i class="ri-add-line"></i> Publicar Novo Anúncio
@@ -190,20 +201,9 @@
                 </form>
 
                 <div class="estoque-table-container">
-                    <table class="estoque-table" aria-label="Lista de anúncios ativos">
-                        <thead>
-                            <tr>
-                                <th>Imagem</th>
-                                <th>Título</th>
-                                <th>Descrição</th>
-                                <th>Preço</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="estoque-tbody">
-                            <!-- Produtos listados aqui -->
-                        </tbody>
-                    </table>
+                    <div id="listaProdutos" class="produtos-grid">
+                        <!-- Produtos listados aqui -->
+                    </div>
                 </div>
             </section>
 
@@ -218,8 +218,542 @@
         </div>
     </div>
 
+    <!-- Firebase e JavaScript -->
+    <script type="module">
+        // ===== FIREBASE CONFIGURATION =====
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set, get, child, push, update, remove, onValue }
+            from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAFE7gbnch3hstHc8PXqidjMGENqPTl7ts",
+            authDomain: "projeto-b8aea.firebaseapp.com",
+            databaseURL: "https://projeto-b8aea-default-rtdb.firebaseio.com",
+            projectId: "projeto-b8aea",
+            storageBucket: "projeto-b8aea.firebasestorage.app",
+            messagingSenderId: "544644492441",
+            appId: "1:544644492441:web:c52f55961daa0c1baf9c08",
+            measurementId: "G-FT28Y1V57F"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // ===== VARIÁVEIS GLOBAIS =====
+        let produtos = [];
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        let filtroCategoria = 'todos';
+        let editandoProdutoId = null;
+
+        // ===== FUNÇÕES FIREBASE =====
+        async function salvarProduto(produto, id = null) {
+            try {
+                if (id) {
+                    await update(ref(db, `estoque/${id}`), produto);
+                    mostrarToast('✅ Produto atualizado com sucesso!');
+                } else {
+                    await push(ref(db, "estoque"), produto);
+                    mostrarToast('✅ Produto adicionado com sucesso!');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                mostrarToast('❌ Erro ao salvar produto', 'error');
+            }
+        }
+
+        async function carregarEstoque() {
+            try {
+                const snapshot = await get(child(ref(db), "estoque"));
+                return snapshot.exists() ? snapshot.val() : {};
+            } catch (error) {
+                console.error('Erro ao carregar estoque:', error);
+                return {};
+            }
+        }
+
+        async function removerProdutoDB(id) {
+            try {
+                await remove(ref(db, `estoque/${id}`));
+                mostrarToast('✅ Produto removido com sucesso!');
+            } catch (error) {
+                console.error('Erro ao remover produto:', error);
+                mostrarToast('❌ Erro ao remover produto', 'error');
+            }
+        }
+
+        // ===== FUNÇÕES DE INTERFACE =====
+        function mostrarToast(mensagem, tipo = 'success', tempo = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <span class="toast-message">${mensagem}</span>
+                    <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (container.contains(toast)) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
+            }, tempo);
+        }
+
+        // ===== RENDER PRODUTOS =====
+        function renderVitrine() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+            
+            const listaFiltrada = filtroCategoria === 'todos' ? 
+                produtos : produtos.filter(p => p.categoria === filtroCategoria);
+            
+            if (listaFiltrada.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-inbox-line"></i>
+                        <h3>Nenhum produto encontrado</h3>
+                        <p>Tente ajustar os filtros ou buscar por outros termos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listaFiltrada.forEach(produto => {
+                const div = document.createElement('div');
+                div.className = 'product-card';
+                div.innerHTML = `
+                    <div class="card-image">
+                        <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
+                        <div class="card-overlay">
+                            <button class="quick-view-btn" onclick="adicionarAoCarrinho('${produto.id}')">
+                                <i class="ri-shopping-cart-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${produto.nome}</h3>
+                        <p class="card-description">${produto.descricao ? produto.descricao.substring(0, 60) + '...' : ''}</p>
+                        <div class="card-footer">
+                            <span class="card-price">R$ ${produto.preco.toFixed(2)}</span>
+                            <button class="add-to-cart-btn" onclick="adicionarAoCarrinho('${produto.id}')">
+                                <i class="ri-add-line"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productList.appendChild(div);
+            });
+        }
+
+        async function renderProdutosAdmin() {
+            const listaProdutos = document.getElementById("listaProdutos");
+            listaProdutos.innerHTML = "<p>Carregando produtos...</p>";
+            
+            const data = await carregarEstoque();
+            listaProdutos.innerHTML = "";
+
+            if (Object.keys(data).length === 0) {
+                listaProdutos.innerHTML = "<p>Nenhum produto cadastrado.</p>";
+                return;
+            }
+
+            Object.entries(data).forEach(([id, produto]) => {
+                const div = document.createElement("div");
+                div.classList.add("produto-admin-card");
+                div.innerHTML = `
+                    <div class="produto-admin-image">
+                        <img src="${produto.imagem}" alt="${produto.nome}">
+                    </div>
+                    <div class="produto-admin-info">
+                        <h3>${produto.nome}</h3>
+                        <p>${produto.descricao}</p>
+                        <div class="produto-admin-meta">
+                            <span class="preco">R$ ${produto.preco.toFixed(2)}</span>
+                            <span class="categoria">${produto.categoria || 'Sem categoria'}</span>
+                        </div>
+                        <div class="produto-admin-actions">
+                            <button onclick="editarProduto('${id}')" class="btn-edit">
+                                <i class="ri-edit-line"></i> Editar
+                            </button>
+                            <button onclick="removerProduto('${id}')" class="btn-delete">
+                                <i class="ri-delete-bin-line"></i> Remover
+                            </button>
+                        </div>
+                    </div>
+                `;
+                listaProdutos.appendChild(div);
+            });
+        }
+
+        // ===== CARREGAR DADOS INICIAIS =====
+        async function inicializarApp() {
+            try {
+                const data = await carregarEstoque();
+                produtos = Object.entries(data).map(([id, produto]) => ({
+                    id,
+                    ...produto
+                }));
+                renderVitrine();
+                atualizarContadorCarrinho();
+            } catch (error) {
+                console.error('Erro ao inicializar app:', error);
+                mostrarToast('❌ Erro ao carregar produtos', 'error');
+            }
+        }
+
+        // ===== FORMULÁRIO DE PRODUTOS =====
+        const form = document.getElementById("formProduto");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const nome = document.getElementById("nome").value.trim();
+            const descricao = document.getElementById("descricao").value.trim();
+            const preco = parseFloat(document.getElementById("preco").value);
+            const imagem = document.getElementById("imagem").value.trim();
+            const categoria = document.getElementById("categoria").value;
+
+            if (!nome || !descricao || isNaN(preco) || preco < 0 || !imagem || !categoria) {
+                mostrarToast('❌ Preencha todos os campos corretamente', 'error');
+                return;
+            }
+
+            const produto = { nome, descricao, preco, imagem, categoria };
+
+            await salvarProduto(produto, editandoProdutoId);
+            
+            form.reset();
+            editandoProdutoId = null;
+            await renderProdutosAdmin();
+            await inicializarApp(); // Recarregar vitrine
+        });
+
+        // ===== FUNÇÕES GLOBAIS =====
+        window.removerProduto = async (id) => {
+            if (confirm("Tem certeza que deseja remover este produto?")) {
+                await removerProdutoDB(id);
+                await renderProdutosAdmin();
+                await inicializarApp(); // Recarregar vitrine
+            }
+        };
+
+        window.editarProduto = async (id) => {
+            const data = await carregarEstoque();
+            const produto = data[id];
+
+            if (!produto) {
+                mostrarToast('❌ Produto não encontrado', 'error');
+                return;
+            }
+
+            document.getElementById("nome").value = produto.nome;
+            document.getElementById("descricao").value = produto.descricao;
+            document.getElementById("preco").value = produto.preco;
+            document.getElementById("imagem").value = produto.imagem;
+            document.getElementById("categoria").value = produto.categoria || '';
+
+            editandoProdutoId = id;
+            
+            // Scroll para o formulário
+            document.getElementById("formProduto").scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        };
+
+        // ===== CARRINHO =====
+        function atualizarContadorCarrinho() {
+            const contador = document.getElementById('cart-count');
+            const total = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+            contador.textContent = total;
+            contador.style.display = total > 0 ? 'flex' : 'none';
+        }
+
+        window.adicionarAoCarrinho = function(produtoId) {
+            const produto = produtos.find(p => p.id === produtoId);
+            if (!produto) {
+                mostrarToast('❌ Produto não encontrado', 'error');
+                return;
+            }
+
+            const existente = carrinho.find(p => p.id === produtoId);
+            if (existente) {
+                existente.quantidade += 1;
+            } else {
+                carrinho.push({ ...produto, quantidade: 1 });
+            }
+            
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+            renderCarrinho();
+            mostrarToast(`✅ <strong>${produto.nome}</strong> adicionado ao carrinho.`);
+        };
+
+        function renderCarrinho() {
+            const lista = document.getElementById('lista-carrinho');
+            const totalEl = document.getElementById('total-carrinho');
+            
+            lista.innerHTML = '';
+            
+            if (carrinho.length === 0) {
+                lista.innerHTML = `
+                    <li class="carrinho-empty">
+                        <i class="ri-shopping-cart-line"></i>
+                        <p>Seu carrinho está vazio</p>
+                    </li>
+                `;
+                totalEl.textContent = 'Total: R$ 0,00';
+                return;
+            }
+
+            carrinho.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'carrinho-item';
+                li.innerHTML = `
+                    <div class="item-image">
+                        <img src="${item.imagem}" alt="${item.nome}">
+                    </div>
+                    <div class="item-details">
+                        <h4>${item.nome}</h4>
+                        <p class="item-price">R$ ${item.preco.toFixed(2)}</p>
+                    </div>
+                    <div class="item-controls">
+                        <div class="quantity-controls">
+                            <button onclick="alterarQuantidade(${index}, -1)" class="qty-btn">
+                                <i class="ri-subtract-line"></i>
+                            </button>
+                            <span class="quantity">${item.quantidade}</span>
+                            <button onclick="alterarQuantidade(${index}, 1)" class="qty-btn">
+                                <i class="ri-add-line"></i>
+                            </button>
+                        </div>
+                        <button onclick="removerDoCarrinho(${index})" class="remove-btn" title="Remover item">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(li);
+            });
+
+            const total = carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
+            totalEl.textContent = 'Total: R$ ' + total.toFixed(2);
+        }
+
+        window.alterarQuantidade = function(index, delta) {
+            carrinho[index].quantidade += delta;
+            if (carrinho[index].quantidade <= 0) {
+                carrinho.splice(index, 1);
+            }
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+            renderCarrinho();
+        };
+
+        window.removerDoCarrinho = function(index) {
+            carrinho.splice(index, 1);
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+            renderCarrinho();
+        };
+
+        window.limparCarrinho = function() {
+            if (confirm('Tem certeza que deseja limpar o carrinho?')) {
+                carrinho = [];
+                localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                atualizarContadorCarrinho();
+                renderCarrinho();
+                mostrarToast('🧹 Carrinho limpo com sucesso.');
+            }
+        };
+
+        window.abrirCarrinho = function() {
+            renderCarrinho();
+            document.getElementById('carrinho-panel').classList.add('active');
+        };
+
+        window.fecharCarrinho = function() {
+            document.getElementById('carrinho-panel').classList.remove('active');
+        };
+
+        // ===== ADMIN PANEL =====
+        const adminPanelBg = document.getElementById('admin-panel-bg');
+        const adminCloseBtn = document.getElementById('admin-close-btn');
+        const adminAccess = document.getElementById('admin-access');
+        const btnEstoque = document.getElementById('btn-controle-estoque');
+        const btnUsuarios = document.getElementById('btn-controle-usuarios');
+        const controleEstoque = document.getElementById('controle-estoque');
+        const controleUsuarios = document.getElementById('controle-usuarios');
+
+        adminAccess.addEventListener('click', () => {
+            const senha = prompt('Acesso Restrito - Insira o código de segurança:');
+            if (senha === '454') {
+                adminPanelBg.style.display = 'flex';
+                mostrarTelaAdmin('estoque');
+            } else if (senha !== null) {
+                mostrarToast('❌ Código inválido!', 'error');
+            }
+        });
+
+        adminCloseBtn.addEventListener('click', () => {
+            adminPanelBg.style.display = 'none';
+            document.getElementById("formProduto").reset();
+            editandoProdutoId = null;
+        });
+
+        btnEstoque.addEventListener('click', () => mostrarTelaAdmin('estoque'));
+        btnUsuarios.addEventListener('click', () => {
+            window.location.href = 'usuariostyr.html';
+        });
+
+        function mostrarTelaAdmin(tela) {
+            if (tela === 'estoque') {
+                controleEstoque.style.display = 'block';
+                controleUsuarios.style.display = 'none';
+                renderProdutosAdmin();
+            } else if (tela === 'usuarios') {
+                controleEstoque.style.display = 'none';
+                controleUsuarios.style.display = 'block';
+            }
+        }
+
+        // ===== FILTROS E BUSCA =====
+        const categorias = document.querySelectorAll('.categoria-btn');
+        categorias.forEach(cat => {
+            cat.addEventListener('click', () => {
+                categorias.forEach(c => c.classList.remove('active'));
+                cat.classList.add('active');
+                filtroCategoria = cat.dataset.cat;
+                renderVitrine();
+            });
+        });
+
+        // Busca
+        const searchIcon = document.getElementById('search-icon');
+        const searchBox = document.getElementById('search-box');
+        const searchInput = document.getElementById('search-input');
+        
+        searchIcon.addEventListener('click', () => {
+            if (searchBox.classList.contains('active')) {
+                searchBox.classList.remove('active');
+                searchInput.value = '';
+                renderVitrine();
+            } else {
+                searchBox.classList.add('active');
+                searchInput.focus();
+            }
+        });
+
+        searchInput.addEventListener('input', function() {
+            const termo = this.value.toLowerCase();
+            const produtosFiltrados = produtos.filter(p => 
+                p.nome.toLowerCase().includes(termo) || 
+                (p.descricao && p.descricao.toLowerCase().includes(termo))
+            );
+            
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+            
+            if (produtosFiltrados.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-search-line"></i>
+                        <h3>Nenhum resultado encontrado</h3>
+                        <p>Tente buscar por outros termos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            produtosFiltrados.forEach(produto => {
+                const div = document.createElement('div');
+                div.className = 'product-card';
+                div.innerHTML = `
+                    <div class="card-image">
+                        <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
+                        <div class="card-overlay">
+                            <button class="quick-view-btn" onclick="adicionarAoCarrinho('${produto.id}')">
+                                <i class="ri-shopping-cart-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${produto.nome}</h3>
+                        <p class="card-description">${produto.descricao ? produto.descricao.substring(0, 60) + '...' : ''}</p>
+                        <div class="card-footer">
+                            <span class="card-price">R$ ${produto.preco.toFixed(2)}</span>
+                            <button class="add-to-cart-btn" onclick="adicionarAoCarrinho('${produto.id}')">
+                                <i class="ri-add-line"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productList.appendChild(div);
+            });
+        });
+
+        // ===== MENU TOGGLE =====
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuItems = document.getElementById('menu-items');
+        
+        menuToggle.addEventListener('click', () => {
+            menuItems.classList.toggle('active');
+        });
+
+        // ===== DOWNLOAD DE DADOS =====
+        window.baixarDados = async function() {
+            try {
+                const dadosFirebase = await carregarEstoque();
+                const dados = {
+                    estoque: dadosFirebase,
+                    carrinho: carrinho,
+                    timestamp: new Date().toISOString()
+                };
+                
+                const conteudo = JSON.stringify(dados, null, 2);
+                const blob = new Blob([conteudo], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+               
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `alphafox-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                mostrarToast('✅ Backup realizado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao baixar dados:', error);
+                mostrarToast('❌ Erro ao realizar backup', 'error');
+            }
+        };
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarApp();
+        });
+
+        // Inicializar imediatamente se o DOM já estiver carregado
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inicializarApp);
+        } else {
+            inicializarApp();
+        }
+
+    </script>
+
+    <!-- JavaScript adicional para Particles.js e Loading -->
     <script>
-        // Particles.js Configuration
+        // ===== PARTICLES.JS CONFIGURATION =====
         particlesJS('particles-js', {
             particles: {
                 number: { value: 80, density: { enable: true, value_area: 800 } },
@@ -275,467 +809,275 @@
             retina_detect: true
         });
 
-        // Loading Screen
+        // ===== LOADING SCREEN =====
         window.addEventListener('load', function() {
             setTimeout(() => {
-                document.getElementById('loading-screen').style.opacity = '0';
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
+                    loadingScreen.style.display = 'none';
                 }, 500);
             }, 2000);
         });
 
-        // Seu JavaScript original continua aqui...
-        // [Todo o código JavaScript original permanece inalterado]
-        
-        // --- Banco de dados simulado via localStorage ---
-        const DB_KEY = 'AlphaFoxXP_DB';
-        function carregarDB() {
-            const db = localStorage.getItem(DB_KEY);
-            if (!db) {
-                const inicial = { estoque: [], usuarios: [] };
-                localStorage.setItem(DB_KEY, JSON.stringify(inicial));
-                return inicial;
-            }
-            return JSON.parse(db);
-        }
-
-        function salvarDB(db) {
-            localStorage.setItem(DB_KEY, JSON.stringify(db));
-        }
-
-        let db = carregarDB();
-
-        // --- Render Vitrine de produtos ---
-        let produtos = db.estoque;
-        const productList = document.getElementById('product-list');
-        const categorias = document.querySelectorAll('.categoria-btn');
-        let filtroCategoria = 'todos';
-
-        function renderVitrine() {
-            productList.innerHTML = '';
-            const listaFiltrada = filtroCategoria === 'todos' ? produtos : produtos.filter(p => p.categoria === filtroCategoria);
-            
-            if (listaFiltrada.length === 0) {
-                productList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="ri-inbox-line"></i>
-                        <h3>Nenhum produto encontrado</h3>
-                        <p>Tente ajustar os filtros ou buscar por outros termos</p>
-                    </div>
-                `;
-                return;
-            }
-
-            listaFiltrada.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'product-card';
-                div.innerHTML = `
-                    <div class="card-image">
-                        <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
-                        <div class="card-overlay">
-                            <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-shopping-cart-line"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${p.nome}</h3>
-                        <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
-                        <div class="card-footer">
-                            <span class="card-price">R$ ${p.preco.toFixed(2)}</span>
-                            <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-add-line"></i> Adicionar
-                            </button>
-                        </div>
-                    </div>
-                `;
-                productList.appendChild(div);
-            });
-        }
-
-        // Atualizar contador do carrinho
-        function atualizarContadorCarrinho() {
-            const contador = document.getElementById('cart-count');
-            const total = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
-            contador.textContent = total;
-            contador.style.display = total > 0 ? 'flex' : 'none';
-        }
-
-        // --- Busca dinâmica ---
-        document.getElementById('search-input').addEventListener('input', function() {
-            const termo = this.value.toLowerCase();
-            const listaFiltrada = produtos.filter(p => 
-                p.nome.toLowerCase().includes(termo) || 
-                (p.descricao && p.descricao.toLowerCase().includes(termo))
-            );
-            
-            productList.innerHTML = '';
-            if (listaFiltrada.length === 0) {
-                productList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="ri-search-line"></i>
-                        <h3>Nenhum resultado encontrado</h3>
-                        <p>Tente buscar por outros termos</p>
-                    </div>
-                `;
-                return;
-            }
-
-            listaFiltrada.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'product-card';
-                div.innerHTML = `
-                    <div class="card-image">
-                        <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
-                        <div class="card-overlay">
-                            <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-shopping-cart-line"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${p.nome}</h3>
-                        <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
-                        <div class="card-footer">
-                            <span class="card-price">R$ ${p.preco.toFixed(2)}</span>
-                            <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-add-line"></i> Adicionar
-                            </button>
-                        </div>
-                    </div>
-                `;
-                productList.appendChild(div);
-            });
+        // ===== TRATAMENTO DE ERROS GLOBAIS =====
+        window.addEventListener('error', function(e) {
+            console.error('Erro global capturado:', e.error);
         });
 
-        // --- Troca filtro categoria ---
-        categorias.forEach(cat => {
-            cat.addEventListener('click', () => {
-                categorias.forEach(c => c.classList.remove('active'));
-                cat.classList.add('active');
-                filtroCategoria = cat.dataset.cat;
-                renderVitrine();
-            });
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Promise rejeitada:', e.reason);
         });
-
-        renderVitrine();
-
-        // --- Mostrar/Esconder busca ---
-        const searchIcon = document.getElementById('search-icon');
-        const searchBox = document.getElementById('search-box');
-        
-        searchIcon.addEventListener('click', () => {
-            if (searchBox.classList.contains('active')) {
-                searchBox.classList.remove('active');
-                document.getElementById('search-input').value = '';
-                renderVitrine();
-            } else {
-                searchBox.classList.add('active');
-                document.getElementById('search-input').focus();
-            }
-        });
-
-        // --- Menu toggle ---
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuItems = document.getElementById('menu-items');
-        
-        menuToggle.addEventListener('click', () => {
-            menuItems.classList.toggle('active');
-        });
-
-        // --- Painel Admin ---
-        const adminPanelBg = document.getElementById('admin-panel-bg');
-        const adminCloseBtn = document.getElementById('admin-close-btn');
-        const adminAccess = document.getElementById('admin-access');
-        const btnEstoque = document.getElementById('btn-controle-estoque');
-        const btnUsuarios = document.getElementById('btn-controle-usuarios');
-        const controleEstoque = document.getElementById('controle-estoque');
-        const controleUsuarios = document.getElementById('controle-usuarios');
-
-        adminAccess.addEventListener('click', () => {
-            const senha = prompt('Acesso Restrito - Insira o código de segurança:');
-            if (senha === '454') {
-                adminPanelBg.style.display = 'flex';
-                mostrarTelaAdmin('estoque');
-            } else {
-                alert('Código inválido!');
-            }
-        });
-
-        adminCloseBtn.addEventListener('click', () => {
-            adminPanelBg.style.display = 'none';
-            limparCamposProduto();
-        });
-
-        btnEstoque.addEventListener('click', () => mostrarTelaAdmin('estoque'));
-        btnUsuarios.addEventListener('click', () => {
-            window.location.href = 'usuariostyr.html';
-        });
-
-        function mostrarTelaAdmin(tela) {
-            if (tela === 'estoque') {
-                controleEstoque.style.display = 'block';
-                controleUsuarios.style.display = 'none';
-                carregarTabelaEstoque();
-            } else if (tela === 'usuarios') {
-                controleEstoque.style.display = 'none';
-                controleUsuarios.style.display = 'block';
-            }
-        }
-
-        // --- Controle de Estoque ---
-        const estoqueTbody = document.getElementById('estoque-tbody');
-        const formNovoProduto = document.getElementById('novo-produto-form');
-        const inputNome = document.getElementById('input-nome');
-        const inputDescricao = document.getElementById('input-descricao');
-        const inputPreco = document.getElementById('input-preco');
-        const inputImagem = document.getElementById('input-imagem');
-
-        function carregarTabelaEstoque() {
-            estoqueTbody.innerHTML = '';
-            db.estoque.forEach((produto, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <img src="${produto.imagem}" alt="${produto.nome}" class="table-image">
-                    </td>
-                    <td class="table-title">${produto.nome}</td>
-                    <td class="table-description">${produto.descricao}</td>
-                    <td class="table-price">R$ ${produto.preco.toFixed(2)}</td>
-                    <td class="table-actions">
-                        <button onclick="editarProduto(${idx})" class="edit-btn" title="Editar">
-                            <i class="ri-edit-line"></i>
-                        </button>
-                        <button onclick="removerProduto(${idx})" class="delete-btn" title="Remover">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </td>
-                `;
-                estoqueTbody.appendChild(tr);
-            });
-        }
-
-        window.editarProduto = function(index) {
-            const p = db.estoque[index];
-            inputNome.value = p.nome;
-            inputDescricao.value = p.descricao;
-            inputPreco.value = p.preco;
-            inputImagem.value = p.imagem;
-            formNovoProduto.dataset.editIndex = index;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.removerProduto = function(index) {
-            if (confirm('Deseja realmente remover este produto?')) {
-                db.estoque.splice(index, 1);
-                salvarDB(db);
-                produtos = db.estoque;
-                carregarTabelaEstoque();
-                renderVitrine();
-            }
-        };
-
-        function limparCamposProduto() {
-            inputNome.value = '';
-            inputDescricao.value = '';
-            inputPreco.value = '';
-            inputImagem.value = '';
-            delete formNovoProduto.dataset.editIndex;
-        }
-
-        formNovoProduto.addEventListener('submit', e => {
-            e.preventDefault();
-            const nome = inputNome.value.trim();
-            const descricao = inputDescricao.value.trim();
-            const preco = parseFloat(inputPreco.value);
-            const imagem = inputImagem.value.trim();
-
-            if (!nome || !descricao || isNaN(preco) || preco < 0 || !imagem) {
-                alert('Preencha todos os campos corretamente.');
-                return;
-            }
-
-            const novoProduto = {
-                nome,
-                descricao,
-                preco,
-                imagem,
-                categoria: detectarCategoria(nome, descricao)
-            };
-
-            if (formNovoProduto.dataset.editIndex !== undefined) {
-                const idx = parseInt(formNovoProduto.dataset.editIndex);
-                db.estoque[idx] = novoProduto;
-                alert('Produto atualizado com sucesso!');
-            } else {
-                db.estoque.push(novoProduto);
-                alert('Produto adicionado com sucesso!');
-            }
-
-            salvarDB(db);
-            produtos = db.estoque;
-            carregarTabelaEstoque();
-            renderVitrine();
-            limparCamposProduto();
-        });
-
-        function detectarCategoria(nome, descricao) {
-            const texto = (nome + ' ' + descricao).toLowerCase();
-            if (texto.includes('game') || texto.includes('jogo')) return 'Games';
-            if (texto.includes('gift card')) return 'Gift Cards';
-            if (texto.includes('conta')) return 'Contas';
-            if (texto.includes('oferta')) return 'Ofertas';
-            if (texto.includes('novo')) return 'Novidades';
-            return 'Outros';
-        }
-
-        // --- Carrinho Avançado + Toast ---
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-
-        function salvarCarrinho() {
-            localStorage.setItem('carrinho', JSON.stringify(carrinho));
-            atualizarContadorCarrinho();
-        }
-
-        function mostrarToast(mensagem, tipo = 'success', tempo = 3000) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${tipo}`;
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <span class="toast-message">${mensagem}</span>
-                    <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
-                        <i class="ri-close-line"></i>
-                    </button>
-                </div>
-            `;
-            container.appendChild(toast);
-
-            setTimeout(() => toast.classList.add('show'), 100);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => container.removeChild(toast), 300);
-            }, tempo);
-        }
-
-        function adicionarAoCarrinho(produto) {
-            const existente = carrinho.find(p => p.nome === produto.nome);
-            if (existente) {
-                existente.quantidade += 1;
-            } else {
-                carrinho.push({ ...produto, quantidade: 1 });
-            }
-            salvarCarrinho();
-            renderCarrinho();
-            mostrarToast(`✅ <strong>${produto.nome}</strong> adicionado ao carrinho.`);
-        }
-
-        function removerDoCarrinho(index) {
-            carrinho.splice(index, 1);
-            salvarCarrinho();
-            renderCarrinho();
-        }
-
-        function alterarQuantidade(index, delta) {
-            carrinho[index].quantidade += delta;
-            if (carrinho[index].quantidade <= 0) {
-                removerDoCarrinho(index);
-            } else {
-                salvarCarrinho();
-                renderCarrinho();
-            }
-        }
-
-        function limparCarrinho() {
-            if (confirm('Tem certeza que deseja limpar o carrinho?')) {
-                carrinho = [];
-                salvarCarrinho();
-                renderCarrinho();
-                mostrarToast('🧹 Carrinho limpo com sucesso.');
-            }
-        }
-
-        function calcularTotal() {
-            return carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
-        }
-
-        function renderCarrinho() {
-            const lista = document.getElementById('lista-carrinho');
-            const totalEl = document.getElementById('total-carrinho');
-            
-            lista.innerHTML = '';
-            
-            if (carrinho.length === 0) {
-                lista.innerHTML = `
-                    <li class="carrinho-empty">
-                        <i class="ri-shopping-cart-line"></i>
-                        <p>Seu carrinho está vazio</p>
-                    </li>
-                `;
-                totalEl.textContent = 'Total: R$ 0,00';
-                return;
-            }
-
-            carrinho.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = 'carrinho-item';
-                li.innerHTML = `
-                    <div class="item-image">
-                        <img src="${item.imagem}" alt="${item.nome}">
-                    </div>
-                    <div class="item-details">
-                        <h4>${item.nome}</h4>
-                        <p class="item-price">R$ ${item.preco.toFixed(2)}</p>
-                    </div>
-                    <div class="item-controls">
-                        <div class="quantity-controls">
-                            <button onclick="alterarQuantidade(${index}, -1)" class="qty-btn">
-                                <i class="ri-subtract-line"></i>
-                            </button>
-                            <span class="quantity">${item.quantidade}</span>
-                            <button onclick="alterarQuantidade(${index}, 1)" class="qty-btn">
-                                <i class="ri-add-line"></i>
-                            </button>
-                        </div>
-                        <button onclick="removerDoCarrinho(${index})" class="remove-btn" title="Remover item">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                `;
-                lista.appendChild(li);
-            });
-
-            totalEl.textContent = 'Total: R$ ' + calcularTotal().toFixed(2);
-        }
-
-        function abrirCarrinho() {
-            renderCarrinho();
-            document.getElementById('carrinho-panel').classList.add('active');
-        }
-
-        function fecharCarrinho() {
-            document.getElementById('carrinho-panel').classList.remove('active');
-        }
-
-        function baixarDados() {
-            const dados = {
-                banco: carregarDB(),
-                carrinho: carrinho
-            };
-            const conteudo = JSON.stringify(dados, null, 2);
-            const blob = new Blob([conteudo], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-           
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "projetoescola.json";
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Inicializar contador do carrinho
-        atualizarContadorCarrinho();
     </script>
+
+    <!-- CSS adicional para melhorar a aparência dos produtos admin -->
+    <style>
+        .produtos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .produto-admin-card {
+            background: var(--card-bg, #fff);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color, #e0e0e0);
+        }
+
+        .produto-admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .produto-admin-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .produto-admin-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .produto-admin-card:hover .produto-admin-image img {
+            transform: scale(1.05);
+        }
+
+        .produto-admin-info h3 {
+            margin: 0 0 10px 0;
+            color: var(--text-primary, #333);
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .produto-admin-info p {
+            margin: 0 0 15px 0;
+            color: var(--text-secondary, #666);
+            font-size: 0.9em;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .produto-admin-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .produto-admin-meta .preco {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--primary-color, #ff5722);
+        }
+
+        .produto-admin-meta .categoria {
+            background: var(--primary-color, #ff5722);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .produto-admin-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit, .btn-delete {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary, #666);
+        }
+
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+            color: var(--text-primary, #333);
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 1em;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left: 4px solid #4CAF50;
+            min-width: 300px;
+            max-width: 400px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.toast-error {
+            border-left-color: #f44336;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: #666;
+            margin-left: 10px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-close:hover {
+            color: #333;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .produtos-grid {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .produto-admin-card {
+                padding: 15px;
+            }
+
+            .produto-admin-image {
+                height: 150px;
+            }
+
+            .toast-container {
+                left: 20px;
+                right: 20px;
+            }
+
+            .toast {
+                min-width: auto;
+                max-width: none;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .produto-admin-card {
+                --card-bg: #2d2d2d;
+                --border-color: #404040;
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+            }
+
+            .toast {
+                background: #2d2d2d;
+                color: #ffffff;
+            }
+        }
+    </style>
 </body>
 </html>
