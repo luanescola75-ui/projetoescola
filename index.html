@@ -85,7 +85,7 @@
             <button onclick="window.location.href='index.html'">
                 <i class="ri-home-line"></i> Início
             </button>
-            <button onclick="window.location.href='ediçao.html'">
+            <button onclick="window.location.href='edicao.html'">
                 <i class="ri-settings-line"></i> Configuração
             </button>
             <button onclick="window.location.href='planos.html'">
@@ -142,196 +142,755 @@
     </main>
 
     <!-- Painel Admin Modal -->
-    <div id="admin-panel-bg" class="admin-modal-bg">
+    <div id="admin-panel-bg" class="admin-modal-bg" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
         <div id="admin-panel" class="admin-panel">
             <header class="admin-header">
                 <h2 id="admin-panel-title">
                     <i class="ri-admin-line"></i> Painel Admin
                 </h2>
-                <button id="admin-close-btn" class="close-btn">
+                <button id="admin-close-btn" class="close-btn" aria-label="Fechar painel admin">
                     <i class="ri-close-line"></i>
                 </button>
             </header>
             
             <nav class="admin-nav">
-                <button id="btn-controle-estoque" class="admin-nav-btn active">
+                <button id="btn-controle-estoque" class="admin-nav-btn">
                     <i class="ri-box-3-line"></i> Controle de Estoque
                 </button>
                 <button id="btn-controle-usuarios" class="admin-nav-btn">
                     <i class="ri-user-settings-line"></i> Controle de Usuários
                 </button>
-                <button id="btn-relatorios" class="admin-nav-btn">
-                    <i class="ri-bar-chart-line"></i> Relatórios
-                </button>
                 <button onclick="baixarDados()" class="admin-nav-btn">
-                    <i class="ri-download-line"></i> Backup de Dados
+                    <i class="ri-download-line"></i> Salvar Dados em JSON
                 </button>
             </nav>
 
             <!-- Controle de Estoque -->
-            <section id="controle-estoque" class="admin-section active">
-                <div class="section-header">
-                    <h3><i class="ri-box-3-line"></i> Gerenciar Produtos</h3>
-                    <div class="stats-cards">
-                        <div class="stat-card">
-                            <i class="ri-shopping-bag-line"></i>
-                            <div>
-                                <span class="stat-number" id="total-produtos">0</span>
-                                <span class="stat-label">Produtos</span>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <i class="ri-money-dollar-circle-line"></i>
-                            <div>
-                                <span class="stat-number" id="valor-total">R$ 0</span>
-                                <span class="stat-label">Valor Total</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <form id="formProduto" class="produto-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nome">Nome do Produto *</label>
-                            <input type="text" id="nome" placeholder="Digite o nome do produto" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="categoria">Categoria *</label>
-                            <select id="categoria" required>
-                                <option value="">Selecione uma categoria</option>
-                                <option value="Games">Games</option>
-                                <option value="Gift Cards">Gift Cards</option>
-                                <option value="Contas">Contas</option>
-                                <option value="Ofertas">Ofertas</option>
-                                <option value="Novidades">Novidades</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="preco">Preço (R$) *</label>
-                            <input type="number" id="preco" placeholder="0.00" required step="0.01" min="0" />
-                        </div>
-                        <div class="form-group">
-                            <label for="estoque">Quantidade em Estoque</label>
-                            <input type="number" id="estoque" placeholder="0" min="0" value="1" />
-                        </div>
-                    </div>
-                    
+            <section id="controle-estoque" class="admin-section">
+                <form id="novo-produto-form" class="produto-form" aria-label="Adicionar novo produto">
                     <div class="form-group">
-                        <label for="descricao">Descrição *</label>
-                        <textarea id="descricao" placeholder="Descrição detalhada do produto" required rows="3"></textarea>
+                        <label for="input-nome">Título do Produto</label>
+                        <input type="text" id="input-nome" placeholder="Digite o título do anúncio" required autocomplete="off" />
                     </div>
-                    
                     <div class="form-group">
-                        <label for="imagem">URL da Imagem *</label>
-                        <input type="url" id="imagem" placeholder="https://exemplo.com/imagem.jpg" required />
-                        <div class="image-preview" id="image-preview"></div>
+                        <label for="input-descricao">Descrição</label>
+                        <textarea id="input-descricao" placeholder="Descrição detalhada do produto" required></textarea>
                     </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn-submit" id="btn-submit">
-                            <i class="ri-add-line"></i> Adicionar Produto
-                        </button>
-                        <button type="button" class="btn-cancel" id="btn-cancel" onclick="cancelarEdicao()">
-                            <i class="ri-close-line"></i> Cancelar
-                        </button>
+                    <div class="form-group">
+                        <label for="input-preco">Preço (R$)</label>
+                        <input type="number" id="input-preco" placeholder="0.00" required step="0.01" min="0" />
                     </div>
+                    <div class="form-group">
+                        <label for="input-imagem">URL da Imagem</label>
+                        <input type="url" id="input-imagem" placeholder="https://exemplo.com/imagem.jpg" required autocomplete="off" />
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="ri-add-line"></i> Publicar Novo Anúncio
+                    </button>
                 </form>
 
-                <div class="produtos-section">
-                    <div class="section-controls">
-                        <div class="search-filter">
-                            <input type="text" id="filtro-produtos" placeholder="Buscar produtos...">
-                            <select id="filtro-categoria">
-                                <option value="">Todas as categorias</option>
-                                <option value="Games">Games</option>
-                                <option value="Gift Cards">Gift Cards</option>
-                                <option value="Contas">Contas</option>
-                                <option value="Ofertas">Ofertas</option>
-                                <option value="Novidades">Novidades</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="listaProdutos" class="produtos-grid"></div>
+                <div class="estoque-table-container">
+                    <table class="estoque-table" aria-label="Lista de anúncios ativos">
+                        <thead>
+                            <tr>
+                                <th>Imagem</th>
+                                <th>Título</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="estoque-tbody">
+                            <!-- Produtos listados aqui -->
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
             <!-- Controle de Usuários -->
             <section id="controle-usuarios" class="admin-section">
-                <div class="section-header">
-                    <h3><i class="ri-user-settings-line"></i> Gerenciar Usuários</h3>
-                </div>
-                
-                <div class="usuarios-stats">
-                    <div class="stat-card">
-                        <i class="ri-user-line"></i>
-                        <div>
-                            <span class="stat-number" id="total-usuarios">0</span>
-                            <span class="stat-label">Usuários Cadastrados</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="ri-user-star-line"></i>
-                        <div>
-                            <span class="stat-number" id="usuarios-ativos">0</span>
-                            <span class="stat-label">Usuários Ativos</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="usuarios-section">
-                    <div class="section-controls">
-                        <input type="text" id="filtro-usuarios" placeholder="Buscar usuários...">
-                        <button class="btn-add-user" onclick="adicionarUsuario()">
-                            <i class="ri-user-add-line"></i> Adicionar Usuário
-                        </button>
-                    </div>
-                    <div id="listaUsuarios" class="usuarios-grid"></div>
-                </div>
-            </section>
-
-            <!-- Relatórios -->
-            <section id="relatorios" class="admin-section">
-                <div class="section-header">
-                    <h3><i class="ri-bar-chart-line"></i> Relatórios e Estatísticas</h3>
-                </div>
-                
-                <div class="relatorios-grid">
-                    <div class="relatorio-card">
-                        <h4><i class="ri-shopping-cart-line"></i> Vendas</h4>
-                        <div class="relatorio-content">
-                            <p>Total de Vendas: <span id="total-vendas">R$ 0,00</span></p>
-                            <p>Produtos Vendidos: <span id="produtos-vendidos">0</span></p>
-                            <p>Ticket Médio: <span id="ticket-medio">R$ 0,00</span></p>
-                        </div>
-                    </div>
-                    
-                    <div class="relatorio-card">
-                        <h4><i class="ri-star-line"></i> Produtos Populares</h4>
-                        <div class="relatorio-content" id="produtos-populares">
-                            <p>Carregando dados...</p>
-                        </div>
-                    </div>
-                    
-                    <div class="relatorio-card">
-                        <h4><i class="ri-calendar-line"></i> Atividade Recente</h4>
-                        <div class="relatorio-content" id="atividade-recente">
-                            <p>Carregando atividades...</p>
-                        </div>
-                    </div>
+                <div class="coming-soon">
+                    <i class="ri-tools-line"></i>
+                    <h3>Funcionalidade em Desenvolvimento</h3>
+                    <p>O controle de usuários estará disponível em breve.</p>
                 </div>
             </section>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script type="module" src="js/firebase-config.js"></script>
-    <script type="module" src="js/admin-panel.js"></script>
-    <script type="module" src="js/carrinho.js"></script>
-    <script type="module" src="js/main.js"></script>
-    <script src="js/particles-config.js"></script>
+    <script>
+        // --- Configuração inicial ---
+        const DB_KEY = 'AlphaFoxXP_DB';
+        let db = null;
+        let produtos = [];
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        let filtroCategoria = 'todos';
+
+        // --- Funções de banco de dados ---
+        function carregarDB() {
+            const dbLocal = localStorage.getItem(DB_KEY);
+            if (!dbLocal) {
+                const inicial = { estoque: [], usuarios: [] };
+                localStorage.setItem(DB_KEY, JSON.stringify(inicial));
+                return inicial;
+            }
+            return JSON.parse(dbLocal);
+        }
+
+        function salvarDB(database) {
+            localStorage.setItem(DB_KEY, JSON.stringify(database));
+        }
+
+        // --- Carregar dados externos do JSON ---
+        async function carregarDadosExternos() {
+            try {
+                console.log('Tentando carregar dados externos...');
+                const response = await fetch("./AlphaFoxXP_Dados.json");
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const dados = await response.json();
+                console.log('Dados carregados do JSON:', dados);
+
+                // Atualiza o banco local com os dados do arquivo
+                if (dados.estoque && Array.isArray(dados.estoque)) {
+                    db.estoque = dados.estoque;
+                    produtos = db.estoque;
+                    salvarDB(db);
+                    console.log('Produtos atualizados:', produtos.length);
+                }
+
+                // Renderiza a vitrine com os dados carregados
+                renderVitrine();
+                
+            } catch (err) {
+                console.error("Falha ao carregar dados externos:", err);
+                // Se der erro, usa os dados salvos no localStorage
+                produtos = db.estoque || [];
+                renderVitrine();
+            }
+        }
+
+        // --- Inicialização ---
+        async function inicializar() {
+            // Carrega o banco de dados local
+            db = carregarDB();
+            produtos = db.estoque || [];
+            
+            // Tenta carregar dados externos
+            await carregarDadosExternos();
+            
+            // Inicializa outros componentes
+            atualizarContadorCarrinho();
+            configurarEventListeners();
+        }
+
+        // --- Render Vitrine de produtos ---
+        function renderVitrine() {
+            const productList = document.getElementById('product-list');
+            if (!productList) return;
+
+            productList.innerHTML = '';
+            
+            const listaFiltrada = filtroCategoria === 'todos' 
+                ? produtos 
+                : produtos.filter(p => p.categoria === filtroCategoria);
+            
+            if (listaFiltrada.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-inbox-line"></i>
+                        <h3>Nenhum produto encontrado</h3>
+                        <p>Tente ajustar os filtros ou buscar por outros termos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listaFiltrada.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'product-card';
+                div.innerHTML = `
+                    <div class="card-image">
+                        <img src="${p.imagem}" alt="${p.nome}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=Imagem+Indisponível'">
+                        <div class="card-overlay">
+                            <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p).replace(/'/g, "'")})'>
+                                <i class="ri-shopping-cart-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${p.nome}</h3>
+                        <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
+                        <div class="card-footer">
+                            <span class="card-price">R$ ${parseFloat(p.preco).toFixed(2)}</span>
+                            <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p).replace(/'/g, "'")})'>
+                                <i class="ri-add-line"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productList.appendChild(div);
+            });
+        }
+
+        // --- Configurar Event Listeners ---
+        function configurarEventListeners() {
+            // Busca dinâmica
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const termo = this.value.toLowerCase();
+                    const listaFiltrada = produtos.filter(p => 
+                        p.nome.toLowerCase().includes(termo) || 
+                        (p.descricao && p.descricao.toLowerCase().includes(termo))
+                    );
+                    
+                    const productList = document.getElementById('product-list');
+                    productList.innerHTML = '';
+                    
+                    if (listaFiltrada.length === 0) {
+                        productList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="ri-search-line"></i>
+                                <h3>Nenhum resultado encontrado</h3>
+                                <p>Tente buscar por outros termos</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    listaFiltrada.forEach(p => {
+                        const div = document.createElement('div');
+                        div.className = 'product-card';
+                        div.innerHTML = `
+                            <div class="card-image">
+                                <img src="${p.imagem}" alt="${p.nome}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=Imagem+Indisponível'">
+                                <div class="card-overlay">
+                                    <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p).replace(/'/g, "'")})'>
+                                        <i class="ri-shopping-cart-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">${p.nome}</h3>
+                                <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
+                                <div class="card-footer">
+                                    <span class="card-price">R$ ${parseFloat(p.preco).toFixed(2)}</span>
+                                    <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p).replace(/'/g, "'")})'>
+                                        <i class="ri-add-line"></i> Adicionar
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        productList.appendChild(div);
+                    });
+                });
+            }
+
+            // Filtros de categoria
+            const categorias = document.querySelectorAll('.categoria-btn');
+            categorias.forEach(cat => {
+                cat.addEventListener('click', () => {
+                    categorias.forEach(c => c.classList.remove('active'));
+                    cat.classList.add('active');
+                    filtroCategoria = cat.dataset.cat;
+                    renderVitrine();
+                });
+            });
+
+            // Busca toggle
+            const searchIcon = document.getElementById('search-icon');
+            const searchBox = document.getElementById('search-box');
+            
+            if (searchIcon && searchBox) {
+                searchIcon.addEventListener('click', () => {
+                    if (searchBox.classList.contains('active')) {
+                        searchBox.classList.remove('active');
+                        if (searchInput) {
+                            searchInput.value = '';
+                        }
+                        renderVitrine();
+                    } else {
+                        searchBox.classList.add('active');
+                        if (searchInput) {
+                            searchInput.focus();
+                        }
+                    }
+                });
+            }
+
+            // Menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const menuItems = document.getElementById('menu-items');
+            
+            if (menuToggle && menuItems) {
+                menuToggle.addEventListener('click', () => {
+                    menuItems.classList.toggle('active');
+                });
+            }
+
+            // Admin panel
+            configurarPainelAdmin();
+        }
+
+        // --- Configurar Painel Admin ---
+        function configurarPainelAdmin() {
+            const adminPanelBg = document.getElementById('admin-panel-bg');
+            const adminCloseBtn = document.getElementById('admin-close-btn');
+            const adminAccess = document.getElementById('admin-access');
+            const btnEstoque = document.getElementById('btn-controle-estoque');
+            const btnUsuarios = document.getElementById('btn-controle-usuarios');
+
+            if (adminAccess) {
+                adminAccess.addEventListener('click', () => {
+                    const senha = prompt('Acesso Restrito - Insira o código de segurança:');
+                    if (senha === '454') {
+                        if (adminPanelBg) {
+                            adminPanelBg.style.display = 'flex';
+                            mostrarTelaAdmin('estoque');
+                        }
+                    } else {
+                        alert('Código inválido!');
+                    }
+                });
+            }
+
+            if (adminCloseBtn && adminPanelBg) {
+                adminCloseBtn.addEventListener('click', () => {
+                    adminPanelBg.style.display = 'none';
+                    limparCamposProduto();
+                });
+            }
+
+            if (btnEstoque) {
+                btnEstoque.addEventListener('click', () => mostrarTelaAdmin('estoque'));
+            }
+
+            if (btnUsuarios) {
+                btnUsuarios.addEventListener('click', () => {
+                    window.location.href = 'usuariostyr.html';
+                });
+            }
+
+            // Form de novo produto
+            const formNovoProduto = document.getElementById('novo-produto-form');
+            if (formNovoProduto) {
+                formNovoProduto.addEventListener('submit', handleSubmitProduto);
+            }
+        }
+
+        // --- Funções do Admin ---
+        function mostrarTelaAdmin(tela) {
+            const controleEstoque = document.getElementById('controle-estoque');
+            const controleUsuarios = document.getElementById('controle-usuarios');
+
+            if (tela === 'estoque') {
+                if (controleEstoque) controleEstoque.style.display = 'block';
+                if (controleUsuarios) controleUsuarios.style.display = 'none';
+                carregarTabelaEstoque();
+            } else if (tela === 'usuarios') {
+                if (controleEstoque) controleEstoque.style.display = 'none';
+                if (controleUsuarios) controleUsuarios.style.display = 'block';
+            }
+        }
+
+        function carregarTabelaEstoque() {
+            const estoqueTbody = document.getElementById('estoque-tbody');
+            if (!estoqueTbody) return;
+
+            estoqueTbody.innerHTML = '';
+            
+            if (!db.estoque || db.estoque.length === 0) {
+                estoqueTbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            <i class="ri-inbox-line" style="font-size: 2rem; color: #666;"></i>
+                            <p>Nenhum produto cadastrado</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            db.estoque.forEach((produto, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <img src="${produto.imagem}" alt="${produto.nome}" class="table-image" onerror="this.src='https://via.placeholder.com/50x50?text=N/A'">
+                    </td>
+                    <td class="table-title">${produto.nome}</td>
+                    <td class="table-description">${produto.descricao}</td>
+                    <td class="table-price">R$ ${parseFloat(produto.preco).toFixed(2)}</td>
+                    <td class="table-actions">
+                        <button onclick="editarProduto(${idx})" class="edit-btn" title="Editar">
+                            <i class="ri-edit-line"></i>
+                        </button>
+                        <button onclick="removerProduto(${idx})" class="delete-btn" title="Remover">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </td>
+                `;
+                estoqueTbody.appendChild(tr);
+            });
+        }
+
+        function handleSubmitProduto(e) {
+            e.preventDefault();
+            
+            const inputNome = document.getElementById('input-nome');
+            const inputDescricao = document.getElementById('input-descricao');
+            const inputPreco = document.getElementById('input-preco');
+            const inputImagem = document.getElementById('input-imagem');
+
+            if (!inputNome || !inputDescricao || !inputPreco || !inputImagem) {
+                alert('Erro: Campos do formulário não encontrados.');
+                return;
+            }
+
+            const nome = inputNome.value.trim();
+            const descricao = inputDescricao.value.trim();
+            const preco = parseFloat(inputPreco.value);
+            const imagem = inputImagem.value.trim();
+
+            if (!nome || !descricao || isNaN(preco) || preco < 0 || !imagem) {
+                alert('Preencha todos os campos corretamente.');
+                return;
+            }
+
+            const novoProduto = {
+                nome,
+                descricao,
+                preco,
+                imagem,
+                categoria: detectarCategoria(nome, descricao)
+            };
+
+            const formNovoProduto = document.getElementById('novo-produto-form');
+            if (formNovoProduto.dataset.editIndex !== undefined) {
+                const idx = parseInt(formNovoProduto.dataset.editIndex);
+                db.estoque[idx] = novoProduto;
+                alert('Produto atualizado com sucesso!');
+            } else {
+                db.estoque.push(novoProduto);
+                alert('Produto adicionado com sucesso!');
+            }
+
+            salvarDB(db);
+            produtos = db.estoque;
+            carregarTabelaEstoque();
+            renderVitrine();
+            limparCamposProduto();
+        }
+
+        function detectarCategoria(nome, descricao) {
+            const texto = (nome + ' ' + descricao).toLowerCase();
+            if (texto.includes('game') || texto.includes('jogo')) return 'Games';
+            if (texto.includes('gift card')) return 'Gift Cards';
+            if (texto.includes('conta')) return 'Contas';
+            if (texto.includes('oferta')) return 'Ofertas';
+            if (texto.includes('novo')) return 'Novidades';
+            return 'Outros';
+        }
+
+        function limparCamposProduto() {
+            const inputNome = document.getElementById('input-nome');
+            const inputDescricao = document.getElementById('input-descricao');
+            const inputPreco = document.getElementById('input-preco');
+            const inputImagem = document.getElementById('input-imagem');
+            const formNovoProduto = document.getElementById('novo-produto-form');
+
+            if (inputNome) inputNome.value = '';
+            if (inputDescricao) inputDescricao.value = '';
+            if (inputPreco) inputPreco.value = '';
+            if (inputImagem) inputImagem.value = '';
+            if (formNovoProduto) delete formNovoProduto.dataset.editIndex;
+        }
+
+        // --- Funções globais para os botões ---
+        window.editarProduto = function(index) {
+            const p = db.estoque[index];
+            const inputNome = document.getElementById('input-nome');
+            const inputDescricao = document.getElementById('input-descricao');
+            const inputPreco = document.getElementById('input-preco');
+            const inputImagem = document.getElementById('input-imagem');
+            const formNovoProduto = document.getElementById('novo-produto-form');
+
+            if (inputNome) inputNome.value = p.nome;
+            if (inputDescricao) inputDescricao.value = p.descricao;
+            if (inputPreco) inputPreco.value = p.preco;
+            if (inputImagem) inputImagem.value = p.imagem;
+            if (formNovoProduto) formNovoProduto.dataset.editIndex = index;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.removerProduto = function(index) {
+            if (confirm('Deseja realmente remover este produto?')) {
+                db.estoque.splice(index, 1);
+                salvarDB(db);
+                produtos = db.estoque;
+                carregarTabelaEstoque();
+                renderVitrine();
+            }
+        };
+
+        // --- Funções do Carrinho ---
+        function salvarCarrinho() {
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            atualizarContadorCarrinho();
+        }
+
+        function atualizarContadorCarrinho() {
+            const contador = document.getElementById('cart-count');
+            if (contador) {
+                const total = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+                contador.textContent = total;
+                contador.style.display = total > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function mostrarToast(mensagem, tipo = 'success', tempo = 3000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <span class="toast-message">${mensagem}</span>
+                    <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (container.contains(toast)) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
+            }, tempo);
+        }
+
+        function adicionarAoCarrinho(produto) {
+            const existente = carrinho.find(p => p.nome === produto.nome);
+            if (existente) {
+                existente.quantidade += 1;
+            } else {
+                carrinho.push({ ...produto, quantidade: 1 });
+            }
+            salvarCarrinho();
+            renderCarrinho();
+            mostrarToast(`✅ <strong>${produto.nome}</strong> adicionado ao carrinho.`);
+        }
+
+        function removerDoCarrinho(index) {
+            carrinho.splice(index, 1);
+            salvarCarrinho();
+            renderCarrinho();
+        }
+
+        function alterarQuantidade(index, delta) {
+            carrinho[index].quantidade += delta;
+            if (carrinho[index].quantidade <= 0) {
+                removerDoCarrinho(index);
+            } else {
+                salvarCarrinho();
+                renderCarrinho();
+            }
+        }
+
+        function limparCarrinho() {
+            if (confirm('Tem certeza que deseja limpar o carrinho?')) {
+                carrinho = [];
+                salvarCarrinho();
+                renderCarrinho();
+                mostrarToast('🧹 Carrinho limpo com sucesso.');
+            }
+        }
+
+        function calcularTotal() {
+            return carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
+        }
+
+               function renderCarrinho() {
+            const lista = document.getElementById('lista-carrinho');
+            const totalEl = document.getElementById('total-carrinho');
+            
+            if (!lista || !totalEl) return;
+            
+            lista.innerHTML = '';
+            
+            if (carrinho.length === 0) {
+                lista.innerHTML = `
+                    <li class="carrinho-empty">
+                        <i class="ri-shopping-cart-line"></i>
+                        <p>Seu carrinho está vazio</p>
+                    </li>
+                `;
+                totalEl.textContent = 'Total: R$ 0,00';
+                return;
+            }
+
+            carrinho.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'carrinho-item';
+                li.innerHTML = `
+                    <div class="item-image">
+                        <img src="${item.imagem}" alt="${item.nome}" onerror="this.src='https://via.placeholder.com/50x50?text=N/A'">
+                    </div>
+                    <div class="item-details">
+                        <h4>${item.nome}</h4>
+                        <p class="item-price">R$ ${parseFloat(item.preco).toFixed(2)}</p>
+                    </div>
+                    <div class="item-controls">
+                        <div class="quantity-controls">
+                            <button onclick="alterarQuantidade(${index}, -1)" class="qty-btn">
+                                <i class="ri-subtract-line"></i>
+                            </button>
+                            <span class="quantity">${item.quantidade}</span>
+                            <button onclick="alterarQuantidade(${index}, 1)" class="qty-btn">
+                                <i class="ri-add-line"></i>
+                            </button>
+                        </div>
+                        <button onclick="removerDoCarrinho(${index})" class="remove-btn" title="Remover item">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(li);
+            });
+
+            totalEl.textContent = 'Total: R$ ' + calcularTotal().toFixed(2);
+        }
+
+        function abrirCarrinho() {
+            renderCarrinho();
+            const carrinhoPanel = document.getElementById('carrinho-panel');
+            if (carrinhoPanel) {
+                carrinhoPanel.classList.add('active');
+            }
+        }
+
+        function fecharCarrinho() {
+            const carrinhoPanel = document.getElementById('carrinho-panel');
+            if (carrinhoPanel) {
+                carrinhoPanel.classList.remove('active');
+            }
+        }
+
+        function baixarDados() {
+            const dados = {
+                banco: carregarDB(),
+                carrinho: carrinho
+            };
+            const conteudo = JSON.stringify(dados, null, 2);
+            const blob = new Blob([conteudo], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+           
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "AlphaFoxXP_Dados.json";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // --- Funções globais para os botões do carrinho ---
+        window.adicionarAoCarrinho = adicionarAoCarrinho;
+        window.removerDoCarrinho = removerDoCarrinho;
+        window.alterarQuantidade = alterarQuantidade;
+        window.limparCarrinho = limparCarrinho;
+        window.abrirCarrinho = abrirCarrinho;
+        window.fecharCarrinho = fecharCarrinho;
+        window.baixarDados = baixarDados;
+
+        // --- Particles.js Configuration ---
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ff5722" },
+                shape: {
+                    type: "circle",
+                    stroke: { width: 0, color: "#000000" },
+                    polygon: { nb_sides: 5 }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: false,
+                    anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: { enable: false, speed: 40, size_min: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ff5722",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 6,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: { enable: false, rotateX: 600, rotateY: 1200 }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 400, line_linked: { opacity: 1 } },
+                    bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                    repulse: { distance: 200, duration: 0.4 },
+                    push: { particles_nb: 4 },
+                    remove: { particles_nb: 2 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // --- Loading Screen ---
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 2000);
+        });
+
+        // --- Inicialização quando o DOM estiver carregado ---
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializar();
+        });
+
+        // --- Fallback para garantir que a inicialização aconteça ---
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inicializar);
+        } else {
+            inicializar();
+        }
+    </script>
 </body>
 </html>

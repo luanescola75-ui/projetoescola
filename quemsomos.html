@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Sobre Nós - AlphaFoxXP</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -27,6 +28,21 @@
 
     <style>
         /* Reset e configurações globais */
+=======
+    <title>Quem Somos - AlphaFoxXP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6a00;
+            --bg: #0f0f10;
+            --card: #17181b;
+            --muted: #8a8f98;
+            --ring: rgba(255,106,0,.35);
+            --glass: rgba(255,255,255,0.04);
+        }
+
+>>>>>>> 6aa646c (1.0.5)
         * {
             margin: 0;
             padding: 0;
@@ -35,6 +51,7 @@
 
         html, body {
             height: 100%;
+<<<<<<< HEAD
             background: #0d0d0f;
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
@@ -221,12 +238,195 @@
         }
 
         .back-btn::before {
+=======
+            background: radial-gradient(1200px 600px at 80% -10%, rgba(255,106,0,.15), transparent 60%),
+                        radial-gradient(800px 500px at -10% 30%, rgba(255,106,0,.12), transparent 60%),
+                        var(--bg);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        /* Particles layer */
+        #particles-js {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        /* Scrollbar personalizada */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: saturate(1.2) blur(10px);
+            background: linear-gradient(180deg, rgba(15,15,16,.9), rgba(15,15,16,.7));
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+        }
+
+        .logo {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .logo .brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,.2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #0c0c0d;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,106,0,.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 100px 20px 80px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Section Styles */
+        .section {
+            position: relative;
+            z-index: 1;
+            padding: 80px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: var(--primary);
+        }
+
+        /* Mission Section */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .mission-card {
+            background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02));
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::before {
+>>>>>>> 6aa646c (1.0.5)
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
+<<<<<<< HEAD
             background: linear-gradient(90deg, transparent, rgba(255, 87, 34, 0.2), transparent);
             transition: left 0.5s ease;
         }
@@ -322,6 +522,315 @@
         }
 
         /* Animações de entrada */
+=======
+            background: linear-gradient(90deg, transparent, rgba(255,106,0,.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .mission-card:hover::before {
+            left: 100%;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--ring);
+            box-shadow: 0 20px 40px rgba(255,106,0,.2);
+        }
+
+        .mission-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .mission-card p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* History Section */
+        .history-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .history-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ddd;
+        }
+
+        .history-image {
+            position: relative;
+        }
+
+        .history-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,.3);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .team-card {
+            background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02));
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--ring);
+            box-shadow: 0 20px 40px rgba(255,106,0,.2);
+        }
+
+        .team-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 3px solid var(--primary);
+            object-fit: cover;
+        }
+
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .team-role {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .team-bio {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02));
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--ring);
+        }
+
+        .testimonial-quote {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ddd;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+
+        .author-info h4 {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .author-info span {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .stars {
+            color: #ffd700;
+            margin-top: 5px;
+        }
+
+        /* Differentials Section */
+        .differentials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .differential-card {
+            background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02));
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .differential-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ring);
+            box-shadow: 0 15px 30px rgba(255,106,0,.15);
+        }
+
+        .differential-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .differential-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .differential-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Partners Section */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            align-items: center;
+        }
+
+        .partner-card {
+            background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02));
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            filter: grayscale(1);
+        }
+
+        .partner-card:hover {
+            filter: grayscale(0);
+            transform: scale(1.05);
+            border-color: var(--ring);
+        }
+
+        .partner-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,.3));
+            padding: 60px 20px 40px;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--muted);
+            line-height: 1.6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            color: #000;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,.06);
+            color: var(--muted);
+        }
+
+        /* Animations */
+>>>>>>> 6aa646c (1.0.5)
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -333,6 +842,7 @@
             }
         }
 
+<<<<<<< HEAD
         .sobre-card {
             animation: fadeInUp 0.6s ease-out forwards;
         }
@@ -369,5 +879,678 @@
             font-display: swap;
         }
     </style>
+=======
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 12px 15px;
+            }
+
+            .logo .brand {
+                font-size: 1rem;
+            }
+
+            .nav-buttons {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 80px 15px 60px;
+            }
+
+            .section {
+                padding: 60px 15px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 40px;
+            }
+
+            .history-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .mission-grid,
+            .team-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .differentials-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <img src="https://i.postimg.cc/brfXwKJR/DALL-E-2024-11-16-14-19-55-A-modern-and-stylish-3-D-logo-with-the-name-Alpha-Fox-XP-in-bold-sleek.webp" alt="AlphaFoxXP">
+                <div class="brand">AlphaFoxXP</div>
+            </div>
+            <nav class="nav-buttons">
+                <a href="index.html" class="btn btn-ghost">
+                    <i class="ri-arrow-left-line"></i>
+                    Voltar
+                </a>
+                <a href="#contato" class="btn btn-primary">
+                    <i class="ri-message-3-line"></i>
+                    Contato
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1>Quem Somos</h1>
+            <p>Conheça a AlphaFoxXP, líder em soluções digitais premium. Nossa jornada é marcada pela inovação, excelência e compromisso com nossos clientes.</p>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="section" id="missao">
+        <div class="container">
+            <h2 class="section-title fade-in">Nossa Missão</h2>
+            <div class="mission-grid">
+                <div class="mission-card fade-in">
+                    <i class="ri-target-line mission-icon"></i>
+                    <h3>Missão</h3>
+                    <p>Democratizar o acesso a produtos digitais premium, oferecendo soluções seguras, rápidas e confiáveis para gamers e entusiastas da tecnologia em todo o Brasil.</p>
+                </div>
+                <div class="mission-card fade-in">
+                    <i class="ri-eye-line mission-icon"></i>
+                    <h3>Visão</h3>
+                    <p>Ser a plataforma de referência em vendas digitais na América Latina, reconhecida pela excelência no atendimento e inovação constante.</p>
+                </div>
+                <div class="mission-card fade-in">
+                    <i class="ri-heart-line mission-icon"></i>
+                    <h3>Valores</h3>
+                    <p>Transparência, segurança, inovação e foco no cliente. Acreditamos que a confiança é a base de relacionamentos duradouros.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="section" id="historia">
+        <div class="container">
+            <h2 class="section-title fade-in">Nossa História</h2>
+            <div class="history-content">
+                <div class="history-text fade-in">
+                    <p>Fundada em 2020, a AlphaFoxXP nasceu da paixão por jogos e tecnologia. O que começou como um projeto entre amigos rapidamente se transformou em uma das principais plataformas de vendas digitais do Brasil.</p>
+                    
+                    <p>Ao longo dos anos, expandimos nosso catálogo, aprimoramos nossa segurança e construímos uma comunidade de mais de 50.000 clientes satisfeitos. Nossa jornada é marcada por marcos importantes:</p>
+                    
+                    <ul style="margin: 20px 0; padding-left: 20px; color: var(--muted);">
+                        <li><strong>2020:</strong> Fundação da AlphaFoxXP</li>
+                        <li><strong>2021:</strong> Primeiro milhão em vendas</li>
+                        <li><strong>2022:</strong> Expansão para novos mercados</li>
+                        <li><strong>2023:</strong> Lançamento do programa de fidelidade</li>
+                        <li><strong>2024:</strong> Certificação de segurança internacional</li>
+                    </ul>
+                </div>
+                <div class="history-image fade-in">
+                    <img src="https://i.postimg.cc/hj6n8Xkr/Chat-GPT-Image-9-de-set-de-2025-08-50-53.png" alt="Nossa História">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section" id="equipe">
+        <div class="container">
+            <h2 class="section-title fade-in">Nossa Equipe</h2>
+            <div class="team-grid">
+                <div class="team-card fade-in">
+                    <img src="https://i.postimg.cc/tTwBvSfV/download-5.jpg" alt="João Silva" class="team-photo">
+                    <h3 class="team-name">luan</h3>
+                    <p class="team-role">CEO & Fundador</p>
+                    <p class="team-bio">Visionário e apaixonado por tecnologia, luan lidera a AlphaFoxXP com mais de 10 anos de experiência em e-commerce e inovação digital.</p>
+                </div>
+                <div class="team-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face" alt="kaik alves" class="team-photo">
+                    <h3 class="team-name">kaik alves</h3>
+                    <p class="team-role">CTO</p>
+                    <p class="team-bio">Especialista em segurança digital e arquitetura de sistemas, kaik garante que nossa plataforma seja sempre segura e eficiente.</p>
+                </div>
+                <div class="team-card fade-in">
+                    <img src="https://i.postimg.cc/Yqvfvzvv/logo-kid-gamer-573604-730.avif" alt="Carlos Oliveira" class="team-photo">
+                    <h3 class="team-name">kauan sircera </h3>
+                    <p class="team-role">Head de Vendas</p>
+                    <p class="team-bio">Com expertise em relacionamento com clientes, kauan sirquera  coordena nossa equipe de vendas e garante a melhor experiência de compra.</p>
+                </div>
+                <div class="team-card fade-in">
+                    <img src="https://i.postimg.cc/tTvFBssS/Chat-GPT-Image-18-de-set-de-2025-09-36-59.png" alt="Ana Costa" class="team-photo">
+                    <h3 class="team-name">joão neto </h3>
+                    <p class="team-role">Head de Marketing</p>
+                    <p class="team-bio">Criativo e estratégico, joão neto desenvolve campanhas inovadoras que conectam nossa marca com a comunidade gamer.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section" id="depoimentos">
+        <div class="container">
+            <h2 class="section-title fade-in">Depoimentos</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-quote">"A AlphaFoxXP mudou minha experiência com compras digitais. Rapidez, segurança e preços justos. Recomendo para todos!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="Cliente" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Pedro Gamer</h4>
+                            <span>Cliente há 2 anos</span>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-quote">"Atendimento excepcional e produtos sempre funcionando perfeitamente. A confiança que eu procurava!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face" alt="Cliente" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Lucia Tech</h4>
+                            <span>Cliente há 1 ano</span>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <p class="testimonial-quote">"Melhor plataforma que já usei. Suporte rápido, produtos originais e preços competitivos. Nota 10!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&h=100&fit=crop&crop=face" alt="Cliente" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Rafael Pro</h4>
+                            <span>Cliente há 3 anos</span>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Differentials Section -->
+    <section class="section" id="diferenciais">
+        <div class="container">
+            <h2 class="section-title fade-in">Nossos Diferenciais</h2>
+            <div class="differentials-grid">
+                <div class="differential-card fade-in">
+                    <i class="ri-shield-check-line differential-icon"></i>
+                    <h4>Segurança Total</h4>
+                    <p>Certificações internacionais e criptografia de ponta para proteger suas transações.</p>
+                </div>
+                <div class="differential-card fade-in">
+                    <i class="ri-flashlight-line differential-icon"></i>
+                    <h4>Entrega Instantânea</h4>
+                    <p>Receba seus produtos em segundos através do nosso sistema automatizado.</p>
+                </div>
+                <div class="differential-card fade-in">
+                    <i class="ri-customer-service-2-line differential-icon"></i>
+                    <h4>Suporte 24/7</h4>
+                    <p>Equipe especializada disponível a qualquer hora para ajudar você.</p>
+                </div>
+                <div class="differential-card fade-in">
+                    <i class="ri-money-dollar-circle-line differential-icon"></i>
+                    <h4>Melhor Preço</h4>
+                    <p>Garantimos os melhores preços do mercado com qualidade premium.</p>
+                </div>
+                <div class="differential-card fade-in">
+                    <i class="ri-award-line differential-icon"></i>
+                    <h4>Produtos Originais</h4>
+                    <p>100% dos nossos produtos são originais e verificados.</p>
+                </div>
+                <div class="differential-card fade-in">
+                    <i class="ri-refresh-line differential-icon"></i>
+                    <h4>Garantia Total</h4>
+                    <p>Garantia de reposição ou reembolso em caso de problemas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="section" id="parceiros">
+        <div class="container">
+            <h2 class="section-title fade-in">Nossos Parceiros</h2>
+            <div class="partners-grid">
+                <div class="partner-card fade-in">
+                    <img src="https://logos-world.net/wp-content/uploads/2021/02/Steam-Logo.png" alt="Steam" class="partner-logo">
+                    <h4>Steam</h4>
+                </div>
+                <div class="partner-card fade-in">
+                    <img src="https://logos-world.net/wp-content/uploads/2021/02/Epic-Games-Logo.png" alt="Epic Games" class="partner-logo">
+                    <h4>Epic Games</h4>
+                </div>
+                <div class="partner-card fade-in">
+                    <img src="https://logos-world.net/wp-content/uploads/2020/06/PlayStation-Logo.png" alt="PlayStation" class="partner-logo">
+                    <h4>PlayStation</h4>
+                </div>
+                <div class="partner-card fade-in">
+                    <img src="https://logos-world.net/wp-content/uploads/2020/06/Xbox-Logo.png" alt="Xbox" class="partner-logo">
+                    <h4>Xbox</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contato">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>AlphaFoxXP</h3>
+                                    <p>Sua plataforma premium para produtos digitais. Segurança, rapidez e confiabilidade em cada transação.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="ri-instagram-line"></i></a>
+                        <a href="#" class="social-link"><i class="ri-twitter-line"></i></a>
+                        <a href="#" class="social-link"><i class="ri-discord-line"></i></a>
+                        <a href="#" class="social-link"><i class="ri-youtube-line"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><i class="ri-mail-line"></i> contato@alphafoxxp.com</p>
+                    <p><i class="ri-phone-line"></i> (11) 99999-9999</p>
+                    <p><i class="ri-map-pin-line"></i> São Paulo, SP - Brasil</p>
+                    <p><i class="ri-time-line"></i> Seg-Dom: 24h</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <p><a href="index.html">Início</a></p>
+                    <p><a href="produtos.html">Produtos</a></p>
+                    <p><a href="planos.html">Planos</a></p>
+                    <p><a href="suporte.html">Suporte</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Certificações</h3>
+                    <p>✓ SSL Certificado</p>
+                    <p>✓ PCI DSS Compliant</p>
+                    <p>✓ ISO 27001</p>
+                    <p>✓ LGPD Compliance</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 AlphaFoxXP. Todos os direitos reservados. | Desenvolvido com ❤️ para gamers</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Inicializa particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { 
+                    value: 60, 
+                    density: { 
+                        enable: true, 
+                        value_area: 900 
+                    } 
+                },
+                color: { 
+                    value: ['#ff6a00', '#ffffff', '#ffab40'] 
+                },
+                shape: { 
+                    type: 'circle',
+                    stroke: {
+                        width: 0,
+                        color: '#000000'
+                    }
+                },
+                opacity: { 
+                    value: 0.4, 
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: { 
+                    value: 3, 
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 2,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: { 
+                    enable: true, 
+                    distance: 150, 
+                    color: '#ff6a00', 
+                    opacity: 0.3, 
+                    width: 1 
+                },
+                move: { 
+                    enable: true, 
+                    speed: 2.5, 
+                    direction: 'none', 
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { 
+                    onhover: { 
+                        enable: true, 
+                        mode: 'grab' 
+                    }, 
+                    onclick: { 
+                        enable: true, 
+                        mode: 'push' 
+                    }, 
+                    resize: true 
+                },
+                modes: {
+                    grab: { 
+                        distance: 180, 
+                        line_linked: { 
+                            opacity: 0.6 
+                        } 
+                    },
+                    push: { 
+                        particles_nb: 4 
+                    },
+                    remove: {
+                        particles_nb: 2
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Animações de scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos com animação
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Efeito de digitação no hero
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Contador animado para estatísticas
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            function updateCounter() {
+                start += increment;
+                if (start < target) {
+                    element.textContent = Math.floor(start).toLocaleString();
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target.toLocaleString();
+                }
+            }
+            updateCounter();
+        }
+
+        // Smooth scroll para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efeito parallax suave
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.mission-card, .team-card, .testimonial-card');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.1);
+                const yPos = -(scrolled * speed / 10);
+                element.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // Adicionar efeito de hover nos cards
+        document.querySelectorAll('.mission-card, .team-card, .testimonial-card, .differential-card, .partner-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Loading screen
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Adicionar estatísticas animadas
+        function addStats() {
+            const statsSection = document.createElement('section');
+            statsSection.className = 'section';
+            statsSection.innerHTML = `
+                <div class="container">
+                    <h2 class="section-title fade-in">Nossos Números</h2>
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;">
+                        <div class="stat-card fade-in" style="background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 30px;">
+                            <div class="stat-number" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 10px;" data-target="50000">0</div>
+                            <div style="color: #fff; font-weight: 600;">Clientes Ativos</div>
+                        </div>
+                        <div class="stat-card fade-in" style="background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 30px;">
+                            <div class="stat-number" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 10px;" data-target="1000000">0</div>
+                            <div style="color: #fff; font-weight: 600;">Produtos Vendidos</div>
+                        </div>
+                        <div class="stat-card fade-in" style="background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 30px;">
+                            <div class="stat-number" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 10px;" data-target="99">0</div>
+                            <div style="color: #fff; font-weight: 600;">% Satisfação</div>
+                        </div>
+                        <div class="stat-card fade-in" style="background: linear-gradient(145deg, var(--glass), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 30px;">
+                            <div class="stat-number" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 10px;" data-target="24">0</div>
+                            <div style="color: #fff; font-weight: 600;">Horas de Suporte</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Inserir antes da seção de depoimentos
+            const testimonialsSection = document.getElementById('depoimentos');
+            testimonialsSection.parentNode.insertBefore(statsSection, testimonialsSection);
+            
+            // Animar contadores quando visíveis
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-target'));
+                        animateCounter(entry.target, target);
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statNumbers.forEach(stat => {
+                statsObserver.observe(stat);
+            });
+        }
+
+        // Adicionar seção de estatísticas após o carregamento
+        document.addEventListener('DOMContentLoaded', addStats);
+
+        // Efeito de cursor personalizado
+        const cursor = document.createElement('div');
+        cursor.style.cssText = `
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        `;
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
+        // Expandir cursor em elementos interativos
+        document.querySelectorAll('a, button, .card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(2)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+            });
+        });
+
+        // Preloader personalizado
+        function createPreloader() {
+            const preloader = document.createElement('div');
+            preloader.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--bg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                transition: opacity 0.5s ease;
+            `;
+            
+            preloader.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="width: 60px; height: 60px; border: 3px solid rgba(255,106,0,0.3); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                    <div style="color: var(--primary); font-weight: 600; font-size: 1.2rem;">Carregando...</div>
+                </div>
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(preloader);
+            
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.remove();
+                    }, 500);
+                }, 1000);
+            });
+        }
+
+        // Inicializar preloader
+        createPreloader();
+
+        // Easter egg - Konami Code
+        let konamiCode = [];
+        const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > konami.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.toString() === konami.toString()) {
+                // Ativar modo especial
+                document.body.style.filter = 'hue-rotate(180deg)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                    alert('🦊 Easter Egg encontrado! Você desbloqueou o modo AlphaFox secreto!');
+                }, 2000);
+            }
+        });
+
+        console.log('🦊 AlphaFoxXP - Página Quem Somos carregada com sucesso!');
+        console.log('💡 Dica: Tente o código Konami para uma surpresa!');
+    </script>
+>>>>>>> 6aa646c (1.0.5)
 </body>
 </html>
