@@ -3,301 +3,771 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suporte ao Cliente | AlphaFoxXP</title>
+  <title>Suporte Premium | AlphaFoxXP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet" />
   <style>
+    :root {
+      --primary: #ff6a00;
+      --secondary: #ffa347;
+      --bg: #0f0f10;
+      --card: #17181b;
+      --muted: #8a8f98;
+      --ring: rgba(255,106,0,.35);
+      --glass: rgba(255,255,255,0.04);
+      --success-color: #00ff88;
+      --error-color: #ff4757;
+      --warning-color: #ffa502;
+      --text-light: #dfe1e6;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      font-family: 'Poppins', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(255,106,0,.15), transparent 60%),
+                  radial-gradient(800px 500px at -10% 30%, rgba(255,106,0,.12), transparent 60%),
+                  var(--bg);
       color: #fff;
       padding: 20px;
       line-height: 1.6;
+      transition: all 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* Dark/Light Theme */
+    body.light-theme {
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(255,106,0,.08), transparent 60%),
+                  radial-gradient(800px 500px at -10% 30%, rgba(255,106,0,.06), transparent 60%),
+                  #f8f9fa;
+      color: #333;
+    }
+
+    body.light-theme .container,
+    body.light-theme .faq,
+    body.light-theme .chat-box {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
+      color: #333;
+    }
+
+    body.light-theme input,
+    body.light-theme textarea {
+      background: rgba(248, 249, 250, 0.9);
+      color: #333;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border: none;
+      padding: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px var(--ring);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+    }
+
+    /* Voice Controls */
+    .voice-controls {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.95));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 106, 0, 0.3);
+      border-radius: 15px;
+      padding: 15px;
+      z-index: 1001;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 200px;
+    }
+
+    .voice-controls.show {
+      display: flex;
+      animation: slideIn 0.3s ease;
+    }
+
+    .voice-control-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .voice-control-item label {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .voice-slider {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .voice-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .voice-toggle-btn {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 106, 0, 0.3);
+      color: var(--primary);
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      position: fixed;
+      top: 140px;
+      right: 20px;
+    }
+
+    .voice-toggle-btn:hover {
+      background: rgba(255, 106, 0, 0.1);
+      transform: scale(1.1);
+    }
+
+    /* Status Indicator */
+    .status-indicator {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.95));
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1001;
+      border: 1px solid rgba(255, 106, 0, 0.3);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success-color);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     header {
       text-align: center;
       margin-bottom: 40px;
+      margin-top: 60px;
+      position: relative;
+      z-index: 1;
     }
 
     header h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      font-size: clamp(28px, 3.6vw, 42px);
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+      background-size: 200% auto;
       margin-bottom: 10px;
+      animation: shine 4s linear infinite, logoGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes shine {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes logoGlow {
+      0% { filter: drop-shadow(0 0 5px rgba(255, 106, 0, 0.5)); }
+      100% { filter: drop-shadow(0 0 20px rgba(255, 106, 0, 0.8)); }
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: auto;
-      background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(26, 26, 26, 0.8));
-      border-radius: 20px;
-      padding: 30px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(255, 107, 53, 0.2);
-      border: 1px solid rgba(255, 107, 53, 0.3);
+      background: linear-gradient(135deg, var(--glass), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 25px;
+      padding: 40px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 30px 50px -30px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.04);
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.8s ease;
+      transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-4px);
+      border-color: var(--ring);
+      box-shadow: 0 40px 70px -35px var(--ring);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .contact-form h2,
     .faq-section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      color: #ff6b35;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--primary);
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      font-weight: 800;
+    }
+
+    /* Form Validation */
+    .form-group {
+      position: relative;
+      margin-bottom: 25px;
     }
 
     form label {
       display: block;
-      margin: 15px 0 8px;
-      font-weight: bold;
-      color: #ff8c42;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     input,
     textarea {
       width: 100%;
-      padding: 15px;
-      border: 2px solid rgba(255, 107, 53, 0.3);
-      border-radius: 10px;
-      background: rgba(45, 45, 45, 0.8);
+      padding: 18px;
+      border: 2px solid rgba(255, 106, 0, 0.3);
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.8));
       color: #fff;
-      margin-bottom: 20px;
       outline: none;
       transition: all 0.3s ease;
       font-size: 16px;
+      font-family: inherit;
     }
 
     input:focus,
     textarea:focus {
-      border-color: #ff6b35;
-      box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--ring);
       transform: translateY(-2px);
     }
 
-    button {
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
-      color: #1a1a1a;
-      border: none;
-      padding: 15px 30px;
-      font-weight: bold;
+    input.error,
+    textarea.error {
+      border-color: var(--error-color);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    /* File Upload */
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .file-upload input[type="file"] {
+      display: none;
+    }
+
+    .file-upload-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px;
+      border: 2px dashed rgba(255, 106, 0, 0.5);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255, 106, 0, 0.05);
+    }
+
+    .file-upload-label:hover {
+      border-color: var(--primary);
+      background: rgba(255, 106, 0, 0.1);
+    }
+
+    .file-preview {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(0, 255, 136, 0.1);
       border-radius: 10px;
+      display: none;
+    }
+
+    button {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #0c0c0d;
+      border: none;
+      padding: 18px 35px;
+      font-weight: 700;
+      border-radius: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
     }
 
     button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+      box-shadow: 0 10px 25px var(--ring);
+      filter: saturate(1.1);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
     }
 
     .loading-animation {
       display: none;
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255, 107, 53, 0.3);
-      border-top-color: #ff6b35;
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 106, 0, 0.3);
+      border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 20px auto;
+      margin: 25px auto;
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
 
     #confirmationMessage {
       display: none;
       text-align: center;
-      margin-top: 20px;
-      color: #ff6b35;
-      font-weight: bold;
+      margin-top: 25px;
+      color: var(--success-color);
+      font-weight: 600;
       font-size: 18px;
-      padding: 15px;
-      background: rgba(255, 107, 53, 0.1);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 107, 53, 0.3);
+      padding: 20px;
+      background: rgba(0, 255, 136, 0.1);
+      border-radius: 15px;
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      animation: slideIn 0.5s ease;
     }
 
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* FAQ Section */
     .faq-section {
-      margin-top: 40px;
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-top: 50px;
+      position: relative;
+      z-index: 1;
     }
 
     .faq {
-      background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(26, 26, 26, 0.8));
-      border-radius: 15px;
-      margin-bottom: 15px;
-      padding: 20px;
+      background: linear-gradient(135deg, var(--glass), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      margin-bottom: 20px;
+      overflow: hidden;
       cursor: pointer;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 107, 53, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
     }
 
     .faq:hover {
-      background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(45, 45, 45, 0.9));
-      border-color: #ff6b35;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+      background: linear-gradient(135deg, rgba(255, 106, 0, 0.1), var(--glass));
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px var(--ring);
     }
 
     .faq-question {
-      font-weight: bold;
-      color: #ff6b35;
-      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 25px;
+      transition: all 0.3s ease;
     }
 
-    .faq-question::after {
-      content: '+';
+    .faq-icon {
       font-size: 1.5rem;
-      color: #ff8c42;
-      transition: transform 0.3s ease;
+      color: var(--secondary);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .faq.open .faq-question::after {
-      transform: rotate(45deg);
+    .faq.open .faq-icon {
+      transform: rotate(180deg);
     }
 
     .faq-answer {
-      display: none;
-      margin-top: 15px;
-      color: #cccccc;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 107, 53, 0.2);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      color: var(--text-light);
+      padding: 0 25px;
     }
 
     .faq.open .faq-answer {
-      display: block;
+      max-height: 200px;
+      padding: 0 25px 25px;
     }
 
+    /* Chat System */
     .live-chat {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
-      color: #1a1a1a;
-      padding: 12px 20px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #0c0c0d;
+      padding: 15px 25px;
       border-radius: 50px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
-      box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
-      font-weight: bold;
+      box-shadow: 0 8px 25px var(--ring);
+      font-weight: 700;
       transition: all 0.3s ease;
       z-index: 1000;
+      
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
     }
 
     .live-chat:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px var(--ring);
+      animation: none;
     }
 
     .live-chat img {
-      width: 35px;
-      height: 35px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      border: 2px solid #1a1a1a;
+      border: 3px solid #0c0c0d;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--error-color);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      animation: pulse 1s infinite;
     }
 
     .chat-box {
       position: fixed;
-      bottom: 100px;
+      bottom: 110px;
       right: 30px;
-      background: linear-gradient(135deg, rgba(45, 45, 45, 0.95), rgba(26, 26, 26, 0.95));
-      backdrop-filter: blur(15px);
-      border-radius: 15px;
-      width: 350px;
-      max-height: 450px;
+      background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.98));
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      width: 400px;
+      max-height: 500px;
       display: none;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 107, 53, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 106, 0, 0.3);
       z-index: 999;
+      animation: chatSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes chatSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .chat-box header {
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
-      color: #1a1a1a;
-      padding: 15px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #0c0c0d;
+      padding: 20px;
       text-align: center;
-      font-weight: bold;
-      font-size: 1.1rem;
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-close {
+      background: none;
+      border: none;
+      color: #0c0c0d;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: auto;
+      height: auto;
     }
 
     .chat-content {
       flex: 1;
-      padding: 15px;
+      padding: 20px;
       overflow-y: auto;
-      max-height: 300px;
+      max-height: 320px;
     }
 
-    .chat-content p {
-      margin: 10px 0;
-      font-size: 0.95rem;
-      padding: 8px 12px;
-      border-radius: 10px;
-      line-height: 1.4;
+    .message {
+      margin: 15px 0;
+      padding: 12px 18px;
+      border-radius: 20px;
+      line-height: 1.5;
+      animation: messageSlide 0.3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
     }
 
-    .chat-content p:nth-child(odd) {
-      background: rgba(255, 107, 53, 0.1);
-      border-left: 3px solid #ff6b35;
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.bot {
+      background: rgba(255, 106, 0, 0.1);
+      border-left: 4px solid var(--primary);
+    }
+
+    .message.user {
+      background: rgba(0, 123, 255, 0.1);
+      border-left: 4px solid #007bff;
+      margin-left: 20px;
+    }
+
+    .message-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #0c0c0d;
+      flex-shrink: 0;
+    }
+
+    .typing-indicator {
+      display: none;
+      padding: 15px;
+      color: var(--text-light);
+      font-style: italic;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .typing-dots {
+      display: inline-flex;
+      gap: 4px;
+      margin-left: 5px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      animation: typingDots 1.4s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingDots {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    /* Quick Replies */
+    .quick-replies {
+      padding: 15px;
+      border-top: 1px solid rgba(255, 106, 0, 0.2);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-reply {
+      background: rgba(255, 106, 0, 0.1);
+      border: 1px solid rgba(255, 106, 0, 0.3);
+      color: var(--primary);
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .quick-reply:hover {
+      background: var(--primary);
+      color: #0c0c0d;
+      transform: translateY(-2px);
     }
 
     .user-input {
       display: flex;
-      border-top: 1px solid rgba(255, 107, 53, 0.3);
+      border-top: 1px solid rgba(255, 106, 0, 0.3);
+      background: rgba(23, 24, 27, 0.5);
     }
 
     .user-input input {
       flex: 1;
       border: none;
-      padding: 12px;
+      padding: 18px;
       background: transparent;
       color: #fff;
       margin: 0;
+      border-radius: 0;
     }
 
     .user-input button {
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
-      color: #1a1a1a;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #0c0c0d;
       border: none;
-      padding: 12px 20px;
+      padding: 18px 25px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 700;
       margin: 0;
+      border-radius: 0;
+      transition: all 0.3s ease;
+    }
+
+    .user-input button:hover {
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      transform: none;
+      box-shadow: none;
     }
 
     .back-button {
-      margin-top: 30px;
+      margin-top: 40px;
       background: transparent;
-      border: 2px solid #ff6b35;
-      color: #ff6b35;
-      font-weight: bold;
-      padding: 12px 25px;
-      border-radius: 10px;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-weight: 700;
+      padding: 15px 30px;
+      border-radius: 15px;
       transition: all 0.3s ease;
       display: block;
       margin-left: auto;
@@ -305,266 +775,1305 @@
     }
 
     .back-button:hover {
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
-      color: #1a1a1a;
-      transform: translateY(-2px);
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #0c0c0d;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px var(--ring);
     }
 
-    /* Scrollbar personalizada */
+    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #1a1a1a;
+      background: rgba(15, 15, 16, 0.5);
+      border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: linear-gradient(45deg, #ff6b35, #ff8c42);
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
       border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #ff6b35;
+      background: var(--primary);
     }
 
-    /* Responsivo */
+    /* Responsive */
     @media (max-width: 768px) {
       body {
         padding: 10px;
       }
 
       header h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
       }
 
       .container {
-        padding: 20px;
+        padding: 25px;
       }
 
       .chat-box {
-        width: 90%;
-        right: 5%;
-        bottom: 90px;
+        width: 95%;
+        right: 2.5%;
+        bottom: 100px;
       }
       
       .live-chat {
         right: 20px;
         bottom: 20px;
-        padding: 10px 15px;
+        padding: 12px 18px;
       }
 
       .live-chat span {
         display: none;
       }
+
+      .status-indicator,
+      .theme-toggle,
+      .voice-toggle-btn,
+      .voice-controls {
+        position: relative;
+        top: auto;
+        right: auto;
+        left: auto;
+        margin: 10px;
+      }
+
+      .mobile-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
     }
 
-    /* Animação de entrada */
-    .container {
-      animation: slideUp 0.6s ease;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    @keyframes slideUp {
-      from {
+    /* Success Animation */
+    .success-checkmark {
+      display: none;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--success-color);
+      margin: 20px auto;
+      position: relative;
+    }
+
+    .success-checkmark::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+    }
+
+    .success-checkmark.show {
+      display: block;
+      animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes successPop {
+      0% {
+        transform: scale(0);
         opacity: 0;
-        transform: translateY(30px);
       }
-      to {
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
         opacity: 1;
-        transform: translateY(0);
       }
+    }
+
+    /* Voice Status Indicator */
+    .voice-status {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.95));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 106, 0, 0.3);
+      border-radius: 15px;
+      padding: 10px 15px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .voice-status.show {
+      display: flex;
+    }
+
+    .voice-wave {
+      width: 4px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 2px;
+      animation: voiceWave 1s ease-in-out infinite;
+    }
+
+    .voice-wave:nth-child(2) { animation-delay: 0.1s; }
+    .voice-wave:nth-child(3) { animation-delay: 0.2s; }
+    .voice-wave:nth-child(4) { animation-delay: 0.3s; }
+
+    @keyframes voiceWave {
+      0%, 100% { height: 10px; }
+      50% { height: 25px; }
     }
   </style>
 </head>
 <body>
+  <!-- Particles Background -->
+  <div id="particles-js" aria-hidden="true"></div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" title="Alternar Tema">
+    <i class="fas fa-moon" id="themeIcon"></i>
+  </button>
+
+  <!-- Voice Toggle Button -->
+  <button class="voice-toggle-btn" onclick="toggleVoiceControls()" title="Controles de Voz">
+    <i class="fas fa-microphone" id="voiceIcon"></i>
+  </button>
+
+  <!-- Voice Controls -->
+  <div class="voice-controls" id="voiceControls">
+    <div class="voice-control-item">
+      <label>Volume:</label>
+      <input type="range" class="voice-slider" id="volumeSlider" min="0" max="1" step="0.1" value="0.8">
+    </div>
+    <div class="voice-control-item">
+          <label>Velocidade:</label>
+      <input type="range" class="voice-slider" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+    </div>
+    <div class="voice-control-item">
+      <label>Tom:</label>
+      <input type="range" class="voice-slider" id="pitchSlider" min="0" max="2" step="0.1" value="1">
+    </div>
+    <div class="voice-control-item">
+      <label>Voz Ativa:</label>
+      <select id="voiceSelect" style="background: var(--card); color: #fff; border: 1px solid rgba(255,106,0,0.3); border-radius: 8px; padding: 5px;">
+        <option value="">Carregando vozes...</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Status Indicator -->
+  <div class="status-indicator">
+    <div class="status-dot"></div>
+    <span>Sistema Online</span>
+  </div>
+
+  <!-- Voice Status -->
+  <div class="voice-status" id="voiceStatus">
+    <div class="voice-wave"></div>
+    <div class="voice-wave"></div>
+    <div class="voice-wave"></div>
+    <div class="voice-wave"></div>
+    <span>Ouvindo...</span>
+  </div>
+
+  <!-- Mobile Controls -->
+  <div class="mobile-controls" style="display: none;">
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <i class="fas fa-moon" id="mobileThemeIcon"></i>
+    </button>
+    <button class="voice-toggle-btn" onclick="toggleVoiceControls()">
+      <i class="fas fa-microphone"></i>
+    </button>
+  </div>
 
   <header>
-    <h1>🔥 Suporte ao Cliente - AlphaFoxXP</h1>
+    <h1><i class="fas fa-crown"></i> Suporte Premium AlphaFoxXP</h1>
+    <p style="color: var(--text-light); font-size: 1.1rem; margin-top: 10px;">
+      Atendimento especializado 24/7 com IA avançada
+    </p>
   </header>
 
   <div class="container">
-    <!-- Formulário de Contato -->
-    <section class="contact-form">
-      <h2>Entre em Contato Conosco</h2>
-      <form id="contactForm" onsubmit="showConfirmation(event)">
-        <label for="name">Nome Completo:</label>
-        <input type="text" id="name" required placeholder="Digite seu nome completo">
+    <div class="contact-form">
+      <h2><i class="fas fa-headset"></i> Abrir Ticket de Suporte</h2>
+      <form id="supportForm" novalidate>
+        <div class="form-group">
+          <label for="name">
+            <i class="fas fa-user"></i> Nome Completo *
+          </label>
+          <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
+          <div class="error-message" id="nameError">Por favor, insira seu nome completo</div>
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" required placeholder="Digite seu melhor email">
+        <div class="form-group">
+          <label for="email">
+            <i class="fas fa-envelope"></i> E-mail *
+          </label>
+          <input type="email" id="email" name="email" required placeholder="seu@email.com">
+          <div class="error-message" id="emailError">Por favor, insira um e-mail válido</div>
+        </div>
 
-        <label for="message">Mensagem:</label>
-        <textarea id="message" rows="5" required placeholder="Descreva como podemos te ajudar..."></textarea>
+        <div class="form-group">
+          <label for="phone">
+            <i class="fas fa-phone"></i> Telefone/WhatsApp
+          </label>
+          <input type="tel" id="phone" name="phone" placeholder="(11) 99999-9999">
+        </div>
 
-        <button type="submit">🚀 Enviar Mensagem</button>
+        <div class="form-group">
+          <label for="priority">
+            <i class="fas fa-exclamation-triangle"></i> Prioridade *
+          </label>
+          <select id="priority" name="priority" required style="width: 100%; padding: 18px; border: 2px solid rgba(255, 106, 0, 0.3); border-radius: 15px; background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.8)); color: #fff; font-size: 16px; font-family: inherit;">
+            <option value="">Selecione a prioridade</option>
+            <option value="baixa">🟢 Baixa - Dúvidas gerais</option>
+            <option value="media">🟡 Média - Problemas técnicos</option>
+            <option value="alta">🟠 Alta - Falhas críticas</option>
+            <option value="urgente">🔴 Urgente - Sistema inoperante</option>
+          </select>
+          <div class="error-message" id="priorityError">Por favor, selecione a prioridade</div>
+        </div>
+
+        <div class="form-group">
+          <label for="category">
+            <i class="fas fa-tags"></i> Categoria *
+          </label>
+          <select id="category" name="category" required style="width: 100%; padding: 18px; border: 2px solid rgba(255, 106, 0, 0.3); border-radius: 15px; background: linear-gradient(135deg, var(--card), rgba(23, 24, 27, 0.8)); color: #fff; font-size: 16px; font-family: inherit;">
+            <option value="">Selecione a categoria</option>
+            <option value="tecnico">🔧 Suporte Técnico</option>
+            <option value="billing">💳 Faturamento</option>
+            <option value="account">👤 Conta e Perfil</option>
+            <option value="feature">✨ Solicitação de Recurso</option>
+            <option value="bug">🐛 Relatório de Bug</option>
+            <option value="other">❓ Outros</option>
+          </select>
+          <div class="error-message" id="categoryError">Por favor, selecione uma categoria</div>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">
+            <i class="fas fa-bookmark"></i> Assunto *
+          </label>
+          <input type="text" id="subject" name="subject" required placeholder="Descreva brevemente o problema">
+          <div class="error-message" id="subjectError">Por favor, insira o assunto</div>
+        </div>
+
+        <div class="form-group">
+          <label for="message">
+            <i class="fas fa-comment-alt"></i> Descrição Detalhada *
+          </label>
+          <textarea id="message" name="message" rows="6" required placeholder="Descreva detalhadamente seu problema ou solicitação. Inclua informações como: quando o problema começou, mensagens de erro, passos para reproduzir, etc."></textarea>
+          <div class="error-message" id="messageError">Por favor, descreva seu problema detalhadamente (mínimo 20 caracteres)</div>
+        </div>
+
+        <div class="form-group">
+          <label for="attachment">
+            <i class="fas fa-paperclip"></i> Anexos (Opcional)
+          </label>
+          <div class="file-upload">
+            <input type="file" id="attachment" name="attachment" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.zip" multiple>
+            <label for="attachment" class="file-upload-label">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span>Clique para anexar arquivos ou arraste aqui</span>
+            </label>
+          </div>
+          <div class="file-preview" id="filePreview"></div>
+          <small style="color: var(--text-light); margin-top: 5px; display: block;">
+            Formatos aceitos: JPG, PNG, PDF, DOC, TXT, ZIP (máx. 10MB por arquivo)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" id="terms" name="terms" required style="width: auto; margin: 0;">
+            <span>Concordo com os <a href="#" style="color: var(--primary);">Termos de Serviço</a> e <a href="#" style="color: var(--primary);">Política de Privacidade</a> *</span>
+          </label>
+          <div class="error-message" id="termsError">Você deve concordar com os termos</div>
+        </div>
+
+        <button type="submit" id="submitBtn">
+          <i class="fas fa-paper-plane"></i>
+          <span>Enviar Ticket</span>
+        </button>
       </form>
+
       <div class="loading-animation" id="loadingAnimation"></div>
-      <p id="confirmationMessage">✅ Obrigado! Em breve retornaremos o contato.</p>
-    </section>
+      <div class="success-checkmark" id="successCheckmark"></div>
+      <div id="confirmationMessage"></div>
+    </div>
 
-    <!-- Botão de Voltar -->
-     <button class="back-button" onclick="window.history.back()">← Voltar</button>
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2><i class="fas fa-question-circle"></i> Perguntas Frequentes</h2>
+      
+      <div class="faq" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          Como posso resetar minha senha?
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          Para resetar sua senha, acesse a página de login e clique em "Esqueci minha senha". Você receberá um e-mail com instruções para criar uma nova senha. O link é válido por 24 horas.
+        </div>
+      </div>
 
+      <div class="faq" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          Qual é o tempo de resposta do suporte?
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          Nosso tempo de resposta varia conforme a prioridade: Urgente (1h), Alta (4h), Média (12h), Baixa (24h). Suporte premium tem prioridade máxima em todos os casos.
+        </div>
+      </div>
 
-  <!-- Seção de FAQ -->
-  <section class="faq-section">
-    <h2>❓ Perguntas Frequentes</h2>
-    <div class="faq">
-      <div class="faq-question">Como posso contratar um serviço de segurança?</div>
-      <div class="faq-answer">Para contratar nossos serviços, entre em contato pelo formulário acima ou utilize o chat ao vivo. Nossa equipe está pronta para atendê-lo 24/7.</div>
-    </div>
-    <div class="faq">
-      <div class="faq-question">Quais áreas a AlphaFoxXP atende?</div>
-      <div class="faq-answer">Atendemos em várias regiões do Brasil. Consulte nossa equipe para verificar disponibilidade em sua área específica.</div>
-    </div>
-    <div class="faq">
-      <div class="faq-question">Quais são os serviços oferecidos?</div>
-      <div class="faq-answer">Oferecemos vigilância privada, escolta armada, segurança pessoal, monitoramento 24h e consultoria em segurança.</div>
-    </div>
-    <div class="faq">
-      <div class="faq-question">Qual o horário de atendimento do suporte?</div>
-      <div class="faq-answer">Nosso suporte está disponível 24 horas por dia, todos os dias da semana, incluindo feriados.</div>
-    </div>
-    <div class="faq">
-      <div class="faq-question">Como posso cancelar um serviço?</div>
-      <div class="faq-answer">Para cancelamentos, entre em contato diretamente pelo nosso suporte ou utilize o formulário acima. Respeitamos todos os termos contratuais.</div>
-    </div>
-    <div class="faq">
-      <div class="faq-question">Vocês oferecem orçamento gratuito?</div>
-      <div class="faq-answer">Sim! Oferecemos orçamento gratuito e personalizado para todos os nossos serviços. Entre em contato conosco.</div>
-    </div>
-  </section>
+      <div class="faq" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          Como atualizar meus dados de faturamento?
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          Acesse sua conta, vá em "Configurações" > "Faturamento" e atualize suas informações. As alterações são aplicadas imediatamente e você receberá uma confirmação por e-mail.
+        </div>
+      </div>
 
-  <!-- Chat ao Vivo -->
+      <div class="faq" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          Posso cancelar minha assinatura a qualquer momento?
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          Sim, você pode cancelar sua assinatura a qualquer momento sem taxas. O acesso permanece ativo até o final do período pago. Seus dados são mantidos por 30 dias após o cancelamento.
+        </div>
+      </div>
+
+      <div class="faq" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          Como funciona o sistema de backup?
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          Realizamos backups automáticos diários com retenção de 30 dias. Backups são criptografados e armazenados em múltiplas localizações. Você pode solicitar restauração através do suporte.
+        </div>
+      </div>
+
+      <div class="faq" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          Existe limite de usuários na conta premium?
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer">
+          A conta premium permite até 50 usuários simultâneos. Para mais usuários, oferecemos planos empresariais personalizados. Entre em contato para uma proposta customizada.
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" onclick="window.history.back()">
+      <i class="fas fa-arrow-left"></i>
+      Voltar ao Dashboard
+    </button>
+  </div>
+
+  <!-- Live Chat -->
   <div class="live-chat" onclick="toggleChat()">
-    <img src="https://i.postimg.cc/28phW4K9/2c592eab-be95-4e28-be48-39a0f8223187.webp" alt="Foto do Assistente Virtual">
-    <span>SafeBot</span>
+    <img src="https://i.postimg.cc/CxfnSQw1/opa.png" alt="Suporte IA">
+    <span>Chat com IA</span>
+    <div class="notification-badge" id="chatBadge">3</div>
   </div>
 
+  <!-- Chat Box -->
   <div class="chat-box" id="chatBox">
-    <header>🤖 SafeBot - Assistente Virtual</header>
+    <header>
+      <span><i class="fas fa-robot"></i> AlphaBot - Assistente IA</span>
+      <button class="chat-close" onclick="toggleChat()">
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+    
     <div class="chat-content" id="chatContent">
-      <p><strong>SafeBot:</strong> Olá! 👋 Como posso ajudar você hoje?</p>
+      <div class="message bot">
+        <div class="message-avatar">AI</div>
+        <div>
+          Olá! 👋 Sou o AlphaBot, seu assistente virtual. Como posso ajudá-lo hoje?
+        </div>
+      </div>
     </div>
+
+    <div class="typing-indicator" id="typingIndicator">
+      AlphaBot está digitando
+      <div class="typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="quick-replies">
+      <div class="quick-reply" onclick="sendQuickReply('Problemas de login')">🔐 Login</div>
+      <div class="quick-reply" onclick="sendQuickReply('Faturamento')">💳 Faturamento</div>
+      <div class="quick-reply" onclick="sendQuickReply('Suporte técnico')">🔧 Técnico</div>
+      <div class="quick-reply" onclick="sendQuickReply('Outros')">❓ Outros</div>
+    </div>
+
     <div class="user-input">
-      <input type="text" id="userMessage" placeholder="Digite sua mensagem...">
-      <button onclick="sendMessage()">Enviar</button>
+      <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="handleChatKeyPress(event)">
+      <button onclick="sendMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </div>
   </div>
 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script>
-    function toggleChat() {
-      const chatBox = document.getElementById("chatBox");
-      chatBox.style.display = chatBox.style.display === "none" || chatBox.style.display === "" ? "flex" : "none";
+    // Particles.js Configuration
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: '#ff6a00' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5, random: false },
+        size: { value: 3, random: true },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: '#ff6a00',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 6,
+          direction: 'none',
+          random: false,
+          straight: false,
+          out_mode: 'out',
+          bounce: false
+        }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+
+    // Global Variables
+    let currentTheme = 'dark';
+    let voiceControlsVisible = false;
+    let chatVisible = false;
+    let speechSynthesis = window.speechSynthesis;
+    let speechRecognition = null;
+    let isListening = false;
+    let voices = [];
+
+    // Initialize Speech Recognition
+    if ('webkitSpeechRecognition' in window) {
+      speechRecognition = new webkitSpeechRecognition();
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = false;
+      speechRecognition.lang = 'pt-BR';
+      
+      speechRecognition.onstart = function() {
+        isListening = true;
+        document.getElementById('voiceStatus').classList.add('show');
+      };
+      
+      speechRecognition.onend = function() {
+        isListening = false;
+        document.getElementById('voiceStatus').classList.remove('show');
+      };
+      
+      speechRecognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('chatInput').value = transcript;
+        sendMessage();
+      };
     }
 
-    function getAutoReply(message) {
-      const lowerMessage = message.toLowerCase();
-      const responses = {
-        "oi": "Oi! 👋 Como posso ajudar você hoje?",
-        "olá": "Olá! 😊 Como posso ajudar?",
-        "ola": "Olá! 😊 Como posso te ajudar?",
-        "opa": "Opa! 🔥 Como posso te ajudar?",
-        "bom dia": "Bom dia! ☀️ Como posso te ajudar?",
-        "boa tarde": "Boa tarde! 🌅 Como posso te ajudar?",
-        "boa noite": "Boa noite! 🌙 Como posso te ajudar?",
-        "qual seu nome": "Sou a SafeBot 🤖, IA desenvolvida para te ajudar com dúvidas rápidas sobre a AlphaFoxXP.",
-        "quem é você": "Sou a SafeBot 🤖, assistente virtual da AlphaFoxXP, aqui para te ajudar!",
-        "como trocar minha senha": "Vá até 'Esqueci minha senha' na aba de login ou entre em contato com nosso suporte online. 🔐",
-        "cancelar serviço": "Para cancelar seu serviço, entre em contato pelo formulário acima ou via suporte. 📞",
-        "ajuda": "Claro! 🆘 O que você precisa saber?",
-        "suporte": "Nosso suporte está disponível 24/7. 🕐 Como posso ajudar?",
-        "entendi": "Fico feliz! 😊 Posso ajudar com mais alguma coisa?",
-        "preço": "Para informações sobre preços 💰, entre em contato com nossa equipe comercial pelo formulário.",
-        "horário": "Nosso atendimento funciona 24 horas por dia ⏰, todos os dias da semana.",
-        "contrato": "Para informações sobre contratos 📋, utilize nosso formulário de contato.",
-        "emergência": "Em caso de emergência 🚨, ligue imediatamente para 190 ou nosso número de emergência.",
-        "obrigado": "De nada! 😊 Fico feliz em ajudar. Precisa de mais alguma coisa?",
-        "tchau": "Até logo! 👋 Obrigado por escolher a AlphaFoxXP!",
-        "bye": "Até logo! 👋 Tenha um ótimo dia!",
-        "sim": "Ótimo! 👍 Em que posso te ajudar?",
-        "não": "Tudo bem! 😊 Obrigado por escolher a AlphaFoxXP!",
-        "segurança": "Oferecemos diversos serviços de segurança 🛡️: vigilância, escolta, segurança pessoal e mais!",
-        "orçamento": "Oferecemos orçamento gratuito! 💰 Entre em contato pelo formulário acima."
-      };
+    // Load Voices
+    function loadVoices() {
+      voices = speechSynthesis.getVoices();
+      const voiceSelect = document.getElementById('voiceSelect');
+      voiceSelect.innerHTML = '';
+      
+      voices.forEach((voice, index) => {
+        if (voice.lang.includes('pt') || voice.lang.includes('en')) {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = `${voice.name} (${voice.lang})`;
+          voiceSelect.appendChild(option);
+        }
+      });
+    }
 
+    // Text to Speech
+    function speak(text) {
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+      }
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      const voiceSelect = document.getElementById('voiceSelect');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const speedSlider = document.getElementById('speedSlider');
+      const pitchSlider = document.getElementById('pitchSlider');
+      
+      if (voiceSelect.value && voices[voiceSelect.value]) {
+        utterance.voice = voices[voiceSelect.value];
+      }
+      
+      utterance.volume = parseFloat(volumeSlider.value);
+      utterance.rate = parseFloat(speedSlider.value);
+      utterance.pitch = parseFloat(pitchSlider.value);
+      
+      speechSynthesis.speak(utterance);
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.getElementById('themeIcon');
+      const mobileThemeIcon = document.getElementById('mobileThemeIcon');
+      
+      if (currentTheme === 'dark') {
+        body.classList.add('light-theme');
+        themeIcon.className = 'fas fa-sun';
+        if (mobileThemeIcon) mobileThemeIcon.className = 'fas fa-sun';
+        currentTheme = 'light';
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.classList.remove('light-theme');
+        themeIcon.className = 'fas fa-moon';
+        if (mobileThemeIcon) mobileThemeIcon.className = 'fas fa-moon';
+        currentTheme = 'dark';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Voice Controls Toggle
+    function toggleVoiceControls() {
+      const voiceControls = document.getElementById('voiceControls');
+      voiceControlsVisible = !voiceControlsVisible;
+      
+      if (voiceControlsVisible) {
+        voiceControls.classList.add('show');
+      } else {
+        voiceControls.classList.remove('show');
+      }
+    }
+
+    // Chat Toggle
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      const chatBadge = document.getElementById('chatBadge');
+      chatVisible = !chatVisible;
+      
+      if (chatVisible) {
+        chatBox.style.display = 'flex';
+        chatBadge.style.display = 'none';
+        document.getElementById('chatInput').focus();
+      } else {
+        chatBox.style.display = 'none';
+      }
+    }
+
+    // FAQ Toggle
+    function toggleFAQ(element) {
+      element.classList.toggle('open');
+    }
+
+    // Form Validation
+    function validateForm() {
+      let isValid = true;
+      const requiredFields = ['name', 'email', 'priority', 'category', 'subject', 'message', 'terms'];
+      
+      requiredFields.forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        const errorElement = document.getElementById(fieldName + 'Error');
+        
+        if (!field.value.trim() || (fieldName === 'terms' && !field.checked)) {
+          field.classList.add('error');
+          errorElement.classList.add('show');
+          isValid = false;
+        } else {
+          field.classList.remove('error');
+          errorElement.classList.remove('show');
+        }
+      });
+      
+      // Email validation
+      const email = document.getElementById('email');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (email.value && !emailRegex.test(email.value)) {
+        email.classList.add('error');
+        document.getElementById('emailError').classList.add('show');
+        document.getElementById('emailError').textContent = 'Por favor, insira um e-mail válido';
+        isValid = false;
+      }
+      
+      // Message length validation
+      const message = document.getElementById('message');
+      if (message.value.length < 20) {
+        message.classList.add('error');
+        document.getElementById('messageError').classList.add('show');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
+    // File Upload Handler
+    document.getElementById('attachment').addEventListener('change', function(e) {
+      const files = e.target.files;
+      const preview = document.getElementById('filePreview');
+      preview.innerHTML = '';
+      
+      if (files.length > 0) {
+        preview.style.display = 'block';
+        Array.from(files).forEach(file => {
+          const fileItem = document.createElement('div');
+          fileItem.style.cssText = 'display: flex; align-items: center; gap: 10px; margin: 5px 0; padding: 8px; background: rgba(0,255,136,0.1); border-radius: 8px;';
+          fileItem.innerHTML = `
+            <i class="fas fa-file"></i>
+            <span>${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+          `;
+          preview.appendChild(fileItem);
+        });
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+
+    // Form Submit Handler
+    document.getElementById('supportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!validateForm()) {
+        return;
+      }
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const loadingAnimation = document.getElementById('loadingAnimation');
+      const successCheckmark = document.getElementById('successCheckmark');
+      const confirmationMessage = document.getElementById('confirmationMessage');
+      
+      // Show loading
+      submitBtn.style.display = 'none';
+      loadingAnimation.style.display = 'block';
+      
+      // Simulate form submission
+      setTimeout(() => {
+        loadingAnimation.style.display = 'none';
+        successCheckmark.classList.add('show');
+        
+        setTimeout(() => {
+          const ticketNumber = 'ALPHA-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+          confirmationMessage.innerHTML = `
+            <div style="text-align: center;">
+              <h3 style="color: var(--success-color); margin-bottom: 15px;">
+                <i class="fas fa-check-circle"></i> Ticket Criado com Sucesso!
+              </h3>
+              <p><strong>Número do Ticket:</strong> ${ticketNumber}</p>
+              <p>Você receberá uma confirmação por e-mail em breve.</p>
+              <p>Tempo estimado de resposta: <strong>2-4 horas</strong></p>
+            </div>
+          `;
+          confirmationMessage.style.display = 'block';
+          
+          // Reset form
+          document.getElementById('supportForm').reset();
+          document.getElementById('filePreview').style.display = 'none';
+          
+          // Speak confirmation
+          speak('Ticket criado com sucesso! Número do ticket: ' + ticketNumber);
+          
+        }, 1000);
+      }, 2000);
+    });
+
+    // Chat Functions
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      addMessage(message, 'user');
+      input.value = '';
+      
+      // Show typing indicator
+      document.getElementById('typingIndicator').style.display = 'block';
+      
+      // Simulate bot response
+      setTimeout(() => {
+        document.getElementById('typingIndicator').style.display = 'none';
+        const response = getBotResponse(message);
+        addMessage(response, 'bot');
+        speak(response);
+      }, 1500);
+    }
+
+    function sendQuickReply(message) {
+      addMessage(message, 'user');
+      
+      setTimeout(() => {
+        const response = getBotResponse(message);
+        addMessage(response, 'bot');
+        speak(response);
+      }, 1000);
+    }
+
+    function addMessage(text, sender) {
+      const chatContent = document.getElementById('chatContent');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.textContent = sender === 'bot' ? 'AI' : 'U';
+      
+      const messageText = document.createElement('div');
+      messageText.textContent = text;
+      
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(messageText);
+      chatContent.appendChild(messageDiv);
+      
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+      const responses = {
+        'login': 'Para problemas de login, verifique se suas credenciais estão corretas. Se esqueceu a senha, use a opção "Esqueci minha senha" na tela de login.',
+        'faturamento': 'Para questões de faturamento, acesse "Minha Conta" > "Faturamento". Lá você pode visualizar faturas, alterar forma de pagamento e histórico.',
+        'técnico': 'Para suporte técnico, descreva detalhadamente o problema. Nossa equipe técnica responde em até 4 horas para contas premium.',
+        'outros': 'Para outras questões, você pode abrir um ticket de suporte detalhado usando o formulário acima. Nossa equipe retornará em breve.'
+      };
+      
+      const lowerMessage = message.toLowerCase();
+      
       for (let key in responses) {
         if (lowerMessage.includes(key)) {
           return responses[key];
         }
       }
-      return "Desculpe, não entendi sua mensagem. 🤔 Pode reformular ou entre em contato com nosso suporte humano pelo formulário acima.";
+      
+      return 'Obrigado pela sua mensagem! Para um atendimento mais específico, recomendo abrir um ticket de suporte detalhado. Nossa equipe especializada poderá ajudá-lo melhor.';
     }
 
-    function sendMessage() {
-      const userMessage = document.getElementById("userMessage").value;
-      const chatContent = document.getElementById("chatContent");
-
-      if (userMessage.trim() === "") return;
-
-      const userMsg = document.createElement("p");
-      userMsg.innerHTML = `<strong>Você:</strong> ${userMessage}`;
-      chatContent.appendChild(userMsg);
-
-      document.getElementById("userMessage").value = "";
-
-      // Simular digitação do bot
-      setTimeout(() => {
-        const botReply = getAutoReply(userMessage);
-        const botMsg = document.createElement("p");
-        botMsg.innerHTML = `<strong>SafeBot:</strong> ${botReply}`;
-        chatContent.appendChild(botMsg);
-        chatContent.scrollTop = chatContent.scrollHeight;
-      }, 500);
-
-      chatContent.scrollTop = chatContent.scrollHeight;
-    }
-
-    // Permitir envio com Enter
-    document.getElementById("userMessage").addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
+    function handleChatKeyPress(event) {
+      if (event.key === 'Enter') {
         sendMessage();
       }
-    });
+    }
 
-    function showConfirmation(event) {
-      event.preventDefault();
-      
-      // Validar campos
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const message = document.getElementById("message").value.trim();
-      
-      if (!name || !email || !message) {
-        alert("⚠️ Por favor, preencha todos os campos!");
+    // Voice Recognition Toggle
+    function toggleVoiceRecognition() {
+      if (!speechRecognition) {
+        alert('Reconhecimento de voz não suportado neste navegador.');
         return;
       }
       
-      document.getElementById("loadingAnimation").style.display = "block";
-      
-      setTimeout(() => {
-        document.getElementById("loadingAnimation").style.display = "none";
-        document.getElementById("confirmationMessage").style.display = "block";
-        document.getElementById("contactForm").reset(); // Limpar formulário
-      }, 2000);
+      if (isListening) {
+        speechRecognition.stop();
+      } else {
+        speechRecognition.start();
+      }
     }
 
-    // FAQ Toggle
-    document.querySelectorAll('.faq-question').forEach(q => {
-      q.addEventListener('click', () => {
-        q.parentElement.classList.toggle('open');
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        toggleTheme();
+      }
+      
+      // Load voices
+      loadVoices();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+      }
+      
+      // Mobile detection
+      if (window.innerWidth <= 768) {
+        document.querySelector('.mobile-controls').style.display = 'flex';
+      }
+      
+      // Add voice recognition to chat input
+      const chatInput = document.getElementById('chatInput');
+      const voiceBtn = document.createElement('button');
+      voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+      voiceBtn.style.cssText = 'position: absolute; right: 50px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary); cursor: pointer;';
+      voiceBtn.onclick = toggleVoiceRecognition;
+      
+      const userInput = document.querySelector('.user-input');
+      userInput.style.position = 'relative';
+      userInput.appendChild(voiceBtn);
+      
+      // Auto-focus on form fields
+      document.getElementById('name').focus();
+      
+      // Add smooth scrolling
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+      
+      // Add form field animations
+      const inputs = document.querySelectorAll('input, textarea, select');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+          if (!this.value) {
+            this.parentElement.classList.remove('focused');
+          }
+        });
       });
     });
 
-    // Animação de entrada suave
-    window.addEventListener('load', () => {
-      document.body.style.opacity = '0';
-      document.body.style.transition = 'opacity 0.5s ease';
-      setTimeout(() => {
-        document.body.style.opacity = '1';
-      }, 100);
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ctrl + T = Toggle theme
+      if (e.ctrlKey && e.key === 't') {
+        e.preventDefault();
+        toggleTheme();
+      }
+      
+      // Ctrl + C = Toggle chat
+      if (e.ctrlKey && e.key === 'c') {
+        e.preventDefault();
+        toggleChat();
+      }
+      
+      // Ctrl + V = Toggle voice controls
+      if (e.ctrlKey && e.key === 'v') {
+        e.preventDefault();
+        toggleVoiceControls();
+      }
     });
-  </script>
 
+    // Auto-save form data
+    const formInputs = document.querySelectorAll('#supportForm input, #supportForm textarea, #supportForm select');
+    formInputs.forEach(input => {
+      input.addEventListener('input', function() {
+        localStorage.setItem('form_' + this.id, this.value);
+      });
+      
+      // Load saved data
+      const savedValue = localStorage.getItem('form_' + input.id);
+      if (savedValue && input.type !== 'file') {
+        input.value = savedValue;
+      }
+    });
+
+        // Clear saved form data on successful submission
+    function clearFormData() {
+      formInputs.forEach(input => {
+        localStorage.removeItem('form_' + input.id);
+      });
+    }
+
+    // Enhanced form validation with real-time feedback
+    formInputs.forEach(input => {
+      input.addEventListener('blur', function() {
+        validateField(this);
+      });
+      
+      input.addEventListener('input', function() {
+        if (this.classList.contains('error')) {
+          validateField(this);
+        }
+      });
+    });
+
+    function validateField(field) {
+      const errorElement = document.getElementById(field.id + 'Error');
+      let isValid = true;
+      let errorMessage = '';
+
+      switch(field.id) {
+        case 'name':
+          if (!field.value.trim()) {
+            isValid = false;
+            errorMessage = 'Por favor, insira seu nome completo';
+          } else if (field.value.trim().length < 2) {
+            isValid = false;
+            errorMessage = 'Nome deve ter pelo menos 2 caracteres';
+          }
+          break;
+          
+        case 'email':
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!field.value.trim()) {
+            isValid = false;
+            errorMessage = 'Por favor, insira seu e-mail';
+          } else if (!emailRegex.test(field.value)) {
+            isValid = false;
+            errorMessage = 'Por favor, insira um e-mail válido';
+          }
+          break;
+          
+        case 'phone':
+          const phoneRegex = /^[\(\)\s\-\+\d]{10,}$/;
+          if (field.value && !phoneRegex.test(field.value.replace(/\D/g, ''))) {
+            isValid = false;
+            errorMessage = 'Por favor, insira um telefone válido';
+          }
+          break;
+          
+        case 'subject':
+          if (!field.value.trim()) {
+            isValid = false;
+            errorMessage = 'Por favor, insira o assunto';
+          } else if (field.value.trim().length < 5) {
+            isValid = false;
+            errorMessage = 'Assunto deve ter pelo menos 5 caracteres';
+          }
+          break;
+          
+        case 'message':
+          if (!field.value.trim()) {
+            isValid = false;
+            errorMessage = 'Por favor, descreva seu problema';
+          } else if (field.value.trim().length < 20) {
+            isValid = false;
+            errorMessage = `Descrição muito curta (${field.value.length}/20 caracteres mínimos)`;
+          }
+          break;
+          
+        case 'priority':
+        case 'category':
+          if (!field.value) {
+            isValid = false;
+            errorMessage = 'Por favor, selecione uma opção';
+          }
+          break;
+          
+        case 'terms':
+          if (!field.checked) {
+            isValid = false;
+            errorMessage = 'Você deve concordar com os termos';
+          }
+          break;
+      }
+
+      if (isValid) {
+        field.classList.remove('error');
+        if (errorElement) errorElement.classList.remove('show');
+      } else {
+        field.classList.add('error');
+        if (errorElement) {
+          errorElement.textContent = errorMessage;
+          errorElement.classList.add('show');
+        }
+      }
+
+      return isValid;
+    }
+
+    // Phone number formatting
+    document.getElementById('phone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 11) {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+      } else if (value.length >= 7) {
+        value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      } else if (value.length >= 3) {
+        value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+      }
+      e.target.value = value;
+    });
+
+    // Enhanced chat with more responses
+    function getBotResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      // Greeting responses
+      if (lowerMessage.includes('olá') || lowerMessage.includes('oi') || lowerMessage.includes('hello')) {
+        return 'Olá! 👋 Como posso ajudá-lo hoje? Posso auxiliar com login, faturamento, suporte técnico ou outras questões.';
+      }
+      
+      // Login issues
+      if (lowerMessage.includes('login') || lowerMessage.includes('senha') || lowerMessage.includes('entrar')) {
+        return '🔐 Para problemas de login:\n\n1. Verifique se o email está correto\n2. Use "Esqueci minha senha" se necessário\n3. Limpe o cache do navegador\n4. Tente em modo anônimo\n\nSe persistir, posso criar um ticket para você!';
+      }
+      
+      // Billing issues
+      if (lowerMessage.includes('faturamento') || lowerMessage.includes('pagamento') || lowerMessage.includes('cobrança')) {
+        return '💳 Para questões de faturamento:\n\n• Acesse "Minha Conta" > "Faturamento"\n• Visualize faturas e histórico\n• Altere forma de pagamento\n• Baixe comprovantes\n\nPrecisa de ajuda específica com alguma fatura?';
+      }
+      
+      // Technical support
+      if (lowerMessage.includes('técnico') || lowerMessage.includes('erro') || lowerMessage.includes('bug') || lowerMessage.includes('problema')) {
+        return '🔧 Para suporte técnico:\n\n1. Descreva o problema detalhadamente\n2. Informe quando começou\n3. Inclua mensagens de erro\n4. Mencione seu navegador/dispositivo\n\nContas premium têm resposta em até 4 horas!';
+      }
+      
+      // Account issues
+      if (lowerMessage.includes('conta') || lowerMessage.includes('perfil') || lowerMessage.includes('dados')) {
+        return '👤 Para questões de conta:\n\n• Alterar dados pessoais\n• Configurações de segurança\n• Preferências de notificação\n• Exclusão de conta\n\nQual alteração você precisa fazer?';
+      }
+      
+      // Feature requests
+      if (lowerMessage.includes('recurso') || lowerMessage.includes('funcionalidade') || lowerMessage.includes('sugestão')) {
+        return '✨ Adoramos sugestões!\n\nPara solicitar novos recursos:\n1. Descreva a funcionalidade desejada\n2. Explique como seria útil\n3. Abra um ticket com categoria "Solicitação de Recurso"\n\nSua opinião é muito importante para nós!';
+      }
+      
+      // Pricing/plans
+      if (lowerMessage.includes('preço') || lowerMessage.includes('plano') || lowerMessage.includes('assinatura')) {
+        return '💰 Informações sobre planos:\n\n• Básico: R$ 29/mês\n• Premium: R$ 59/mês\n• Empresarial: Sob consulta\n\nTodos incluem suporte 24/7. Quer saber mais sobre algum plano específico?';
+      }
+      
+      // Cancellation
+      if (lowerMessage.includes('cancelar') || lowerMessage.includes('cancelamento')) {
+        return '❌ Para cancelar sua assinatura:\n\n1. Acesse "Configurações" > "Assinatura"\n2. Clique em "Cancelar Assinatura"\n3. Confirme o cancelamento\n\nSeu acesso permanece ativo até o fim do período pago. Posso ajudar com algo para evitar o cancelamento?';
+      }
+      
+      // Thanks
+      if (lowerMessage.includes('obrigado') || lowerMessage.includes('obrigada') || lowerMessage.includes('valeu')) {
+        return 'De nada! 😊 Fico feliz em ajudar. Se precisar de mais alguma coisa, estarei aqui 24/7. Tenha um ótimo dia!';
+      }
+      
+      // Default response
+      return `Entendi sua mensagem sobre "${message}". Para um atendimento mais específico, recomendo abrir um ticket detalhado usando o formulário acima. Nossa equipe especializada poderá ajudá-lo melhor!\n\nPosso ajudar com mais alguma coisa?`;
+    }
+
+    // Enhanced voice commands
+    if (speechRecognition) {
+      speechRecognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        
+        // Voice commands
+        if (transcript.includes('abrir chat')) {
+          if (!chatVisible) toggleChat();
+          speak('Chat aberto');
+          return;
+        }
+        
+        if (transcript.includes('fechar chat')) {
+          if (chatVisible) toggleChat();
+          speak('Chat fechado');
+          return;
+        }
+        
+        if (transcript.includes('tema claro') || transcript.includes('modo claro')) {
+          if (currentTheme === 'dark') toggleTheme();
+          speak('Tema claro ativado');
+          return;
+        }
+        
+        if (transcript.includes('tema escuro') || transcript.includes('modo escuro')) {
+          if (currentTheme === 'light') toggleTheme();
+          speak('Tema escuro ativado');
+          return;
+        }
+        
+        // Send to chat if chat is open
+        if (chatVisible) {
+          document.getElementById('chatInput').value = transcript;
+          sendMessage();
+        } else {
+          // Fill form fields based on voice input
+          if (transcript.includes('meu nome é')) {
+            const name = transcript.replace('meu nome é', '').trim();
+            document.getElementById('name').value = name;
+            speak('Nome preenchido');
+          }
+        }
+      };
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : 'var(--primary)'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        max-width: 300px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      `;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Auto-save draft
+    let draftTimer;
+    function saveDraft() {
+      const formData = {};
+      formInputs.forEach(input => {
+        if (input.type !== 'file' && input.value) {
+          formData[input.id] = input.value;
+        }
+      });
+      localStorage.setItem('supportFormDraft', JSON.stringify(formData));
+      showNotification('Rascunho salvo automaticamente', 'info');
+    }
+
+    // Load draft
+    function loadDraft() {
+      const draft = localStorage.getItem('supportFormDraft');
+      if (draft) {
+        const formData = JSON.parse(draft);
+        Object.keys(formData).forEach(key => {
+          const field = document.getElementById(key);
+          if (field && field.type !== 'file') {
+            field.value = formData[key];
+          }
+        });
+        showNotification('Rascunho carregado', 'success');
+      }
+    }
+
+    // Auto-save every 30 seconds
+    formInputs.forEach(input => {
+      input.addEventListener('input', function() {
+        clearTimeout(draftTimer);
+        draftTimer = setTimeout(saveDraft, 30000);
+      });
+    });
+
+    // Load draft on page load
+    window.addEventListener('load', function() {
+      setTimeout(loadDraft, 1000);
+    });
+
+    // Clear draft on successful submission
+    document.getElementById('supportForm').addEventListener('submit', function() {
+      localStorage.removeItem('supportFormDraft');
+      clearFormData();
+    });
+
+    // Enhanced file upload with drag and drop
+    const fileUploadLabel = document.querySelector('.file-upload-label');
+    const fileInput = document.getElementById('attachment');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      fileUploadLabel.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      fileUploadLabel.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      fileUploadLabel.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+      fileUploadLabel.style.borderColor = 'var(--primary)';
+      fileUploadLabel.style.background = 'rgba(255, 106, 0, 0.1)';
+    }
+
+    function unhighlight(e) {
+      fileUploadLabel.style.borderColor = 'rgba(255, 106, 0, 0.5)';
+      fileUploadLabel.style.background = 'rgba(255, 106, 0, 0.05)';
+    }
+
+    fileUploadLabel.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      fileInput.files = files;
+      
+      // Trigger change event
+      const event = new Event('change', { bubbles: true });
+      fileInput.dispatchEvent(event);
+    }
+
+    // Accessibility improvements
+    document.addEventListener('keydown', function(e) {
+      // ESC to close chat
+      if (e.key === 'Escape' && chatVisible) {
+        toggleChat();
+      }
+      
+      // Tab navigation improvements
+      if (e.key === 'Tab') {
+        const focusableElements = document.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (e.shiftKey && document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    });
+
+    // Performance monitoring
+    window.addEventListener('load', function() {
+      const loadTime = performance.now();
+      console.log(`Página carregada em ${loadTime.toFixed(2)}ms`);
+      
+      if (loadTime > 3000) {
+        showNotification('Conexão lenta detectada. Algumas funcionalidades podem demorar para carregar.', 'warning');
+      }
+    });
+
+    // Error handling
+    window.addEventListener('error', function(e) {
+      console.error('Erro capturado:', e.error);
+      showNotification('Ocorreu um erro inesperado. Tente recarregar a página.', 'error');
+    });
+
+    // Service Worker for offline support (if available)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+        console.log('Service Worker registrado com sucesso:', registration.scope);
+      }).catch(function(error) {
+        console.log('Falha ao registrar Service Worker:', error);
+      });
+    }
+
+    // Final initialization
+    console.log('🦊 AlphaFoxXP Support System initialized successfully!');
+    showNotification('Sistema de suporte carregado com sucesso!', 'success');
+  </script>
 </body>
 </html>
