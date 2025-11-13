@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaFoxXP - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a0a0b 0%, #1a1a1a 50%, #0f0f10 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Partículas animadas de fundo */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 106, 0, 0.5);
+      border-radius: 50%;
+      animation: float 15s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+    }
+
+    /* Container principal */
+    .login-container {
+      position: relative;
+      z-index: 10;
+      background: rgba(20, 20, 22, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 50px 45px;
+      width: 450px;
+      box-shadow: 
+        0 0 60px rgba(255, 106, 0, 0.3),
+        0 0 100px rgba(255, 179, 0, 0.2),
+        inset 0 0 80px rgba(255, 106, 0, 0.05);
+      border: 1px solid rgba(255, 106, 0, 0.2);
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Logo e título */
+    .logo-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #ff6a00, #ffb300);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      animation: rotateLogo 3s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(255, 106, 0, 0.6);
+    }
+
+    @keyframes rotateLogo {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(5deg) scale(1.05); }
+    }
+
+    .logo-title {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff6a00, #ffb300, #ff6a00);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+
+    .logo-subtitle {
+      color: #aaa;
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    /* Formulário */
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      color: #ffb347;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: #ff9500;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 15px 15px 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 106, 0, 0.3);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #ff6a00;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px rgba(255, 106, 0, 0.3);
+    }
+
+    input::placeholder {
+      color: #666;
+    }
+
+    /* Botão de login */
+    .login-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #ff6a00, #ffb300);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 25px rgba(255, 106, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .login-btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(255, 106, 0, 0.6);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Mensagens de status */
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.error {
+      background: rgba(255, 77, 77, 0.2);
+      border: 1px solid #ff4d4d;
+      color: #ff4d4d;
+    }
+
+    .message.success {
+      background: rgba(0, 255, 171, 0.2);
+      border: 1px solid #00ffab;
+      color: #00ffab;
+    }
+
+    .message.warning {
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid #FFD700;
+      color: #FFD700;
+    }
+
+    /* Badge de cargo */
+    .cargo-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+
+    .badge-fundador {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
+    .badge-admin {
+      background: linear-gradient(135deg, #ffb300, #ff6a00);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 179, 0, 0.5);
+    }
+
+    .badge-moderador {
+      background: linear-gradient(135deg, #ffe066, #ffd700);
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 224, 102, 0.5);
+    }
+
+    .badge-user {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 20px auto 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Links extras */
+    .extra-links {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .extra-links a {
+      color: #ff9500;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .extra-links a:hover {
+      color: #ffb300;
+      text-decoration: underline;
+    }
+
+    /* Painel de usuário logado */
+    .user-panel {
+      display: none;
+      text-align: center;
+      padding: 30px;
+      background: rgba(255, 106, 0, 0.1);
+      border-radius: 15px;
+      border: 2px solid rgba(255, 106, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    .user-panel h3 {
+      color: #ffb300;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    /* Foto de perfil no painel */
+    .user-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      border: 3px solid #ff6a00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      background: rgba(255, 106, 0, 0.1);
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 106, 0, 0.4);
+    }
+
+    .user-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-info {
+      color: #ccc;
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    /* Botões do painel */
+    .panel-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .continue-btn {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #ff6a00, #ffb300);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 106, 0, 0.4);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 106, 0, 0.6);
+    }
+
+    .logout-btn {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #ff4d4d, #ff6a6a);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 77, 77, 0.6);
+    }
+
+    /* Responsividade */
+    @media (max-width: 500px) {
+      .login-container {
+        width: 90%;
+        padding: 40px 30px;
+      }
+
+      .logo-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Partículas animadas -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Container de Login -->
+  <div class="login-container">
+    <div class="logo-section">
+      <div class="logo">🦊</div>
+      <h1 class="logo-title">AlphaFoxXP</h1>
+      <p class="logo-subtitle">Acesse sua conta</p>
+    </div>
+
+    <!-- Formulário de Login -->
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">👤 Usuário</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            placeholder="Digite seu nome de usuário"
+            required
+            autocomplete="username"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">🔒 Senha</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Digite sua senha"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">
+        <span>Entrar</span>
+      </button>
+
+      <div class="spinner" id="spinner"></div>
+      <div class="message" id="message"></div>
+    </form>
+
+    <!-- Painel de Usuário Logado -->
+    <div class="user-panel" id="userPanel">
+      <h3>🦊 Bem-vindo de volta!</h3>
+      
+      <!-- Foto de perfil do usuário -->
+      <div class="user-photo" id="userPhoto">
+        <span>👤</span>
+      </div>
+      
+      <div class="user-info" id="userInfo"></div>
+      
+      <div class="panel-buttons">
+        <a href="comuni.html" class="continue-btn">
+          Continuar →
+        </a>
+        <button class="logout-btn" onclick="logout()">Sair da Conta</button>
+      </div>
+    </div>
+
+    <div class="extra-links">
+      <a href="#">Esqueceu a senha?</a> • 
+      <a href="#">Criar conta</a>
+    </div>
+  </div>
+
+  <script>
+    // Criar partículas animadas
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Carregar usuários do localStorage
+    let users = JSON.parse(localStorage.getItem('users')) || [
+      { username: 'Luan', email: 'luan@alphafoxxp.com', cargo: 'fundador', status: 'ativo', password: 'admin123' },
+      { username: 'FoxAdmin', email: 'admin@alphafoxxp.com', cargo: 'admin', status: 'ativo', password: 'admin123' },
+      { username: 'ModXP', email: 'mod@alphafoxxp.com', cargo: 'moderador', status: 'ativo', password: 'mod123' },
+      { username: 'Jogador1', email: 'player1@gmail.com', cargo: 'user', status: 'ativo', password: 'user123' },
+      { username: 'Jogador2', email: 'player2@gmail.com', cargo: 'user', status: 'suspenso', password: 'user123' },
+      { username: 'Jogador3', email: 'player3@gmail.com', cargo: 'user', status: 'ativo', password: 'user123' }
+    ];
+
+    // Salvar usuários se não existirem
+    if (!localStorage.getItem('users')) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    // Função para mostrar mensagem
+    function showMessage(text, type) {
+      const messageEl = document.getElementById('message');
+      messageEl.innerHTML = text;
+      messageEl.className = `message ${type}`;
+      messageEl.style.display = 'block';
+      
+      setTimeout(() => {
+        messageEl.style.display = 'none';
+      }, 5000);
+    }
+
+    // Função para obter badge de cargo
+    function getCargoBadge(cargo) {
+      const badges = {
+        'fundador': '<span class="cargo-badge badge-fundador">🦊 Fundador</span>',
+        'admin': '<span class="cargo-badge badge-admin">🛠️ Administrador</span>',
+        'moderador': '<span class="cargo-badge badge-moderador">🧩 Moderador</span>',
+        'user': '<span class="cargo-badge badge-user">👤 Usuário</span>'
+      };
+      return badges[cargo] || badges['user'];
+    }
+
+    // Função de logout
+    function logout() {
+      localStorage.removeItem('currentUser');
+      document.getElementById('userPanel').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      showMessage('👋 Você saiu da sua conta com sucesso!', 'success');
+    }
+
+    // Função para carregar foto do usuário
+    function loadUserPhoto(user) {
+      const userPhoto = document.getElementById('userPhoto');
+      
+      if (user.profilePhoto) {
+        // Se o usuário tem foto salva, carregar
+        userPhoto.innerHTML = `<img src="${user.profilePhoto}" alt="Foto de ${user.username}">`;
+      } else {
+        // Caso contrário, mostrar ícone padrão
+        userPhoto.innerHTML = '<span>👤</span>';
+      }
+    }
+
+    // Função para mostrar painel de usuário
+    function showUserPanel(user) {
+      const loginForm = document.getElementById('loginForm');
+      const userPanel = document.getElementById('userPanel');
+      const userInfo = document.getElementById('userInfo');
+
+      loginForm.style.display = 'none';
+      userPanel.style.display = 'block';
+
+      const loginDate = new Date(user.loginTime).toLocaleString('pt-BR');
+      
+      // Carregar foto do usuário
+      loadUserPhoto(user);
+      
+      userInfo.innerHTML = `
+        <strong>👤 Usuário:</strong> ${user.username}<br>
+        <strong>📧 Email:</strong> ${user.email}<br>
+        <strong>🎖️ Cargo:</strong> ${getCargoBadge(user.cargo)}<br>
+        <strong>📅 Último login:</strong> ${loginDate}
+      `;
+    }
+
+    // Função de login
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const spinner = document.getElementById('spinner');
+      const loginBtn = document.querySelector('.login-btn');
+
+      // Mostrar loading
+      loginBtn.style.opacity = '0.6';
+      loginBtn.style.pointerEvents = 'none';
+      spinner.style.display = 'block';
+
+      // Simular delay de autenticação
+      setTimeout(() => {
+        // Buscar usuário
+        const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+        if (!user) {
+          showMessage('❌ Usuário não encontrado!', 'error');
+          resetForm();
+          return;
+        }
+
+        // Verificar senha
+        if (user.password !== password) {
+          showMessage('❌ Senha incorreta!', 'error');
+          resetForm();
+          return;
+        }
+
+        // Verificar status da conta
+        if (user.status === 'banido') {
+          showMessage('🚫 Sua conta foi banida. Entre em contato com o suporte.', 'error');
+          resetForm();
+          return;
+        }
+
+        if (user.status === 'suspenso') {
+          showMessage('⚠️ Sua conta está suspensa temporariamente.', 'warning');
+          resetForm();
+          return;
+        }
+
+        // Login bem-sucedido
+        const cargoBadge = getCargoBadge(user.cargo);
+        showMessage(`✅ Login realizado com sucesso! ${cargoBadge}`, 'success');
+
+        // Salvar sessão com foto de perfil se existir
+        const currentUser = {
+          username: user.username,
+          email: user.email,
+          cargo: user.cargo,
+          status: user.status,
+          profilePhoto: user.profilePhoto || null,
+          loginTime: new Date().toISOString()
+        };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        // Mostrar painel de usuário após 1.5 segundos
+        setTimeout(() => {
+          showUserPanel(currentUser);
+          resetForm();
+        }, 1500);
+
+      }, 1500);
+
+      function resetForm() {
+        spinner.style.display = 'none';
+        loginBtn.style.opacity = '1';
+        loginBtn.style.pointerEvents = 'auto';
+      }
+    });
+
+    // Verificar se já está logado ao carregar a página
+    window.addEventListener('load', () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        showUserPanel(currentUser);
+        showMessage(`👋 Bem-vindo de volta, ${currentUser.username}!`, 'success');
+      }
+    });
+
+    // Easter egg: Pressione Ctrl+Shift+D para modo debug
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        console.log('🦊 AlphaFoxXP Debug Mode');
+        console.log('Usuários cadastrados:', users);
+        alert('🦊 Modo Debug Ativado!\n\nUsuários de teste:\n\n' +
+              '👑 Fundador: Luan / admin123\n' +
+              '🛠️ Admin: FoxAdmin / admin123\n' +
+              '🧩 Mod: ModXP / mod123\n' +
+              '👤 User: Jogador1 / user123\n' +
+              '⚠️ Suspenso: Jogador2 / user123');
+      }
+    });
+
+    // Animação de digitação no placeholder
+    const usernameInput = document.getElementById('username');
+    const originalPlaceholder = usernameInput.placeholder;
+    let placeholderIndex = 0;
+    let isDeleting = false;
+    let animationTimeout;
+
+    function animatePlaceholder() {
+      if (document.activeElement !== usernameInput && usernameInput.value === '') {
+        if (!isDeleting && placeholderIndex < originalPlaceholder.length) {
+          usernameInput.placeholder = originalPlaceholder.substring(0, placeholderIndex + 1);
+          placeholderIndex++;
+          animationTimeout = setTimeout(animatePlaceholder, 100);
+        } else if (isDeleting && placeholderIndex > 0) {
+          usernameInput.placeholder = originalPlaceholder.substring(0, placeholderIndex - 1);
+          placeholderIndex--;
+          animationTimeout = setTimeout(animatePlaceholder, 50);
+        } else {
+          isDeleting = !isDeleting;
+          animationTimeout = setTimeout(animatePlaceholder, isDeleting ? 2000 : 500);
+        }
+      }
+    }
+
+    usernameInput.addEventListener('focus', () => {
+      clearTimeout(animationTimeout);
+      usernameInput.placeholder = originalPlaceholder;
+    });
+
+    usernameInput.addEventListener('blur', () => {
+      if (usernameInput.value === '') {
+        placeholderIndex = 0;
+        isDeleting = false;
+        animatePlaceholder();
+      }
+    });
+
+    // Iniciar animação do placeholder após 1 segundo
+    setTimeout(animatePlaceholder, 1000);
+
+    // Efeito de shake no erro
+    function shakeContainer() {
+      const container = document.querySelector('.login-container');
+      container.style.animation = 'none';
+      setTimeout(() => {
+        container.style.animation = 'shake 0.5s';
+      }, 10);
+    }
+
+    // Adicionar animação de shake ao CSS dinamicamente
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+        20%, 40%, 60%, 80% { transform: translateX(10px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Prevenir múltiplos submits
+    let isSubmitting = false;
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      if (isSubmitting) {
+        e.preventDefault();
+        return false;
+      }
+      isSubmitting = true;
+      setTimeout(() => {
+        isSubmitting = false;
+      }, 3000);
+    });
+
+    // Adicionar efeito de partículas ao clicar
+    document.addEventListener('click', function(e) {
+      createClickParticle(e.clientX, e.clientY);
+    });
+
+    function createClickParticle(x, y) {
+      const particle = document.createElement('div');
+      particle.style.position = 'fixed';
+      particle.style.left = x + 'px';
+      particle.style.top = y + 'px';
+      particle.style.width = '5px';
+      particle.style.height = '5px';
+      particle.style.background = '#ff6a00';
+      particle.style.borderRadius = '50%';
+      particle.style.pointerEvents = 'none';
+      particle.style.zIndex = '9999';
+      particle.style.animation = 'clickParticle 0.6s ease-out forwards';
+      document.body.appendChild(particle);
+
+      setTimeout(() => {
+        particle.remove();
+      }, 600);
+    }
+
+    // Adicionar animação de partícula de clique
+    const clickStyle = document.createElement('style');
+    clickStyle.textContent = `
+      @keyframes clickParticle {
+        0% {
+          transform: scale(1) translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(3) translateY(-30px);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(clickStyle);
+
+    // Console log estilizado
+    console.log('%c🦊 AlphaFoxXP System', 'color: #ff6a00; font-size: 20px; font-weight: bold;');
+    console.log('%cSistema de Login Carregado com Sucesso!', 'color: #00ffab; font-size: 14px;');
+    console.log('%cPressione Ctrl+Shift+D para modo debug', 'color: #ffb300; font-size: 12px;');
+
+  </script>
+
+</body>
+</html>

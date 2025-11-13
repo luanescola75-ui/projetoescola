@@ -2,159 +2,217 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel do Administrador - JN Security</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaFoxXP - Painel de Administração</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+      background: linear-gradient(135deg, #0f0f10, #1a1a1a);
       color: #fff;
-      padding: 40px;
+      padding: 20px;
+      min-height: 100vh;
     }
-
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, #ff6a00, #ffae00);
+      font-size: 2.4rem;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #ff6a00, #ffb300);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     p {
-      color: #bbb;
+      color: #aaa;
       margin-bottom: 30px;
-      font-size: 1.05rem;
     }
-
+    .admin-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(255, 102, 0, 0.2);
+    }
+    .admin-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .admin-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 3px solid #FFD700;
+      position: relative;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #FFD70055; }
+      to { box-shadow: 0 0 25px #FFD700; }
+    }
+    .admin-name {
+      font-size: 1.5rem;
+      color: #FFD700;
+      font-weight: 600;
+      text-shadow: 0 0 10px #FFD70099;
+      position: relative;
+    }
+    .admin-name::after {
+      content: '✔️';
+      position: absolute;
+      right: -28px;
+      top: 2px;
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse {
+      from { opacity: 0.6; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.2); }
+    }
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1rem;
+    }
+    .search-bar input::placeholder { color: #aaa; }
+    .search-bar button {
+      padding: 10px 15px;
+      background: linear-gradient(135deg, #ff6a00, #ffb300);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .search-bar button:hover { transform: scale(1.05); }
     table {
       width: 100%;
       border-collapse: collapse;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 14px;
       overflow: hidden;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 0 25px rgba(255, 102, 0, 0.2);
+      box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
+      margin-bottom: 20px;
     }
-
     th, td {
-      padding: 18px 16px;
+      padding: 16px;
       text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-
     th {
-      background: rgba(255, 255, 255, 0.06);
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      background: rgba(255, 255, 255, 0.08);
       color: #ffb347;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
     }
-
-    td {
-      font-size: 0.95rem;
-      color: #f1f1f1;
+    select, button {
+      border: none;
+      outline: none;
+      font-family: inherit;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-
     select {
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
       padding: 6px 12px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: 0.3s;
     }
-
-    select:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
+    select:hover { background: rgba(255, 255, 255, 0.2); }
     button {
-      background: linear-gradient(145deg, #ff6a00, #ffb347);
+      background: linear-gradient(135deg, #ff6a00, #ffb300);
       color: #fff;
-      border: none;
-      padding: 8px 16px;
-      margin: 4px;
+      padding: 8px 14px;
+      margin: 3px;
       font-weight: 600;
-      font-size: 0.9rem;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4);
-      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      box-shadow: 0 0 12px rgba(255, 120, 0, 0.4);
     }
-
     button:hover {
       transform: scale(1.05);
-      background: linear-gradient(145deg, #ffc266, #ff944d);
-      box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
+      box-shadow: 0 0 18px rgba(255, 170, 0, 0.7);
     }
-
-    .status-ativo {
-      color: #00ffab;
-      font-weight: bold;
-      text-shadow: 0 0 5px #00ffab55;
+    .status-ativo { color: #00ffab; font-weight: bold; }
+    .status-suspenso { color: #FFD700; font-weight: bold; }
+    .status-banido { color: #ff4d4d; font-weight: bold; }
+    .cargo-fundador { color: #FFD700; font-weight: bold; text-shadow: 0 0 10px #FFD700; }
+    .cargo-admin { color: #ffb300; text-shadow: 0 0 8px #ffb30088; }
+    .cargo-mod { color: #ffe066; text-shadow: 0 0 6px #ffe06655; }
+    .cargo-user { color: #ccc; }
+    .comandos {
+      margin-top: 25px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-
-    .status-suspenso {
-      color: #ffd700;
-      font-weight: bold;
-      text-shadow: 0 0 5px #ffd70055;
+    .comandos button {
+      flex: 1;
+      min-width: 150px;
+      background: linear-gradient(135deg, #ff9500, #ff6a00);
     }
-
-    .status-banido {
-      color: #ff4d4d;
-      font-weight: bold;
-      text-shadow: 0 0 5px #ff4d4d55;
+    .extra-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-
+    .extra-actions button {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+    }
     @media (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      thead {
-        display: none;
-      }
-      tr {
-        margin-bottom: 20px;
-        background: rgba(255, 255, 255, 0.04);
-        border-radius: 12px;
-        padding: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      }
-      td {
-        text-align: left;
-        padding: 10px;
-        position: relative;
-      }
-      td:before {
-        content: attr(data-label);
-        font-weight: bold;
-        color: #ffb347;
-        display: block;
-        margin-bottom: 6px;
-      }
+      table { font-size: 0.8rem; }
+      .admin-header { flex-direction: column; text-align: center; }
+      .comandos { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 
-  <h1>Painel do Administrador</h1>
-  <p>Usuários Registrados</p>
+  <h1>⚙️ Painel das Contas Administradoras</h1>
+  <p>Gerencie todos os usuários da AlphaFoxXP — equipe e comunidade.</p>
+
+  <div class="admin-card">
+    <div class="admin-header">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Admin" class="admin-avatar">
+      <div class="admin-name">AlphaFoxXP Oficial</div>
+    </div>
+    <div class="comandos">
+      <button onclick="enviarComunicado()"><i class="fas fa-bullhorn"></i> Enviar Comunicado</button>
+      <button onclick="fixarPost()"><i class="fas fa-thumbtack"></i> Fixar Post Oficial</button>
+      <button onclick="atribuirConquista()"><i class="fas fa-trophy"></i> Atribuir XP/Conquista</button>
+      <button onclick="verLogs()"><i class="fas fa-chart-line"></i> Ver Logs</button>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Buscar por nome ou email...">
+    <button onclick="filtrarUsuarios()"><i class="fas fa-search"></i> Buscar</button>
+  </div>
+
+  <div class="extra-actions">
+    <button onclick="adicionarUsuario()"><i class="fas fa-user-plus"></i> Adicionar Usuário</button>
+    <button onclick="exportarCSV()"><i class="fas fa-download"></i> Exportar CSV</button>
+  </div>
 
   <table>
     <thead>
       <tr>
         <th>Usuário</th>
         <th>Email</th>
-        <th>Nível</th>
+        <th>Cargo</th>
         <th>Status</th>
         <th>Ações</th>
       </tr>
@@ -163,60 +221,152 @@
   </table>
 
   <script>
-    let users = JSON.parse(localStorage.getItem('users')) || [];
+    // Base inicial: equipe + usuários padrões
+    let users = JSON.parse(localStorage.getItem('users')) || [
+      { username: 'Luan', email: 'luan@alphafoxxp.com', cargo: 'fundador', status: 'ativo' },
+      { username: 'FoxAdmin', email: 'admin@alphafoxxp.com', cargo: 'admin', status: 'ativo' },
+      { username: 'ModXP', email: 'mod@alphafoxxp.com', cargo: 'moderador', status: 'ativo' },
+      { username: 'Jogador1', email: 'player1@gmail.com', cargo: 'user', status: 'ativo' },
+      { username: 'Jogador2', email: 'player2@gmail.com', cargo: 'user', status: 'suspenso' },
+      { username: 'Jogador3', email: 'player3@gmail.com', cargo: 'user', status: 'ativo' }
+    ];
+
+    let logs = JSON.parse(localStorage.getItem('logs')) || [];
 
     function salvarUsuarios() {
       localStorage.setItem('users', JSON.stringify(users));
       carregarTabela();
     }
 
+    function salvarLogs() {
+      localStorage.setItem('logs', JSON.stringify(logs));
+    }
+
+    function adicionarLog(acao) {
+      logs.push({ timestamp: new Date().toLocaleString(), acao });
+      salvarLogs();
+    }
+
     function alterarStatus(username, novoStatus) {
+      if (confirm(`Tem certeza que deseja alterar o status de ${username} para ${novoStatus}?`)) {
+        const user = users.find(u => u.username === username);
+        if (user) {
+          user.status = novoStatus;
+          adicionarLog(`Status de ${username} alterado para ${novoStatus}`);
+          salvarUsuarios();
+        }
+      }
+    }
+
+    function alterarCargo(username, novoCargo) {
       const user = users.find(u => u.username === username);
       if (user) {
-        user.status = novoStatus;
+        user.cargo = novoCargo;
+        adicionarLog(`Cargo de ${username} alterado para ${novoCargo}`);
         salvarUsuarios();
       }
     }
 
-    function alterarNivel(username, novoNivel) {
-      const user = users.find(u => u.username === username);
-      if (user) {
-        user.nivel = parseInt(novoNivel);
+    function excluirUsuario(username) {
+      if (confirm(`Tem certeza que deseja excluir ${username}?`)) {
+        users = users.filter(u => u.username !== username);
+        adicionarLog(`Usuário ${username} excluído`);
         salvarUsuarios();
       }
     }
 
-    function carregarTabela() {
+    function adicionarUsuario() {
+      const username = prompt("Digite o nome do usuário:");
+      const email = prompt("Digite o email:");
+      if (username && email && !users.find(u => u.username === username || u.email === email)) {
+        users.push({ username, email, cargo: 'user', status: 'ativo' });
+        adicionarLog(`Usuário ${username} adicionado`);
+        salvarUsuarios();
+        alert("Usuário adicionado com sucesso!");
+      } else {
+        alert("Nome ou email inválido/duplicado!");
+      }
+    }
+
+    function filtrarUsuarios() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = users.filter(u => u.username.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
+      carregarTabela(filtered);
+    }
+
+    function exportarCSV() {
+      let csv = 'Usuário,Email,Cargo,Status\n';
+      users.forEach(u => csv += `${u.username},${u.email},${u.cargo},${u.status}\n`);
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'usuarios_alphafoxxp.csv';
+      a.click();
+      adicionarLog('Lista de usuários exportada como CSV');
+    }
+
+    function carregarTabela(filteredUsers = users) {
       const tbody = document.getElementById('userTableBody');
       tbody.innerHTML = '';
-
-      users.forEach(user => {
-        const status = user.status || 'ativo';
-        const nivel = user.nivel || 1;
-
+      filteredUsers.forEach(user => {
         const tr = document.createElement('tr');
+        let cargoClasse =
+          user.cargo === 'fundador' ? 'cargo-fundador' :
+          user.cargo === 'admin' ? 'cargo-admin' :
+          user.cargo === 'moderador' ? 'cargo-mod' : 'cargo-user';
+
         tr.innerHTML = `
-          <td data-label="Usuário">${user.username}</td>
-          <td data-label="Email">${user.email}</td>
-          <td data-label="Nível">
-            <select onchange="alterarNivel('${user.username}', this.value)">
-              <option value="1" ${nivel === 1 ? 'selected' : ''}>Nível 1</option>
-              <option value="2" ${nivel === 2 ? 'selected' : ''}>Nível 2</option>
-              <option value="3" ${nivel === 3 ? 'selected' : ''}>Nível 3</option>
+          <td class="${cargoClasse}">${user.username}</td>
+          <td>${user.email}</td>
+          <td>
+            <select onchange="alterarCargo('${user.username}', this.value)">
+              <option value="user" ${user.cargo === 'user' ? 'selected' : ''}>👤 Usuário</option>
+              <option value="moderador" ${user.cargo === 'moderador' ? 'selected' : ''}>🧩 Moderador</option>
+              <option value="admin" ${user.cargo === 'admin' ? 'selected' : ''}>🛠️ Administrador</option>
+              <option value="fundador" ${user.cargo === 'fundador' ? 'selected' : ''}>🦊 Fundador</option>
             </select>
           </td>
-          <td data-label="Status" class="status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</td>
-          <td data-label="Ações">
-            <button onclick="alterarStatus('${user.username}', 'ativo')">Ativar</button>
-            <button onclick="alterarStatus('${user.username}', 'suspenso')">Suspender</button>
-            <button onclick="alterarStatus('${user.username}', 'banido')">Banir</button>
+          <td class="status-${user.status}">${user.status.toUpperCase()}</td>
+          <td>
+            <button onclick="alterarStatus('${user.username}', 'ativo')"><i class="fas fa-check"></i> Ativar</button>
+            <button onclick="alterarStatus('${user.username}', 'suspenso')"><i class="fas fa-pause"></i> Suspender</button>
+            <button onclick="alterarStatus('${user.username}', 'banido')"><i class="fas fa-ban"></i> Banir</button>
+            <button onclick="excluirUsuario('${user.username}')"><i class="fas fa-trash"></i> Excluir</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
+    // ---- FUNÇÕES ADMINISTRATIVAS ----
+    function enviarComunicado() {
+      const msg = prompt("Digite o comunicado oficial a ser enviado:");
+      if (msg) {
+        adicionarLog(`Comunicado enviado: ${msg}`);
+        alert("📢 Comunicado enviado com sucesso!\n\n" + msg);
+      }
+    }
+
+    function fixarPost() {
+      adicionarLog('Post oficial fixado');
+      alert("📌 Post oficial fixado na comunidade!");
+    }
+
+    function atribuirConquista() {
+      adicionarLog('XP/Conquista atribuída');
+      alert("🏆 XP e conquistas atribuídas ao usuário selecionado!");
+    }
+
+    function verLogs() {
+      const logText = logs.length ? logs.map(l => `${l.timestamp}: ${l.acao}`).join('\n') : 'Nenhum log disponível.';
+      alert("📊 Logs de moderação:\n\n" + logText);
+    }
+
+    // Inicialização
     carregarTabela();
+    document.getElementById('searchInput').addEventListener('input', filtrarUsuarios);
   </script>
+
 </body>
 </html>

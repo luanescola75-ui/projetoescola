@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="cssescola.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 </head>
 
 <body>
@@ -88,6 +94,9 @@
             <button onclick="window.location.href='ediçao.html'">
                 <i class="ri-settings-line"></i> Configuração
             </button>
+            <button onclick="window.location.href='comunidade.html'">
+                <i class="ri-group-line"></i> Comunidade & Blog
+            </button>
             <button onclick="window.location.href='planos.html'">
                 <i class="ri-vip-crown-line"></i> Planos
             </button>
@@ -160,8 +169,8 @@
                 <button id="btn-controle-usuarios" class="admin-nav-btn">
                     <i class="ri-user-settings-line"></i> Controle de Usuários
                 </button>
-                <button onclick="baixarDados()" class="admin-nav-btn">
-                    <i class="ri-download-line"></i> Salvar Dados em JSON
+                <button onclick="exportarDadosFirebase()" class="admin-nav-btn">
+                    <i class="ri-download-line"></i> Exportar Dados Firebase
                 </button>
             </nav>
 
@@ -185,7 +194,10 @@
                         <input type="url" id="input-imagem" placeholder="https://exemplo.com/imagem.jpg" required autocomplete="off" />
                     </div>
                     <button type="submit" class="btn-submit">
-                        <i class="ri-add-line"></i> Publicar Novo Anúncio
+                        <i class="ri-add-line"></i> <span id="btn-submit-text">Publicar Novo Anúncio</span>
+                    </button>
+                    <button type="button" id="btn-cancelar-edicao" class="btn-cancel" style="display: none;">
+                        <i class="ri-close-line"></i> Cancelar Edição
                     </button>
                 </form>
 
@@ -218,8 +230,647 @@
         </div>
     </div>
 
+    <!-- Firebase Config -->
     <script>
-        // Particles.js Configuration
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOMJYymvjApHshn7TWe83KEpM-2eoC09A",
+            authDomain: "escola-5db5c.firebaseapp.com",
+            projectId: "escola-5db5c",
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+    </script>
+
+    <script>
+        // ========================================
+        // SISTEMA FIREBASE - ALPHAFOX XP
+        // ========================================
+
+        // Variáveis Globais
+        let produtos = [];
+        let carrinho = [];
+        let filtroCategoria = 'todos';
+        let produtoEditandoId = null;
+
+        // Referências DOM
+        const productList = document.getElementById('product-list');
+        const categorias = document.querySelectorAll('.categoria-btn');
+        const searchInput = document.getElementById('search-input');
+        const estoqueTbody = document.getElementById('estoque-tbody');
+        const formNovoProduto = document.getElementById('novo-produto-form');
+        const inputNome = document.getElementById('input-nome');
+        const inputDescricao = document.getElementById('input-descricao');
+        const inputPreco = document.getElementById('input-preco');
+        const inputImagem = document.getElementById('input-imagem');
+        const btnSubmitText = document.getElementById('btn-submit-text');
+        const btnCancelarEdicao = document.getElementById('btn-cancelar-edicao');
+
+        // ========================================
+        // FIREBASE - CARREGAR PRODUTOS
+        // ========================================
+        function carregarProdutosFirebase() {
+            db.collection('anuncios').onSnapshot((snapshot) => {
+                produtos = [];
+                snapshot.forEach((doc) => {
+                    produtos.push({ id: doc.id, ...doc.data() });
+                });
+                renderVitrine();
+                carregarTabelaEstoque();
+            }, (error) => {
+                console.error('Erro ao carregar produtos:', error);
+                mostrarToast('❌ Erro ao carregar produtos do Firebase', 'error');
+            });
+        }
+
+        // ========================================
+        // FIREBASE - ADICIONAR PRODUTO
+        // ========================================
+        async function adicionarProdutoFirebase(produto) {
+            try {
+                await db.collection('anuncios').add({
+                    nome: produto.nome,
+                    descricao: produto.descricao,
+                    preco: produto.preco,
+                    imagem: produto.imagem,
+                    categoria: produto.categoria,
+                    dataCriacao: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                mostrarToast('✅ Produto adicionado com sucesso!', 'success');
+                limparCamposProduto();
+            } catch (error) {
+                console.error('Erro ao adicionar produto:', error);
+                mostrarToast('❌ Erro ao adicionar produto', 'error');
+            }
+        }
+
+        // ========================================
+        // FIREBASE - ATUALIZAR PRODUTO
+        // ========================================
+        async function atualizarProdutoFirebase(id, produto) {
+            try {
+                await db.collection('anuncios').doc(id).update({
+                    nome: produto.nome,
+                    descricao: produto.descricao,
+                    preco: produto.preco,
+                    imagem: produto.imagem,
+                    categoria: produto.categoria,
+                    dataAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                mostrarToast('✅ Produto atualizado com sucesso!', 'success');
+                limparCamposProduto();
+            } catch (error) {
+                console.error('Erro ao atualizar produto:', error);
+                mostrarToast('❌ Erro ao atualizar produto', 'error');
+            }
+        }
+
+        // ========================================
+        // FIREBASE - REMOVER PRODUTO
+        // ========================================
+        async function removerProdutoFirebase(id) {
+            try {
+                await db.collection('anuncios').doc(id).delete();
+                mostrarToast('🗑️ Produto removido com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro ao remover produto:', error);
+                mostrarToast('❌ Erro ao remover produto', 'error');
+            }
+        }
+
+        // ========================================
+        // FIREBASE - CARRINHO (SALVAR)
+        // ========================================
+        async function salvarCarrinhoFirebase() {
+            const userId = obterUserIdUnico();
+            try {
+                await db.collection('carrinhos').doc(userId).set({
+                    itens: carrinho,
+                    ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                atualizarContadorCarrinho();
+            } catch (error) {
+                console.error('Erro ao salvar carrinho:', error);
+            }
+        }
+
+        // ========================================
+        // FIREBASE - CARRINHO (CARREGAR)
+        // ========================================
+        async function carregarCarrinhoFirebase() {
+            const userId = obterUserIdUnico();
+            try {
+                const doc = await db.collection('carrinhos').doc(userId).get();
+                if (doc.exists) {
+                    carrinho = doc.data().itens || [];
+                } else {
+                    carrinho = [];
+                }
+                atualizarContadorCarrinho();
+                renderCarrinho();
+            } catch (error) {
+                console.error('Erro ao carregar carrinho:', error);
+                carrinho = [];
+            }
+        }
+
+        // ========================================
+        // GERAR ID ÚNICO POR USUÁRIO
+        // ========================================
+        function obterUserIdUnico() {
+            let userId = localStorage.getItem('alphaFoxUserId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('alphaFoxUserId', userId);
+            }
+            return userId;
+        }
+
+        // ========================================
+        // RENDER VITRINE DE PRODUTOS
+        // ========================================
+        function renderVitrine() {
+            productList.innerHTML = '';
+            let listaFiltrada = filtroCategoria === 'todos' 
+                ? produtos 
+                : produtos.filter(p => p.categoria === filtroCategoria);
+            
+            const termoBusca = searchInput.value.toLowerCase();
+            if (termoBusca) {
+                listaFiltrada = listaFiltrada.filter(p => 
+                    p.nome.toLowerCase().includes(termoBusca) || 
+                    (p.descricao && p.descricao.toLowerCase().includes(termoBusca))
+                );
+            }
+            
+            if (listaFiltrada.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-inbox-line"></i>
+                        <h3>Nenhum produto encontrado</h3>
+                        <p>Tente ajustar os filtros ou buscar por outros termos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listaFiltrada.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'product-card';
+                div.innerHTML = `
+                    <div class="card-image">
+                        <img src="${p.imagem}" alt="${p.nome}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
+                        <div class="card-overlay">
+                            <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p).replace(/'/g, "'")})'>
+                                <i class="ri-shopping-cart-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${p.nome}</h3>
+                        <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
+                        <div class="card-footer">
+                            <span class="card-price">R$ ${Number(p.preco).toFixed(2)}</span>
+                            <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p).replace(/'/g, "'")})'>
+                                <i class="ri-add-line"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productList.appendChild(div);
+            });
+        }
+
+        // ========================================
+        // BUSCA DINÂMICA
+        // ========================================
+        searchInput.addEventListener('input', renderVitrine);
+
+        // ========================================
+        // FILTROS DE CATEGORIA
+        // ========================================
+        categorias.forEach(cat => {
+            cat.addEventListener('click', () => {
+                categorias.forEach(c => c.classList.remove('active'));
+                cat.classList.add('active');
+                filtroCategoria = cat.dataset.cat;
+                renderVitrine();
+            });
+        });
+
+        // ========================================
+        // CARRINHO - ADICIONAR PRODUTO
+        // ========================================
+        function adicionarAoCarrinho(produto) {
+            const existente = carrinho.find(p => p.id === produto.id);
+            if (existente) {
+                existente.quantidade += 1;
+            } else {
+                carrinho.push({ ...produto, quantidade: 1 });
+            }
+            salvarCarrinhoFirebase();
+            renderCarrinho();
+            mostrarToast(`✅ <strong>${produto.nome}</strong> adicionado ao carrinho.`);
+        }
+
+        // ========================================
+        // CARRINHO - REMOVER PRODUTO
+        // ========================================
+        function removerDoCarrinho(index) {
+            carrinho.splice(index, 1);
+            salvarCarrinhoFirebase();
+            renderCarrinho();
+        }
+
+        // ========================================
+        // CARRINHO - ALTERAR QUANTIDADE
+        // ========================================
+        function alterarQuantidade(index, delta) {
+            carrinho[index].quantidade += delta;
+            if (carrinho[index].quantidade <= 0) {
+                removerDoCarrinho(index);
+            } else {
+                salvarCarrinhoFirebase();
+                renderCarrinho();
+            }
+        }
+
+        // ========================================
+        // CARRINHO - LIMPAR
+        // ========================================
+        function limparCarrinho() {
+            if (confirm('Tem certeza que deseja limpar o carrinho?')) {
+                carrinho = [];
+                salvarCarrinhoFirebase();
+                renderCarrinho();
+                mostrarToast('🧹 Carrinho limpo com sucesso.');
+            }
+        }
+
+        // ========================================
+        // CARRINHO - CALCULAR TOTAL
+        // ========================================
+        function calcularTotal() {
+            return carrinho.reduce((soma, item) => soma + (Number(item.preco) * item.quantidade), 0);
+        }
+
+        // ========================================
+        // CARRINHO - RENDER
+        // ========================================
+        function renderCarrinho() {
+            const lista = document.getElementById('lista-carrinho');
+            const totalEl = document.getElementById('total-carrinho');
+            
+            lista.innerHTML = '';
+            
+            if (carrinho.length === 0) {
+                lista.innerHTML = `
+                    <li class="carrinho-empty">
+                        <i class="ri-shopping-cart-line"></i>
+                        <p>Seu carrinho está vazio</p>
+                    </li>
+                `;
+                totalEl.textContent = 'Total: R$ 0,00';
+                return;
+            }
+
+            carrinho.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'carrinho-item';
+                li.innerHTML = `
+                    <div class="item-image">
+                        <img src="${item.imagem}" alt="${item.nome}" onerror="this.src='https://via.placeholder.com/80?text=Sem+Imagem'">
+                    </div>
+                    <div class="item-details">
+                        <h4>${item.nome}</h4>
+                        <p class="item-price">R$ ${Number(item.preco).toFixed(2)}</p>
+                    </div>
+                    <div class="item-controls">
+                        <div class="quantity-controls">
+                            <button onclick="alterarQuantidade(${index}, -1)" class="qty-btn">
+                                <i class="ri-subtract-line"></i>
+                            </button>
+                            <span class="quantity">${item.quantidade}</span>
+                            <button onclick="alterarQuantidade(${index}, 1)" class="qty-btn">
+                                <i class="ri-add-line"></i>
+                            </button>
+                        </div>
+                        <button onclick="removerDoCarrinho(${index})" class="remove-btn" title="Remover item">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(li);
+            });
+
+            totalEl.textContent = 'Total: R$ ' + calcularTotal().toFixed(2);
+        }
+
+        // ========================================
+        // CARRINHO - ABRIR/FECHAR
+        // ========================================
+        function abrirCarrinho() {
+            renderCarrinho();
+            document.getElementById('carrinho-panel').classList.add('active');
+        }
+
+        function fecharCarrinho() {
+            document.getElementById('carrinho-panel').classList.remove('active');
+        }
+
+        // ========================================
+        // ATUALIZAR CONTADOR CARRINHO
+        // ========================================
+        function atualizarContadorCarrinho() {
+            const contador = document.getElementById('cart-count');
+            const total = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+            contador.textContent = total;
+            contador.style.display = total > 0 ? 'flex' : 'none';
+        }
+
+        // ========================================
+        // TOAST NOTIFICATIONS
+        // ========================================
+        function mostrarToast(mensagem, tipo = 'success', tempo = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <span class="toast-message">${mensagem}</span>
+                    <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) container.removeChild(toast);
+                }, 300);
+            }, tempo);
+        }
+
+        // ========================================
+        // ADMIN - CARREGAR TABELA ESTOQUE
+        // ========================================
+        function carregarTabelaEstoque() {
+            estoqueTbody.innerHTML = '';
+            if (produtos.length === 0) {
+                estoqueTbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            <i class="ri-inbox-line" style="font-size: 3rem; color: #999;"></i>
+                            <p>Nenhum produto cadastrado</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            produtos.forEach((produto) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <img src="${produto.imagem}" alt="${produto.nome}" class="table-image" onerror="this.src='https://via.placeholder.com/60?text=Sem+Imagem'">
+                    </td>
+                    <td class="table-title">${produto.nome}</td>
+                    <td class="table-description">${produto.descricao}</td>
+                    <td class="table-price">R$ ${Number(produto.preco).toFixed(2)}</td>
+                    <td class="table-actions">
+                        <button onclick="editarProduto('${produto.id}')" class="edit-btn" title="Editar">
+                            <i class="ri-edit-line"></i>
+                        </button>
+                        <button onclick="removerProduto('${produto.id}')" class="delete-btn" title="Remover">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </td>
+                `;
+                estoqueTbody.appendChild(tr);
+            });
+        }
+
+        // ========================================
+        // ADMIN - EDITAR PRODUTO
+        // ========================================
+        window.editarProduto = function(id) {
+            const produto = produtos.find(p => p.id === id);
+            if (!produto) return;
+
+            inputNome.value = produto.nome;
+            inputDescricao.value = produto.descricao;
+            inputPreco.value = produto.preco;
+            inputImagem.value = produto.imagem;
+            
+            produtoEditandoId = id;
+            btnSubmitText.textContent = 'Atualizar Produto';
+            btnCancelarEdicao.style.display = 'inline-block';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // ========================================
+        // ADMIN - REMOVER PRODUTO
+        // ========================================
+        window.removerProduto = function(id) {
+            if (confirm('Deseja realmente remover este produto?')) {
+                removerProdutoFirebase(id);
+            }
+        };
+
+        // ========================================
+        // ADMIN - LIMPAR CAMPOS
+        // ========================================
+        function limparCamposProduto() {
+            inputNome.value = '';
+            inputDescricao.value = '';
+            inputPreco.value = '';
+            inputImagem.value = '';
+            produtoEditandoId = null;
+            btnSubmitText.textContent = 'Publicar Novo Anúncio';
+            btnCancelarEdicao.style.display = 'none';
+        }
+
+        // ========================================
+        // ADMIN - CANCELAR EDIÇÃO
+        // ========================================
+        btnCancelarEdicao.addEventListener('click', limparCamposProduto);
+
+        // ========================================
+        // ADMIN - SUBMIT FORMULÁRIO
+        // ========================================
+        formNovoProduto.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = inputNome.value.trim();
+            const descricao = inputDescricao.value.trim();
+            const preco = parseFloat(inputPreco.value);
+            const imagem = inputImagem.value.trim();
+            if (!nome || !descricao || isNaN(preco) || preco < 0 || !imagem) {
+                mostrarToast('❌ Preencha todos os campos corretamente.', 'error');
+                return;
+            }
+
+            const novoProduto = {
+                nome,
+                descricao,
+                preco,
+                imagem,
+                categoria: detectarCategoria(nome, descricao)
+            };
+
+            if (produtoEditandoId) {
+                await atualizarProdutoFirebase(produtoEditandoId, novoProduto);
+            } else {
+                await adicionarProdutoFirebase(novoProduto);
+            }
+        });
+
+        // ========================================
+        // DETECTAR CATEGORIA AUTOMATICAMENTE
+        // ========================================
+        function detectarCategoria(nome, descricao) {
+            const texto = (nome + ' ' + descricao).toLowerCase();
+            if (texto.includes('game') || texto.includes('jogo')) return 'Games';
+            if (texto.includes('gift card') || texto.includes('cartão')) return 'Gift Cards';
+            if (texto.includes('conta')) return 'Contas';
+            if (texto.includes('oferta') || texto.includes('promoção')) return 'Ofertas';
+            if (texto.includes('novo') || texto.includes('lançamento')) return 'Novidades';
+            return 'Outros';
+        }
+
+        // ========================================
+        // EXPORTAR DADOS DO FIREBASE
+        // ========================================
+        async function exportarDadosFirebase() {
+            try {
+                mostrarToast('📥 Exportando dados...', 'info');
+                
+                const anunciosSnapshot = await db.collection('anuncios').get();
+                const carrinhosSnapshot = await db.collection('carrinhos').get();
+                
+                const anuncios = [];
+                anunciosSnapshot.forEach(doc => {
+                    anuncios.push({ id: doc.id, ...doc.data() });
+                });
+                
+                const carrinhos = [];
+                carrinhosSnapshot.forEach(doc => {
+                    carrinhos.push({ id: doc.id, ...doc.data() });
+                });
+                
+                const dados = {
+                    anuncios,
+                    carrinhos,
+                    dataExportacao: new Date().toISOString()
+                };
+                
+                const conteudo = JSON.stringify(dados, null, 2);
+                const blob = new Blob([conteudo], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `alphafoxxp-backup-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                mostrarToast('✅ Dados exportados com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro ao exportar dados:', error);
+                mostrarToast('❌ Erro ao exportar dados', 'error');
+            }
+        }
+
+        // ========================================
+        // PAINEL ADMIN - CONTROLES
+        // ========================================
+        const adminPanelBg = document.getElementById('admin-panel-bg');
+        const adminCloseBtn = document.getElementById('admin-close-btn');
+        const adminAccess = document.getElementById('admin-access');
+        const btnEstoque = document.getElementById('btn-controle-estoque');
+        const btnUsuarios = document.getElementById('btn-controle-usuarios');
+        const controleEstoque = document.getElementById('controle-estoque');
+        const controleUsuarios = document.getElementById('controle-usuarios');
+
+        adminAccess.addEventListener('click', () => {
+            const senha = prompt('Acesso Restrito - Insira o código de segurança:');
+            if (senha === '454') {
+                adminPanelBg.style.display = 'flex';
+                mostrarTelaAdmin('estoque');
+            } else if (senha) {
+                mostrarToast('❌ Código inválido!', 'error');
+            }
+        });
+
+        adminCloseBtn.addEventListener('click', () => {
+            adminPanelBg.style.display = 'none';
+            limparCamposProduto();
+        });
+
+        adminPanelBg.addEventListener('click', (e) => {
+            if (e.target === adminPanelBg) {
+                adminPanelBg.style.display = 'none';
+                limparCamposProduto();
+            }
+        });
+
+        btnEstoque.addEventListener('click', () => mostrarTelaAdmin('estoque'));
+        btnUsuarios.addEventListener('click', () => {
+            window.location.href = 'usuariostyr.html';
+        });
+
+        function mostrarTelaAdmin(tela) {
+            if (tela === 'estoque') {
+                controleEstoque.style.display = 'block';
+                controleUsuarios.style.display = 'none';
+                btnEstoque.classList.add('active');
+                btnUsuarios.classList.remove('active');
+            } else if (tela === 'usuarios') {
+                controleEstoque.style.display = 'none';
+                controleUsuarios.style.display = 'block';
+                btnEstoque.classList.remove('active');
+                btnUsuarios.classList.add('active');
+            }
+        }
+
+        // ========================================
+        // BUSCA - MOSTRAR/ESCONDER
+        // ========================================
+        const searchIcon = document.getElementById('search-icon');
+        const searchBox = document.getElementById('search-box');
+        
+        searchIcon.addEventListener('click', () => {
+            if (searchBox.classList.contains('active')) {
+                searchBox.classList.remove('active');
+                searchInput.value = '';
+                renderVitrine();
+            } else {
+                searchBox.classList.add('active');
+                searchInput.focus();
+            }
+        });
+
+        // ========================================
+        // MENU TOGGLE
+        // ========================================
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuItems = document.getElementById('menu-items');
+        
+        menuToggle.addEventListener('click', () => {
+            menuItems.classList.toggle('active');
+        });
+
+        // ========================================
+        // PARTICLES.JS CONFIGURATION
+        // ========================================
         particlesJS('particles-js', {
             particles: {
                 number: { value: 80, density: { enable: true, value_area: 800 } },
@@ -275,509 +926,131 @@
             retina_detect: true
         });
 
-        // Loading Screen
+        // ========================================
+        // LOADING SCREEN
+        // ========================================
         window.addEventListener('load', function() {
             setTimeout(() => {
-                document.getElementById('loading-screen').style.opacity = '0';
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
+                    loadingScreen.style.display = 'none';
                 }, 500);
-            }, 2000);
+            }, 1500);
         });
 
-        // Seu JavaScript original continua aqui...
-        // [Todo o código JavaScript original permanece inalterado]
-        
-        // --- Banco de dados simulado via localStorage ---
-        const DB_KEY = 'AlphaFoxXP_DB';
-        function carregarDB() {
-            const db = localStorage.getItem(DB_KEY);
-            if (!db) {
-                const inicial = { estoque: [], usuarios: [] };
-                localStorage.setItem(DB_KEY, JSON.stringify(inicial));
-                return inicial;
+        // ========================================
+        // INICIALIZAÇÃO DO SISTEMA
+        // ========================================
+        async function inicializarSistema() {
+            try {
+                // Carregar produtos do Firebase
+                carregarProdutosFirebase();
+                
+                // Carregar carrinho do Firebase
+                await carregarCarrinhoFirebase();
+                
+                console.log('✅ Sistema AlphaFoxXP inicializado com Firebase!');
+            } catch (error) {
+                console.error('❌ Erro ao inicializar sistema:', error);
+                mostrarToast('⚠️ Erro ao conectar com o Firebase', 'error');
             }
-            return JSON.parse(db);
         }
 
-        function salvarDB(db) {
-            localStorage.setItem(DB_KEY, JSON.stringify(db));
-        }
+        // Inicializar quando a página carregar
+        inicializarSistema();
 
-        let db = carregarDB();
-
-        // --- Render Vitrine de produtos ---
-        let produtos = db.estoque;
-        const productList = document.getElementById('product-list');
-        const categorias = document.querySelectorAll('.categoria-btn');
-        let filtroCategoria = 'todos';
-
-        function renderVitrine() {
-            productList.innerHTML = '';
-            const listaFiltrada = filtroCategoria === 'todos' ? produtos : produtos.filter(p => p.categoria === filtroCategoria);
+        // ========================================
+        // FECHAR MENUS AO CLICAR FORA
+        // ========================================
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.header') && menuItems.classList.contains('active')) {
+                menuItems.classList.remove('active');
+            }
             
-            if (listaFiltrada.length === 0) {
-                productList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="ri-inbox-line"></i>
-                        <h3>Nenhum produto encontrado</h3>
-                        <p>Tente ajustar os filtros ou buscar por outros termos</p>
-                    </div>
-                `;
+            if (!e.target.closest('#search-box') && !e.target.closest('#search-icon')) {
+                if (searchBox.classList.contains('active') && searchInput.value === '') {
+                    searchBox.classList.remove('active');
+                }
+            }
+        });
+
+        // ========================================
+        // TECLA ESC PARA FECHAR MODAIS
+        // ========================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (adminPanelBg.style.display === 'flex') {
+                    adminPanelBg.style.display = 'none';
+                    limparCamposProduto();
+                }
+                if (document.getElementById('carrinho-panel').classList.contains('active')) {
+                    fecharCarrinho();
+                }
+                if (searchBox.classList.contains('active')) {
+                    searchBox.classList.remove('active');
+                    searchInput.value = '';
+                    renderVitrine();
+                }
+            }
+        });
+
+        // ========================================
+        // PREVENIR MÚLTIPLOS CLIQUES
+        // ========================================
+        let isSubmitting = false;
+        formNovoProduto.addEventListener('submit', async (e) => {
+            if (isSubmitting) {
+                e.preventDefault();
                 return;
             }
-
-            listaFiltrada.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'product-card';
-                div.innerHTML = `
-                    <div class="card-image">
-                        <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
-                        <div class="card-overlay">
-                            <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-shopping-cart-line"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${p.nome}</h3>
-                        <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
-                        <div class="card-footer">
-                            <span class="card-price">R$ ${p.preco.toFixed(2)}</span>
-                            <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-add-line"></i> Adicionar
-                            </button>
-                        </div>
-                    </div>
-                `;
-                productList.appendChild(div);
-            });
-        }
-
-        // Atualizar contador do carrinho
-        function atualizarContadorCarrinho() {
-            const contador = document.getElementById('cart-count');
-            const total = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
-            contador.textContent = total;
-            contador.style.display = total > 0 ? 'flex' : 'none';
-        }
-
-        // --- Busca dinâmica ---
-        document.getElementById('search-input').addEventListener('input', function() {
-            const termo = this.value.toLowerCase();
-            const listaFiltrada = produtos.filter(p => 
-                p.nome.toLowerCase().includes(termo) || 
-                (p.descricao && p.descricao.toLowerCase().includes(termo))
-            );
-            
-            productList.innerHTML = '';
-            if (listaFiltrada.length === 0) {
-                productList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="ri-search-line"></i>
-                        <h3>Nenhum resultado encontrado</h3>
-                        <p>Tente buscar por outros termos</p>
-                    </div>
-                `;
-                return;
-            }
-
-            listaFiltrada.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'product-card';
-                div.innerHTML = `
-                    <div class="card-image">
-                        <img src="${p.imagem}" alt="${p.nome}" loading="lazy">
-                        <div class="card-overlay">
-                            <button class="quick-view-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-shopping-cart-line"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${p.nome}</h3>
-                        <p class="card-description">${p.descricao ? p.descricao.substring(0, 60) + '...' : ''}</p>
-                        <div class="card-footer">
-                            <span class="card-price">R$ ${p.preco.toFixed(2)}</span>
-                            <button class="add-to-cart-btn" onclick='adicionarAoCarrinho(${JSON.stringify(p)})'>
-                                <i class="ri-add-line"></i> Adicionar
-                            </button>
-                        </div>
-                    </div>
-                `;
-                productList.appendChild(div);
-            });
+            isSubmitting = true;
+            setTimeout(() => { isSubmitting = false; }, 2000);
         });
-
-        // --- Troca filtro categoria ---
-        categorias.forEach(cat => {
-            cat.addEventListener('click', () => {
-                categorias.forEach(c => c.classList.remove('active'));
-                cat.classList.add('active');
-                filtroCategoria = cat.dataset.cat;
-                renderVitrine();
-            });
-        });
-
-        renderVitrine();
-
-        // --- Mostrar/Esconder busca ---
-        const searchIcon = document.getElementById('search-icon');
-        const searchBox = document.getElementById('search-box');
-        
-        searchIcon.addEventListener('click', () => {
-            if (searchBox.classList.contains('active')) {
-                searchBox.classList.remove('active');
-                document.getElementById('search-input').value = '';
-                renderVitrine();
-            } else {
-                searchBox.classList.add('active');
-                document.getElementById('search-input').focus();
-            }
-        });
-
-        // --- Menu toggle ---
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuItems = document.getElementById('menu-items');
-        
-        menuToggle.addEventListener('click', () => {
-            menuItems.classList.toggle('active');
-        });
-
-        // --- Painel Admin ---
-        const adminPanelBg = document.getElementById('admin-panel-bg');
-        const adminCloseBtn = document.getElementById('admin-close-btn');
-        const adminAccess = document.getElementById('admin-access');
-        const btnEstoque = document.getElementById('btn-controle-estoque');
-        const btnUsuarios = document.getElementById('btn-controle-usuarios');
-        const controleEstoque = document.getElementById('controle-estoque');
-        const controleUsuarios = document.getElementById('controle-usuarios');
-
-        adminAccess.addEventListener('click', () => {
-            const senha = prompt('Acesso Restrito - Insira o código de segurança:');
-            if (senha === '454') {
-                adminPanelBg.style.display = 'flex';
-                mostrarTelaAdmin('estoque');
-            } else {
-                alert('Código inválido!');
-            }
-        });
-
-        adminCloseBtn.addEventListener('click', () => {
-            adminPanelBg.style.display = 'none';
-            limparCamposProduto();
-        });
-
-        btnEstoque.addEventListener('click', () => mostrarTelaAdmin('estoque'));
-        btnUsuarios.addEventListener('click', () => {
-            window.location.href = 'usuariostyr.html';
-        });
-
-        function mostrarTelaAdmin(tela) {
-            if (tela === 'estoque') {
-                controleEstoque.style.display = 'block';
-                controleUsuarios.style.display = 'none';
-                carregarTabelaEstoque();
-            } else if (tela === 'usuarios') {
-                controleEstoque.style.display = 'none';
-                controleUsuarios.style.display = 'block';
-            }
-        }
-
-        // --- Controle de Estoque ---
-        const estoqueTbody = document.getElementById('estoque-tbody');
-        const formNovoProduto = document.getElementById('novo-produto-form');
-        const inputNome = document.getElementById('input-nome');
-        const inputDescricao = document.getElementById('input-descricao');
-        const inputPreco = document.getElementById('input-preco');
-        const inputImagem = document.getElementById('input-imagem');
-
-        function carregarTabelaEstoque() {
-            estoqueTbody.innerHTML = '';
-            db.estoque.forEach((produto, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <img src="${produto.imagem}" alt="${produto.nome}" class="table-image">
-                    </td>
-                    <td class="table-title">${produto.nome}</td>
-                    <td class="table-description">${produto.descricao}</td>
-                    <td class="table-price">R$ ${produto.preco.toFixed(2)}</td>
-                    <td class="table-actions">
-                        <button onclick="editarProduto(${idx})" class="edit-btn" title="Editar">
-                            <i class="ri-edit-line"></i>
-                        </button>
-                        <button onclick="removerProduto(${idx})" class="delete-btn" title="Remover">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </td>
-                `;
-                estoqueTbody.appendChild(tr);
-            });
-        }
-
-        window.editarProduto = function(index) {
-            const p = db.estoque[index];
-            inputNome.value = p.nome;
-            inputDescricao.value = p.descricao;
-            inputPreco.value = p.preco;
-            inputImagem.value = p.imagem;
-            formNovoProduto.dataset.editIndex = index;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.removerProduto = function(index) {
-            if (confirm('Deseja realmente remover este produto?')) {
-                db.estoque.splice(index, 1);
-                salvarDB(db);
-                produtos = db.estoque;
-                carregarTabelaEstoque();
-                renderVitrine();
-            }
-        };
-
-        function limparCamposProduto() {
-            inputNome.value = '';
-            inputDescricao.value = '';
-            inputPreco.value = '';
-            inputImagem.value = '';
-            delete formNovoProduto.dataset.editIndex;
-        }
-
-        formNovoProduto.addEventListener('submit', e => {
-            e.preventDefault();
-            const nome = inputNome.value.trim();
-            const descricao = inputDescricao.value.trim();
-            const preco = parseFloat(inputPreco.value);
-            const imagem = inputImagem.value.trim();
-
-            if (!nome || !descricao || isNaN(preco) || preco < 0 || !imagem) {
-                alert('Preencha todos os campos corretamente.');
-                return;
-            }
-
-            const novoProduto = {
-                nome,
-                descricao,
-                preco,
-                imagem,
-                categoria: detectarCategoria(nome, descricao)
-            };
-
-            if (formNovoProduto.dataset.editIndex !== undefined) {
-                const idx = parseInt(formNovoProduto.dataset.editIndex);
-                db.estoque[idx] = novoProduto;
-                alert('Produto atualizado com sucesso!');
-            } else {
-                db.estoque.push(novoProduto);
-                alert('Produto adicionado com sucesso!');
-            }
-
-            salvarDB(db);
-            produtos = db.estoque;
-            carregarTabelaEstoque();
-            renderVitrine();
-            limparCamposProduto();
-        });
-
-        function detectarCategoria(nome, descricao) {
-            const texto = (nome + ' ' + descricao).toLowerCase();
-            if (texto.includes('game') || texto.includes('jogo')) return 'Games';
-            if (texto.includes('gift card')) return 'Gift Cards';
-            if (texto.includes('conta')) return 'Contas';
-            if (texto.includes('oferta')) return 'Ofertas';
-            if (texto.includes('novo')) return 'Novidades';
-            return 'Outros';
-        }
-
-        // --- Carrinho Avançado + Toast ---
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-
-        function salvarCarrinho() {
-            localStorage.setItem('carrinho', JSON.stringify(carrinho));
-            atualizarContadorCarrinho();
-        }
-
-        function mostrarToast(mensagem, tipo = 'success', tempo = 3000) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${tipo}`;
-            toast.innerHTML = `
-                <div class="toast-content">
-                    <span class="toast-message">${mensagem}</span>
-                    <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
-                        <i class="ri-close-line"></i>
-                    </button>
-                </div>
-            `;
-            container.appendChild(toast);
-
-            setTimeout(() => toast.classList.add('show'), 100);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => container.removeChild(toast), 300);
-            }, tempo);
-        }
-
-        function adicionarAoCarrinho(produto) {
-            const existente = carrinho.find(p => p.nome === produto.nome);
-            if (existente) {
-                existente.quantidade += 1;
-            } else {
-                carrinho.push({ ...produto, quantidade: 1 });
-            }
-            salvarCarrinho();
-            renderCarrinho();
-            mostrarToast(`✅ <strong>${produto.nome}</strong> adicionado ao carrinho.`);
-        }
-
-        function removerDoCarrinho(index) {
-            carrinho.splice(index, 1);
-            salvarCarrinho();
-            renderCarrinho();
-        }
-
-        function alterarQuantidade(index, delta) {
-            carrinho[index].quantidade += delta;
-            if (carrinho[index].quantidade <= 0) {
-                removerDoCarrinho(index);
-            } else {
-                salvarCarrinho();
-                renderCarrinho();
-            }
-        }
-
-        function limparCarrinho() {
-            if (confirm('Tem certeza que deseja limpar o carrinho?')) {
-                carrinho = [];
-                salvarCarrinho();
-                renderCarrinho();
-                mostrarToast('🧹 Carrinho limpo com sucesso.');
-            }
-        }
-
-        function calcularTotal() {
-            return carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
-        }
-
-        function renderCarrinho() {
-            const lista = document.getElementById('lista-carrinho');
-            const totalEl = document.getElementById('total-carrinho');
-            
-            lista.innerHTML = '';
-            
-            if (carrinho.length === 0) {
-                lista.innerHTML = `
-                    <li class="carrinho-empty">
-                        <i class="ri-shopping-cart-line"></i>
-                        <p>Seu carrinho está vazio</p>
-                    </li>
-                `;
-                totalEl.textContent = 'Total: R$ 0,00';
-                return;
-            }
-
-            carrinho.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = 'carrinho-item';
-                li.innerHTML = `
-                    <div class="item-image">
-                        <img src="${item.imagem}" alt="${item.nome}">
-                    </div>
-                    <div class="item-details">
-                        <h4>${item.nome}</h4>
-                        <p class="item-price">R$ ${item.preco.toFixed(2)}</p>
-                    </div>
-                    <div class="item-controls">
-                        <div class="quantity-controls">
-                            <button onclick="alterarQuantidade(${index}, -1)" class="qty-btn">
-                                <i class="ri-subtract-line"></i>
-                            </button>
-                            <span class="quantity">${item.quantidade}</span>
-                            <button onclick="alterarQuantidade(${index}, 1)" class="qty-btn">
-                                <i class="ri-add-line"></i>
-                            </button>
-                        </div>
-                        <button onclick="removerDoCarrinho(${index})" class="remove-btn" title="Remover item">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                `;
-                lista.appendChild(li);
-            });
-
-            totalEl.textContent = 'Total: R$ ' + calcularTotal().toFixed(2);
-        }
-
-        function abrirCarrinho() {
-            renderCarrinho();
-            document.getElementById('carrinho-panel').classList.add('active');
-        }
-
-        function fecharCarrinho() {
-            document.getElementById('carrinho-panel').classList.remove('active');
-        }
-
-        function baixarDados() {
-            const dados = {
-                banco: carregarDB(),
-                carrinho: carrinho
-            };
-            const conteudo = JSON.stringify(dados, null, 2);
-            const blob = new Blob([conteudo], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-           
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "projetoescola.json";
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Inicializar contador do carrinho
-        atualizarContadorCarrinho();
     </script>
-  <!-- Footer -->
-<footer id="contato">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>AlphaFoxXP</h3>
-                <p>Sua plataforma premium para produtos digitais. Segurança, rapidez e confiabilidade em cada transação.</p>
-                <div class="social-links">
-                    <a href="#" class="social-link"><i class="ri-instagram-line"></i></a>
-                    <a href="#" class="social-link"><i class="ri-twitter-line"></i></a>
-                    <a href="#" class="social-link"><i class="ri-discord-line"></i></a>
-                    <a href="#" class="social-link"><i class="ri-youtube-line"></i></a>
+
+    <!-- Footer -->
+    <footer id="contato">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>AlphaFoxXP</h3>
+                    <p>Sua plataforma premium para produtos digitais. Segurança, rapidez e confiabilidade em cada transação.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="ri-instagram-line"></i></a>
+                        <a href="#" class="social-link"><i class="ri-twitter-line"></i></a>
+                        <a href="#" class="social-link"><i class="ri-discord-line"></i></a>
+                        <a href="#" class="social-link"><i class="ri-youtube-line"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><i class="ri-mail-line"></i> contato@alphafoxxp.com</p>
+                    <p><i class="ri-phone-line"></i> (11) 99999-9999</p>
+                    <p><i class="ri-map-pin-line"></i> São Paulo, SP - Brasil</p>
+                    <p><i class="ri-time-line"></i> Seg-Dom: 24h</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <p><a href="index.html">Início</a></p>
+                    <p><a href="produtos.html">Produtos</a></p>
+                    <p><a href="planos.html">Planos</a></p>
+                    <p><a href="comunidade.html"><i class="ri-group-line"></i> Comunidade & Blog</a></p>
+                    <p><a href="suporte.html">Suporte</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Certificações</h3>
+                    <p>✓ SSL Certificado</p>
+                    <p>✓ PCI DSS Compliant</p>
+                    <p>✓ ISO 27001</p>
+                    <p>✓ LGPD Compliance</p>
                 </div>
             </div>
-            <div class="footer-section">
-                <h3>Contato</h3>
-                <p><i class="ri-mail-line"></i> contato@alphafoxxp.com</p>
-                <p><i class="ri-phone-line"></i> (11) 99999-9999</p>
-                <p><i class="ri-map-pin-line"></i> São Paulo, SP - Brasil</p>
-                <p><i class="ri-time-line"></i> Seg-Dom: 24h</p>
-            </div>
-            <div class="footer-section">
-                <h3>Links Úteis</h3>
-                <p><a href="index.html">Início</a></p>
-                <p><a href="produtos.html">Produtos</a></p>
-                <p><a href="planos.html">Planos</a></p>
-                <p><a href="suporte.html">Suporte</a></p>
-            </div>
-            <div class="footer-section">
-                <h3>Certificações</h3>
-                <p>✓ SSL Certificado</p>
-                <p>✓ PCI DSS Compliant</p>
-                <p>✓ ISO 27001</p>
-                <p>✓ LGPD Compliance</p>
+            <div class="footer-bottom">
+                <p>© 2024 AlphaFoxXP. Todos os direitos reservados. | Desenvolvido com ❤️ para gamers</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2024 AlphaFoxXP. Todos os direitos reservados. | Desenvolvido com ❤️ para gamers</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
 </body>
 </html>
