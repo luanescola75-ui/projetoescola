@@ -220,71 +220,116 @@
     <tbody id="userTableBody"></tbody>
   </table>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Firebase Config -->
   <script>
-    // Base inicial: equipe + usuários padrões
-    let users = JSON.parse(localStorage.getItem('users')) || [
-      { username: 'Luan', email: 'luan@alphafoxxp.com', cargo: 'fundador', status: 'ativo' },
-      { username: 'FoxAdmin', email: 'admin@alphafoxxp.com', cargo: 'admin', status: 'ativo' },
-      { username: 'ModXP', email: 'mod@alphafoxxp.com', cargo: 'moderador', status: 'ativo' },
-      { username: 'Jogador1', email: 'player1@gmail.com', cargo: 'user', status: 'ativo' },
-      { username: 'Jogador2', email: 'player2@gmail.com', cargo: 'user', status: 'suspenso' },
-      { username: 'Jogador3', email: 'player3@gmail.com', cargo: 'user', status: 'ativo' }
-    ];
+    const firebaseConfig = {
+      apiKey: "AIzaSyDOMJYymvjApHshn7TWe83KEpM-2eoC09A",
+      authDomain: "escola-5db5c.firebaseapp.com",
+      projectId: "escola-5db5c",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 
-    let logs = JSON.parse(localStorage.getItem('logs')) || [];
+  <script>
+    let users = [];
+    let logs = [];
 
-    function salvarUsuarios() {
-      localStorage.setItem('users', JSON.stringify(users));
-      carregarTabela();
+    // Carregar usuários do Firebase
+    async function carregarUsuarios() {
+      try {
+        const querySnapshot = await db.collection('users').get();
+        users = [];
+        querySnapshot.forEach(doc => {
+          users.push({ id: doc.id, ...doc.data() });
+        });
+        carregarTabela();
+      } catch (error) {
+        console.error('Erro ao carregar usuários:', error);
+      }
     }
 
-    function salvarLogs() {
-      localStorage.setItem('logs', JSON.stringify(logs));
+    // Carregar logs do Firebase (assumindo uma coleção 'logs')
+    async function carregarLogs() {
+      try {
+        const querySnapshot = await db.collection('logs').get();
+        logs = [];
+        querySnapshot.forEach(doc => {
+          logs.push(doc.data());
+        });
+      } catch (error) {
+        console.error('Erro ao carregar logs:', error);
+      }
+    }
+
+    function salvarUsuario(user) {
+      db.collection('users').doc(user.username).set(user);
     }
 
     function adicionarLog(acao) {
-      logs.push({ timestamp: new Date().toLocaleString(), acao });
-      salvarLogs();
+      const logEntry = { timestamp: new Date().toLocaleString(), acao };
+      logs.push(logEntry);
+      db.collection('logs').add(logEntry);
     }
 
-    function alterarStatus(username, novoStatus) {
+    async function alterarStatus(username, novoStatus) {
       if (confirm(`Tem certeza que deseja alterar o status de ${username} para ${novoStatus}?`)) {
-        const user = users.find(u => u.username === username);
-        if (user) {
-          user.status = novoStatus;
+        try {
+          await db.collection('users').doc(username).update({ status: novoStatus });
           adicionarLog(`Status de ${username} alterado para ${novoStatus}`);
-          salvarUsuarios();
+          carregarUsuarios();
+        } catch (error) {
+          console.error('Erro ao alterar status:', error);
         }
       }
     }
 
-    function alterarCargo(username, novoCargo) {
-      const user = users.find(u => u.username === username);
-      if (user) {
-        user.cargo = novoCargo;
+    async function alterarCargo(username, novoCargo) {
+      try {
+        await db.collection('users').doc(username).update({ cargo: novoCargo });
         adicionarLog(`Cargo de ${username} alterado para ${novoCargo}`);
-        salvarUsuarios();
+        carregarUsuarios();
+      } catch (error) {
+        console.error('Erro ao alterar cargo:', error);
       }
     }
 
-    function excluirUsuario(username) {
+    async function excluirUsuario(username) {
       if (confirm(`Tem certeza que deseja excluir ${username}?`)) {
-        users = users.filter(u => u.username !== username);
-        adicionarLog(`Usuário ${username} excluído`);
-        salvarUsuarios();
+        try {
+          await db.collection('users').doc(username).delete();
+          adicionarLog(`Usuário ${username} excluído`);
+          carregarUsuarios();
+        } catch (error) {
+          console.error('Erro ao excluir usuário:', error);
+        }
       }
     }
 
-    function adicionarUsuario() {
+    async function adicionarUsuario() {
       const username = prompt("Digite o nome do usuário:");
       const email = prompt("Digite o email:");
-      if (username && email && !users.find(u => u.username === username || u.email === email)) {
-        users.push({ username, email, cargo: 'user', status: 'ativo' });
-        adicionarLog(`Usuário ${username} adicionado`);
-        salvarUsuarios();
-        alert("Usuário adicionado com sucesso!");
+      if (username && email) {
+        try {
+          const userDoc = await db.collection('users').doc(username).get();
+          if (userDoc.exists) {
+            alert("Usuário já existe!");
+            return;
+          }
+          const newUser = { username, email, cargo: 'user', status: 'ativo', createdAt: new Date().toISOString() };
+          await db.collection('users').doc(username).set(newUser);
+          adicionarLog(`Usuário ${username} adicionado`);
+          carregarUsuarios();
+          alert("Usuário adicionado com sucesso!");
+        } catch (error) {
+          console.error('Erro ao adicionar usuário:', error);
+        }
       } else {
-        alert("Nome ou email inválido/duplicado!");
+        alert("Nome ou email inválido!");
       }
     }
 
@@ -358,13 +403,15 @@
       alert("🏆 XP e conquistas atribuídas ao usuário selecionado!");
     }
 
-    function verLogs() {
+    async function verLogs() {
+      await carregarLogs();
       const logText = logs.length ? logs.map(l => `${l.timestamp}: ${l.acao}`).join('\n') : 'Nenhum log disponível.';
       alert("📊 Logs de moderação:\n\n" + logText);
     }
 
     // Inicialização
-    carregarTabela();
+    carregarUsuarios();
+    carregarLogs();
     document.getElementById('searchInput').addEventListener('input', filtrarUsuarios);
   </script>
 
