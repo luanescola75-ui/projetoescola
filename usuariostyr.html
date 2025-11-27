@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AlphaFoxXP - Painel de Administração</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0f0f10, #1a1a1a);
@@ -24,159 +22,66 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    p {
-      color: #aaa;
-      margin-bottom: 30px;
-    }
+    p { color: #aaa; margin-bottom: 30px; }
     .admin-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
       border-radius: 18px;
       padding: 25px;
       margin-bottom: 30px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(255, 102, 0, 0.2);
+      box-shadow: 0 0 20px rgba(255,102,0,0.2);
     }
-    .admin-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
+    .admin-header { display:flex; align-items:center; gap:15px; margin-bottom:20px; }
     .admin-avatar {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: 3px solid #FFD700;
-      position: relative;
-      animation: glow 2s infinite alternate;
+      width:70px; height:70px; border-radius:50%;
+      border:3px solid #FFD700; position:relative; animation:glow 2s infinite alternate;
     }
-    @keyframes glow {
-      from { box-shadow: 0 0 10px #FFD70055; }
-      to { box-shadow: 0 0 25px #FFD700; }
-    }
-    .admin-name {
-      font-size: 1.5rem;
-      color: #FFD700;
-      font-weight: 600;
-      text-shadow: 0 0 10px #FFD70099;
-      position: relative;
-    }
-    .admin-name::after {
-      content: '✔️';
-      position: absolute;
-      right: -28px;
-      top: 2px;
-      animation: pulse 1.5s infinite alternate;
-    }
-    @keyframes pulse {
-      from { opacity: 0.6; transform: scale(1); }
-      to { opacity: 1; transform: scale(1.2); }
-    }
-    .search-bar {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    @keyframes glow { from { box-shadow:0 0 10px #FFD70055 } to { box-shadow:0 0 25px #FFD700 } }
+    .admin-name { font-size:1.5rem; color:#FFD700; font-weight:600; text-shadow:0 0 10px #FFD70099; position:relative; }
+    .admin-name::after { content:'✔️'; position:absolute; right:-28px; top:2px; animation:pulse 1.5s infinite alternate; }
+    @keyframes pulse { from { opacity:0.6; transform:scale(1) } to { opacity:1; transform:scale(1.2) } }
+    .search-bar { margin-bottom:20px; display:flex; gap:10px; align-items:center; }
     .search-bar input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      font-size: 1rem;
+      flex:1; padding:10px; border-radius:8px; border:none;
+      background: rgba(255,255,255,0.1); color:#fff; font-size:1rem;
     }
-    .search-bar input::placeholder { color: #aaa; }
-    .search-bar button {
-      padding: 10px 15px;
-      background: linear-gradient(135deg, #ff6a00, #ffb300);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .search-bar button:hover { transform: scale(1.05); }
+    .search-bar input::placeholder { color:#aaa; }
+    .search-bar button { padding:10px 15px; background:linear-gradient(135deg,#ff6a00,#ffb300); color:#fff; border:none; border-radius:8px; cursor:pointer; transition:.3s; }
+    .search-bar button:hover { transform:scale(1.05); }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
-      margin-bottom: 20px;
+      width:100%; border-collapse:collapse;
+      background: rgba(255,255,255,0.04); border-radius:14px; overflow:hidden;
+      box-shadow:0 0 20px rgba(255,153,0,0.2); margin-bottom:20px;
     }
-    th, td {
-      padding: 16px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+    th, td { padding:16px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
     th {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffb347;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
+      background: rgba(255,255,255,0.08);
+      color:#ffb347; text-transform:uppercase; font-size:.9rem; letter-spacing:1px;
     }
-    select, button {
-      border: none;
-      outline: none;
-      font-family: inherit;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    select {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      padding: 6px 12px;
-    }
-    select:hover { background: rgba(255, 255, 255, 0.2); }
+    select, button { border:none; outline:none; font-family:inherit; border-radius:8px; cursor:pointer; transition:.3s; }
+    select { background: rgba(255,255,255,0.1); color:#fff; padding:6px 12px; }
+    select:hover { background: rgba(255,255,255,0.2); }
     button {
-      background: linear-gradient(135deg, #ff6a00, #ffb300);
-      color: #fff;
-      padding: 8px 14px;
-      margin: 3px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      box-shadow: 0 0 12px rgba(255, 120, 0, 0.4);
+      background: linear-gradient(135deg,#ff6a00,#ffb300);
+      color:#fff; padding:8px 14px; margin:3px; font-weight:600; font-size:.85rem;
+      box-shadow:0 0 12px rgba(255,120,0,0.4);
     }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 18px rgba(255, 170, 0, 0.7);
-    }
-    .status-ativo { color: #00ffab; font-weight: bold; }
-    .status-suspenso { color: #FFD700; font-weight: bold; }
-    .status-banido { color: #ff4d4d; font-weight: bold; }
-    .cargo-fundador { color: #FFD700; font-weight: bold; text-shadow: 0 0 10px #FFD700; }
-    .cargo-admin { color: #ffb300; text-shadow: 0 0 8px #ffb30088; }
-    .cargo-mod { color: #ffe066; text-shadow: 0 0 6px #ffe06655; }
-    .cargo-user { color: #ccc; }
-    .comandos {
-      margin-top: 25px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .comandos button {
-      flex: 1;
-      min-width: 150px;
-      background: linear-gradient(135deg, #ff9500, #ff6a00);
-    }
-    .extra-actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .extra-actions button {
-      background: linear-gradient(135deg, #4CAF50, #45a049);
-    }
-    @media (max-width: 768px) {
-      table { font-size: 0.8rem; }
-      .admin-header { flex-direction: column; text-align: center; }
-      .comandos { flex-direction: column; }
-    }
+    button:hover { transform:scale(1.05); box-shadow:0 0 18px rgba(255,170,0,0.7); }
+    .status-ativo { color:#00ffab; font-weight:bold; }
+    .status-suspenso { color:#FFD700; font-weight:bold; }
+    .status-banido { color:#ff4d4d; font-weight:bold; }
+    .cargo-fundador { color:#FFD700; font-weight:bold; text-shadow:0 0 10px #FFD700; }
+    .cargo-admin { color:#ffb300; text-shadow:0 0 8px #ffb30088; }
+    .cargo-mod { color:#ffe066; text-shadow:0 0 6px #ffe06655; }
+    .cargo-user { color:#ccc; }
+    .comandos { margin-top:25px; display:flex; gap:10px; flex-wrap:wrap; }
+    .comandos button { flex:1; min-width:150px; background:linear-gradient(135deg,#ff9500,#ff6a00); }
+    .extra-actions { display:flex; gap:10px; margin-bottom:20px; }
+    .extra-actions button { background:linear-gradient(135deg,#4CAF50,#45a049); }
+    @media (max-width:768px) { table{ font-size:.8rem } .admin-header{ flex-direction:column; text-align:center } .comandos{ flex-direction:column } }
+
+    /* pequenos formulários escondidos (se você tiver forms na página, serão usados) */
+    .hidden-form { display:none; margin-bottom:15px; }
   </style>
 </head>
 <body>
@@ -220,11 +125,33 @@
     <tbody id="userTableBody"></tbody>
   </table>
 
+  <!-- Hidden forms opcionais (se vc quiser usar em algum lugar) -->
+  <!-- Se você já tem forms com esses IDs, o script irá manipular eles do mesmo jeito que no snippet original -->
+  <div id="cadastroForm" class="hidden-form">
+    <!-- exemplo simples -->
+    <input id="cad_username" placeholder="Nome">
+    <input id="cad_email" placeholder="Email">
+    <input id="cad_password" type="password" placeholder="Senha">
+    <button onclick="criarContaFromForm()">Cadastrar</button>
+  </div>
+
+  <div id="loginForm" class="hidden-form">
+    <input id="login_username" placeholder="Nome">
+    <input id="login_password" type="password" placeholder="Senha">
+    <button onclick="loginFromForm()">Entrar</button>
+  </div>
+
+  <div id="changePasswordForm" class="hidden-form">
+    <input id="chg_username" placeholder="Nome">
+    <input id="chg_newPassword" type="password" placeholder="Nova senha">
+    <button onclick="alterarSenhaFromForm()">Alterar senha</button>
+  </div>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Firebase Config -->
+
+  <!-- Firebase Config (mantive o seu) -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDOMJYymvjApHshn7TWe83KEpM-2eoC09A",
@@ -235,135 +162,282 @@
     const db = firebase.firestore();
   </script>
 
+  <!-- SCRIPT PRINCIPAL: painel + JSON(localStorage) exatamente como você queria -->
   <script>
-    let users = [];
-    let logs = [];
+    // === aqui está o JSON exatamente como você mandou =========
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    let logs = JSON.parse(localStorage.getItem('logs')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 
-    // Carregar usuários do Firebase
-    async function carregarUsuarios() {
+    // Garantir que logs estejam no localStorage também
+    function salvarLogsLocal() {
+      localStorage.setItem('logs', JSON.stringify(logs));
+    }
+
+    // --------------------------------------------------------
+    // helpers para sincronizar com firebase sem alterar sua estrutura visual
+    // --------------------------------------------------------
+    async function sincronizarUsuario(user) {
+      // Atualiza localStorage (mantendo 'users' var)
+      const idx = users.findIndex(u => u.username === user.username);
+      if (idx >= 0) users[idx] = user;
+      else users.push(user);
+      localStorage.setItem('users', JSON.stringify(users));
+
+      // Atualiza no Firebase
       try {
-        const querySnapshot = await db.collection('users').get();
-        users = [];
-        querySnapshot.forEach(doc => {
-          users.push({ id: doc.id, ...doc.data() });
-        });
-        carregarTabela();
-      } catch (error) {
-        console.error('Erro ao carregar usuários:', error);
+        await db.collection('users').doc(user.username).set(user);
+      } catch (err) {
+        console.error('Erro sincronizando usuário no Firebase:', err);
       }
     }
 
-    // Carregar logs do Firebase (assumindo uma coleção 'logs')
+    async function sincronizarTudo() {
+      // Busca do Firebase e faz merge com local 'users'
+      try {
+        const snap = await db.collection('users').get();
+        const firebaseUsers = [];
+        snap.forEach(d => firebaseUsers.push({ username: d.id, ...d.data() }));
+
+        // Firebase -> local (se não existir)
+        firebaseUsers.forEach(fb => {
+          if (!users.some(u => u.username === fb.username)) {
+            users.push(fb);
+          }
+        });
+
+        // Local -> Firebase (se não existir)
+        for (const u of users) {
+          const exists = firebaseUsers.some(f => f.username === u.username);
+          if (!exists) {
+            await db.collection('users').doc(u.username).set(u);
+          }
+        }
+
+        // salvar local
+        localStorage.setItem('users', JSON.stringify(users));
+      } catch (err) {
+        console.error('Erro ao sincronizar tudo:', err);
+      }
+    }
+
+    function adicionarLog(acao) {
+      const entry = { timestamp: new Date().toLocaleString(), acao };
+      logs.push(entry);
+      salvarLogsLocal();
+      // também salva no firebase
+      try { db.collection('logs').add(entry); } catch(e){ console.error('Erro ao gravar log no firebase', e); }
+    }
+
+    // --------------------------------------------------------
+    // Funções que replicam o comportamento do snippet original
+    // (criar conta, login, alterar senha) — mantendo os setItem e alerts
+    // --------------------------------------------------------
+
+    // Função baseada no snippet: cria conta e faz exatamente os setItems/alerts
+    function criarContaObject(userObj, passwordConfirm) {
+      // userObj deve ter username, email, password
+      // no snippet original havia uma checagem if (user.password === password) { ... }
+      if (!userObj || !userObj.username) return alert('Dados inválidos.');
+
+      // Simular verificação de confirmação de senha
+      if (userObj.password !== passwordConfirm) return alert('Senhas não conferem.');
+
+      // salva currentUser no localStorage (igual snippet)
+      localStorage.setItem('currentUser', JSON.stringify(userObj));
+      localStorage.setItem('users', JSON.stringify(users)); // mantém exatamente como no snippet
+      users.push(userObj); // adiciona ao array local
+      // sincroniza no firebase também
+      sincronizarUsuario(userObj);
+
+      alert('Conta criada com sucesso!');
+      // se existir form, esconde e mostra conforme snippet
+      const cad = document.getElementById('cadastroForm');
+      const loginF = document.getElementById('loginForm');
+      if (cad) cad.style.display = 'none';
+      if (loginF) loginF.style.display = 'block';
+
+      adicionarLog(`Conta criada: ${userObj.username}`);
+      carregarUsuarios();
+    }
+
+    // wrapper para uso rápido (inputs no DOM hidden forms)
+    function criarContaFromForm() {
+      const username = document.getElementById('cad_username')?.value?.trim();
+      const email = document.getElementById('cad_email')?.value?.trim();
+      const password = document.getElementById('cad_password')?.value || '';
+      if(!username || !email) return alert('Nome ou email inválido!');
+      // verifica se já existe localmente
+      if (users.some(u => u.username === username)) return alert('Usuário já existe!');
+      const user = { username, email, password, cargo: 'user', status: 'ativo', createdAt: new Date().toISOString() };
+      criarContaObject(user, password);
+    }
+
+    // Função de login que respeita o snippet (usa user.password === password e set currentUser)
+    function loginObject(username, password) {
+      const user = users.find(u => u.username === username);
+      if (!user) return alert('Usuário não encontrado!');
+      if (user.password !== password) return alert('Senha incorreta!');
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      alert('Login efetuado com sucesso!');
+      const loginF = document.getElementById('loginForm');
+      if (loginF) loginF.style.display = 'none';
+      adicionarLog(`Login: ${username}`);
+      currentUser = user;
+      return true;
+    }
+
+    function loginFromForm() {
+      const username = document.getElementById('login_username')?.value?.trim();
+      const password = document.getElementById('login_password')?.value || '';
+      loginObject(username, password);
+    }
+
+    // Alterar senha (mantendo o comportamento: user.password = newPassword; localStorage.setItem('users', ...))
+    async function alterarSenhaObject(username, newPassword) {
+      const user = users.find(u => u.username === username);
+      if (!user) return alert('Usuário não encontrado!');
+      user.password = newPassword;
+      // atualiza localStorage exatamente como snippet
+      localStorage.setItem('users', JSON.stringify(users));
+      // sincroniza no firebase
+      try { await db.collection('users').doc(user.username).set(user); } catch(e){ console.error(e); }
+      alert('Senha alterada com sucesso! Você pode fazer login agora.');
+      const chg = document.getElementById('changePasswordForm');
+      const loginF = document.getElementById('loginForm');
+      if (chg) chg.style.display = 'none';
+      if (loginF) loginF.style.display = 'block';
+      adicionarLog(`Senha alterada: ${username}`);
+      carregarUsuarios();
+    }
+
+    function alterarSenhaFromForm() {
+      const username = document.getElementById('chg_username')?.value?.trim();
+      const newPass = document.getElementById('chg_newPassword')?.value || '';
+      if (!username || !newPass) return alert('Dados inválidos!');
+      alterarSenhaObject(username, newPass);
+    }
+
+    // --------------------------------------------------------
+    // Funções do painel (mantive estrutura original e sincronizo com users)
+    // --------------------------------------------------------
+    async function carregarUsuarios() {
+      // Faz sincronização inicial com Firebase e atualiza a tabela
+      await sincronizarTudo();
+      renderTabela(users);
+    }
+
     async function carregarLogs() {
       try {
-        const querySnapshot = await db.collection('logs').get();
+        const snap = await db.collection('logs').get();
         logs = [];
-        querySnapshot.forEach(doc => {
-          logs.push(doc.data());
-        });
-      } catch (error) {
-        console.error('Erro ao carregar logs:', error);
+        snap.forEach(d => logs.push(d.data()));
+        salvarLogsLocal();
+      } catch (err) {
+        console.error('Erro ao carregar logs:', err);
       }
     }
 
     function salvarUsuario(user) {
-      db.collection('users').doc(user.username).set(user);
-    }
-
-    function adicionarLog(acao) {
-      const logEntry = { timestamp: new Date().toLocaleString(), acao };
-      logs.push(logEntry);
-      db.collection('logs').add(logEntry);
+      // mantém a função que você já tinha: salva no Firebase
+      try {
+        db.collection('users').doc(user.username).set(user);
+      } catch (err) {
+        console.error('Erro salvarUsuario:', err);
+      }
     }
 
     async function alterarStatus(username, novoStatus) {
-      if (confirm(`Tem certeza que deseja alterar o status de ${username} para ${novoStatus}?`)) {
-        try {
-          await db.collection('users').doc(username).update({ status: novoStatus });
-          adicionarLog(`Status de ${username} alterado para ${novoStatus}`);
-          carregarUsuarios();
-        } catch (error) {
-          console.error('Erro ao alterar status:', error);
-        }
+      if (!confirm(`Tem certeza que deseja alterar o status de ${username} para ${novoStatus}?`)) return;
+      try {
+        // Atualiza local (users array) e localStorage
+        const u = users.find(x => x.username === username);
+        if (!u) return alert('Usuário não encontrado!');
+        u.status = novoStatus;
+        localStorage.setItem('users', JSON.stringify(users));
+        // Atualiza firebase
+        await db.collection('users').doc(username).update({ status: novoStatus });
+        adicionarLog(`Status de ${username} alterado para ${novoStatus}`);
+        carregarUsuarios();
+      } catch (err) {
+        console.error('Erro ao alterar status:', err);
       }
     }
 
     async function alterarCargo(username, novoCargo) {
       try {
+        const u = users.find(x => x.username === username);
+        if (!u) return alert('Usuário não encontrado!');
+        u.cargo = novoCargo;
+        localStorage.setItem('users', JSON.stringify(users));
         await db.collection('users').doc(username).update({ cargo: novoCargo });
         adicionarLog(`Cargo de ${username} alterado para ${novoCargo}`);
         carregarUsuarios();
-      } catch (error) {
-        console.error('Erro ao alterar cargo:', error);
+      } catch (err) {
+        console.error('Erro ao alterar cargo:', err);
       }
     }
 
     async function excluirUsuario(username) {
-      if (confirm(`Tem certeza que deseja excluir ${username}?`)) {
-        try {
-          await db.collection('users').doc(username).delete();
-          adicionarLog(`Usuário ${username} excluído`);
-          carregarUsuarios();
-        } catch (error) {
-          console.error('Erro ao excluir usuário:', error);
-        }
+      if (!confirm(`Tem certeza que deseja excluir ${username}?`)) return;
+      try {
+        // Remove do array local e salva
+        const idx = users.findIndex(u => u.username === username);
+        if (idx >= 0) users.splice(idx, 1);
+        localStorage.setItem('users', JSON.stringify(users));
+        // Remove do firebase
+        await db.collection('users').doc(username).delete();
+        adicionarLog(`Usuário ${username} excluído`);
+        carregarUsuarios();
+      } catch (err) {
+        console.error('Erro ao excluir usuário:', err);
       }
     }
 
     async function adicionarUsuario() {
       const username = prompt("Digite o nome do usuário:");
       const email = prompt("Digite o email:");
-      if (username && email) {
-        try {
-          const userDoc = await db.collection('users').doc(username).get();
-          if (userDoc.exists) {
-            alert("Usuário já existe!");
-            return;
-          }
-          const newUser = { username, email, cargo: 'user', status: 'ativo', createdAt: new Date().toISOString() };
-          await db.collection('users').doc(username).set(newUser);
-          adicionarLog(`Usuário ${username} adicionado`);
-          carregarUsuarios();
-          alert("Usuário adicionado com sucesso!");
-        } catch (error) {
-          console.error('Erro ao adicionar usuário:', error);
-        }
-      } else {
-        alert("Nome ou email inválido!");
-      }
+      if (!username || !email) return alert("Nome ou email inválido!");
+      // prevenir duplicado
+      if (users.some(u => u.username === username)) return alert("Usuário já existe!");
+      const newUser = { username, email, password: "", cargo: 'user', status: 'ativo', createdAt: new Date().toISOString() };
+      // salva local e firebase via sincronizarUsuario
+      await sincronizarUsuario(newUser);
+      adicionarLog(`Usuário ${username} adicionado`);
+      carregarUsuarios();
+      alert("Usuário adicionado com sucesso!");
     }
 
     function filtrarUsuarios() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = users.filter(u => u.username.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
-      carregarTabela(filtered);
+      const filtered = users.filter(u => (u.username || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query));
+      renderTabela(filtered);
     }
 
     function exportarCSV() {
       let csv = 'Usuário,Email,Cargo,Status\n';
       users.forEach(u => csv += `${u.username},${u.email},${u.cargo},${u.status}\n`);
       const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = URL.createObjectURL(blob);
       a.download = 'usuarios_alphafoxxp.csv';
       a.click();
       adicionarLog('Lista de usuários exportada como CSV');
     }
 
-    function carregarTabela(filteredUsers = users) {
+    function renderTabela(list = []) {
       const tbody = document.getElementById('userTableBody');
       tbody.innerHTML = '';
-      filteredUsers.forEach(user => {
+      list.forEach(user => {
         const tr = document.createElement('tr');
-        let cargoClasse =
+        const cargoClasse =
           user.cargo === 'fundador' ? 'cargo-fundador' :
           user.cargo === 'admin' ? 'cargo-admin' :
           user.cargo === 'moderador' ? 'cargo-mod' : 'cargo-user';
 
         tr.innerHTML = `
           <td class="${cargoClasse}">${user.username}</td>
-          <td>${user.email}</td>
+          <td>${user.email || ''}</td>
           <td>
             <select onchange="alterarCargo('${user.username}', this.value)">
               <option value="user" ${user.cargo === 'user' ? 'selected' : ''}>👤 Usuário</option>
@@ -372,7 +446,7 @@
               <option value="fundador" ${user.cargo === 'fundador' ? 'selected' : ''}>🦊 Fundador</option>
             </select>
           </td>
-          <td class="status-${user.status}">${user.status.toUpperCase()}</td>
+          <td class="status-${user.status}">${(user.status || '').toUpperCase()}</td>
           <td>
             <button onclick="alterarStatus('${user.username}', 'ativo')"><i class="fas fa-check"></i> Ativar</button>
             <button onclick="alterarStatus('${user.username}', 'suspenso')"><i class="fas fa-pause"></i> Suspender</button>
@@ -410,10 +484,18 @@
     }
 
     // Inicialização
-    carregarUsuarios();
-    carregarLogs();
-    document.getElementById('searchInput').addEventListener('input', filtrarUsuarios);
-  </script>
+    (async function init() {
+      // garante que variável users (local) esteja no formato esperado
+      if (!Array.isArray(users)) {
+        localStorage.setItem('users', JSON.stringify([]));
+      }
+      await carregarUsuarios();
+      await carregarLogs();
+      document.getElementById('searchInput').addEventListener('input', filtrarUsuarios);
+    })();
 
+    // Expor algumas funções globalmente (já estão por serem definidas no escopo global)
+    // Isso garante compatibilidade com os onclicks inline do HTML
+  </script>
 </body>
 </html>

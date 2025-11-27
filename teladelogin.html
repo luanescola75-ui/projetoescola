@@ -691,6 +691,13 @@
       retina_detect: true
     });
 
+    // ==== FUNÇÕES LOCALSTORAGE (MESMO JSON DA TELA 2) ====
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    function saveUsersToLocalStorage() {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
     // Funções auxiliares
     function validarCPF(cpf) {
       const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
@@ -756,13 +763,13 @@
         icon.textContent = '🦊';
         title.textContent = 'Bem-vindo de volta!';
         usernameEl.textContent = username;
-        message.innerHTML =         'Que bom te ver novamente!<br>Seus dados estão prontos e aguardando por você.';
+        message.innerHTML = 'Que bom te ver novamente!<br>Seus dados estão prontos e aguardando por você.';
       }
 
       modal.style.display = 'flex';
 
       setTimeout(() => {
-        window.location.href = 'https://codepen.io/luan-escola-the-scripter/full/PwqBBoY';
+        window.location.href = 'index.html';
       }, 2800);
     }
 
@@ -770,7 +777,6 @@
     async function migrateLocalStorageToFirebase() {
       try {
         const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userLoginHistory = JSON.parse(localStorage.getItem('userLoginHistory')) || {};
 
         if (users.length > 0) {
           console.log('Migrando dados do localStorage para Firebase...');
@@ -789,18 +795,10 @@
                 status: user.status || 'ativo',
                 createdAt: user.createdAt || new Date().toISOString()
               });
-
-              // Migrar histórico de login
-              if (userLoginHistory[user.username]) {
-                await db.collection('loginHistory').doc(user.username).set(userLoginHistory[user.username]);
-              }
             }
           }
 
-          console.log('Migração concluída! Limpando localStorage...');
-          localStorage.removeItem('users');
-          localStorage.removeItem('userLoginHistory');
-          localStorage.removeItem('currentUser');
+          console.log('Migração concluída!');
         }
       } catch (error) {
         console.error('Erro na migração:', error);
@@ -810,7 +808,7 @@
     // Executar migração ao carregar a página
     migrateLocalStorageToFirebase();
 
-    // LOGIN
+    // ==== LOGIN ====
     document.getElementById('loginButton').addEventListener('click', async function() {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
@@ -822,8 +820,38 @@
 
       setButtonLoading('loginButton', true);
 
+      // 1. BUSCAR NO LOCALSTORAGE PRIMEIRO
+      const localUser = users.find(u => u.username === username);
+
+      if (localUser) {
+        if (localUser.status === 'banido') {
+          showMessage('loginMessage', '🚫 Sua conta foi banida. Entre em contato com o suporte.', 'error');
+          setButtonLoading('loginButton', false);
+          return;
+        }
+
+        if (localUser.status === 'suspenso') {
+          showMessage('loginMessage', '⏸️ Sua conta está suspensa temporariamente.', 'error');
+          setButtonLoading('loginButton', false);
+          return;
+        }
+
+        if (localUser.password === password) {
+          // Salvar usuário atual
+          localStorage.setItem('currentUser', JSON.stringify(localUser));
+          
+          setButtonLoading('loginButton', false);
+          showWelcomeModal(username, false);
+          return;
+        } else {
+          showMessage('loginMessage', '❌ Senha incorreta. Tente novamente.', 'error');
+          setButtonLoading('loginButton', false);
+          return;
+        }
+      }
+
+      // 2. SE NÃO ENCONTRAR NO LOCALSTORAGE, BUSCAR NO FIREBASE
       try {
-        // Buscar usuário no Firebase
         const userDoc = await db.collection('users').doc(username).get();
 
         if (userDoc.exists) {
@@ -842,6 +870,13 @@
           }
 
           if (user.password === password) {
+            // Adicionar ao localStorage
+            users.push(user);
+            saveUsersToLocalStorage();
+            
+            // Salvar usuário atual
+            localStorage.setItem('currentUser', JSON.stringify(user));
+
             // Buscar histórico de login
             const loginHistoryDoc = await db.collection('loginHistory').doc(username).get();
             const isNewUser = !loginHistoryDoc.exists;
@@ -861,9 +896,6 @@
               });
             }
 
-            // Salvar sessão atual (pode usar sessionStorage temporariamente)
-            sessionStorage.setItem('currentUser', JSON.stringify(user));
-
             setButtonLoading('loginButton', false);
             showWelcomeModal(username, isNewUser);
           } else {
@@ -877,11 +909,11 @@
       } catch (error) {
         console.error('Erro no login:', error);
         showMessage('loginMessage', '❌ Erro ao fazer login. Tente novamente.', 'error');
-        setButtonLoading('loginButton', false);
+               setButtonLoading('loginButton', false);
       }
     });
 
-    // CADASTRO
+    // ==== CADASTRO ====
     document.getElementById('registerButton').addEventListener('click', async function() {
       const newUsername = document.getElementById('newUsername').value.trim();
       const newPassword = document.getElementById('newPassword').value;
@@ -912,8 +944,27 @@
 
       setButtonLoading('registerButton', true);
 
+      // 1. VERIFICAR NO LOCALSTORAGE PRIMEIRO
+      if (users.find(u => u.username === newUsername)) {
+        showMessage('cadastroMessage', '❌ Este usuário já existe. Escolha outro nome.', 'error');
+        setButtonLoading('registerButton', false);
+        return;
+      }
+
+      if (users.find(u => u.cpf === cpf)) {
+        showMessage('cadastroMessage', '❌ CPF já cadastrado no sistema.', 'error');
+        setButtonLoading('registerButton', false);
+        return;
+      }
+
+      if (users.find(u => u.email === email)) {
+        showMessage('cadastroMessage', '❌ E-mail já cadastrado no sistema.', 'error');
+        setButtonLoading('registerButton', false);
+        return;
+      }
+
       try {
-        // Verificar se usuário já existe
+        // 2. VERIFICAR NO FIREBASE
         const userDoc = await db.collection('users').doc(newUsername).get();
         if (userDoc.exists) {
           showMessage('cadastroMessage', '❌ Este usuário já existe. Escolha outro nome.', 'error');
@@ -921,7 +972,6 @@
           return;
         }
 
-        // Verificar se CPF já está cadastrado
         const cpfQuery = await db.collection('users').where('cpf', '==', cpf).get();
         if (!cpfQuery.empty) {
           showMessage('cadastroMessage', '❌ CPF já cadastrado no sistema.', 'error');
@@ -929,7 +979,6 @@
           return;
         }
 
-        // Verificar se email já está cadastrado
         const emailQuery = await db.collection('users').where('email', '==', email).get();
         if (!emailQuery.empty) {
           showMessage('cadastroMessage', '❌ E-mail já cadastrado no sistema.', 'error');
@@ -937,8 +986,8 @@
           return;
         }
 
-        // Criar novo usuário no Firebase
-        await db.collection('users').doc(newUsername).set({
+        // 3. CRIAR OBJETO DE USUÁRIO
+        const newUser = {
           username: newUsername,
           password: newPassword,
           cpf: cpf,
@@ -946,7 +995,14 @@
           nivel: 1,
           status: 'ativo',
           createdAt: new Date().toISOString()
-        });
+        };
+
+        // 4. SALVAR NO LOCALSTORAGE (MESMO JSON DA TELA 2)
+        users.push(newUser);
+        saveUsersToLocalStorage();
+
+        // 5. SALVAR NO FIREBASE
+        await db.collection('users').doc(newUsername).set(newUser);
 
         setButtonLoading('registerButton', false);
         showMessage('cadastroMessage', '✅ Conta criada com sucesso! Redirecionando...', 'success');
@@ -968,7 +1024,7 @@
       }
     });
 
-    // TROCAR SENHA
+    // ==== TROCAR SENHA ====
     document.getElementById('changePasswordButton').addEventListener('click', async function() {
       const cpf = document.getElementById('changeCpf').value;
       const username = document.getElementById('changeUsername').value.trim();
@@ -991,8 +1047,39 @@
 
       setButtonLoading('changePasswordButton', true);
 
+      // 1. BUSCAR NO LOCALSTORAGE PRIMEIRO
+      const localUser = users.find(u => u.cpf === cpf && u.username === username);
+
+      if (localUser) {
+        // Atualizar senha no localStorage
+        localUser.password = newPassword;
+        saveUsersToLocalStorage();
+
+        // Atualizar no Firebase também
+        try {
+          await db.collection('users').doc(username).update({
+            password: newPassword
+          });
+        } catch (error) {
+          console.error('Erro ao atualizar no Firebase:', error);
+        }
+
+        setButtonLoading('changePasswordButton', false);
+        showMessage('changePasswordMessage', '✅ Senha alterada com sucesso! Redirecionando...', 'success');
+
+        setTimeout(() => {
+          document.getElementById('changePasswordForm').style.display = 'none';
+          document.getElementById('loginForm').style.display = 'block';
+          // Limpar campos
+          document.getElementById('changeCpf').value = '';
+          document.getElementById('changeUsername').value = '';
+          document.getElementById('newChangePassword').value = '';
+        }, 2000);
+        return;
+      }
+
+      // 2. SE NÃO ENCONTRAR NO LOCALSTORAGE, BUSCAR NO FIREBASE
       try {
-        // Buscar usuário no Firebase
         const userDoc = await db.collection('users').doc(username).get();
 
         if (!userDoc.exists) {
@@ -1014,6 +1101,16 @@
           password: newPassword
         });
 
+        // Atualizar ou adicionar no localStorage
+        const userIndex = users.findIndex(u => u.username === username);
+        if (userIndex !== -1) {
+          users[userIndex].password = newPassword;
+        } else {
+          user.password = newPassword;
+          users.push(user);
+        }
+        saveUsersToLocalStorage();
+
         setButtonLoading('changePasswordButton', false);
         showMessage('changePasswordMessage', '✅ Senha alterada com sucesso! Redirecionando...', 'success');
 
@@ -1033,7 +1130,7 @@
       }
     });
 
-    // NAVEGAÇÃO ENTRE TELAS
+    // ==== NAVEGAÇÃO ENTRE TELAS ====
     document.getElementById('showCadastro').addEventListener('click', function(e) {
       e.preventDefault();
       document.getElementById('loginForm').style.display = 'none';
@@ -1062,7 +1159,7 @@
       document.getElementById('cadastroForm').style.display = 'none';
     });
 
-    // TOGGLE DE VISIBILIDADE DE SENHA
+    // ==== TOGGLE DE VISIBILIDADE DE SENHA ====
     function togglePasswordVisibility(passwordInputId, toggleIconId) {
       const passwordInput = document.getElementById(passwordInputId);
       const toggleIcon = document.getElementById(toggleIconId);
@@ -1082,7 +1179,7 @@
     togglePasswordVisibility('newPassword', 'toggleNewPassword');
     togglePasswordVisibility('newChangePassword', 'toggleNewChangePassword');
 
-    // ENTER PARA SUBMETER
+    // ==== ENTER PARA SUBMETER ====
     document.getElementById('password').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') document.getElementById('loginButton').click();
     });
@@ -1109,4 +1206,3 @@
   </script>
 </body>
 </html>
-
