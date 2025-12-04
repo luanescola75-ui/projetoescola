@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Serviço - AlphaFoxXP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff5722;
+            --primary-light: #ff8a50;
+            --primary-dark: #e64a19;
+            --background-dark: #0a0a0a;
+            --background-secondary: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --shadow-light: rgba(255, 87, 34, 0.1);
+            --shadow-heavy: rgba(0, 0, 0, 0.3);
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Particles Background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Header Premium */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 8px 25px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 35px var(--shadow-light);
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .logo .title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 100px;
+            min-height: calc(100vh - 100px);
+            padding: 2rem;
+        }
+
+        .terms-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px var(--shadow-heavy);
+        }
+
+        .terms-hero {
+    background: url('https://i.postimg.cc/HL8v9BYH/Super-Mario.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+        
+
+        .terms-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .terms-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .terms-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .terms-hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Tabs */
+        .terms-nav {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--glass-border);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 87, 34, 0.1);
+        }
+
+        .nav-tab.active {
+            color: var(--primary-color);
+            background: rgba(255, 87, 34, 0.1);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        /* Content Sections */
+        .terms-content {
+            padding: 2rem;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px var(--shadow-light);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card-content p {
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background: rgba(255, 87, 34, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box .title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .list-styled {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .list-styled li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .list-styled li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+        }
+
+        .warning-list li::before {
+            content: '\f071';
+            color: var(--warning-color);
+        }
+
+        .error-list li::before {
+            content: '\f00d';
+            color: var(--error-color);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Agreement Section */
+        .agreement-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .agreement-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agreement-checkbox:hover {
+            color: var(--primary-color);
+        }
+
+        .custom-checkbox {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .custom-checkbox input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-checkbox input:checked + .checkmark {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            animation: checkPulse 0.3s ease;
+        }
+
+        .checkmark::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: white;
+            font-size: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .custom-checkbox input:checked + .checkmark::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes checkPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px var(--shadow-light);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Progress Indicator */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem 1.5rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .terms-hero {
+                padding: 2rem 1rem;
+            }
+
+            .terms-hero h1 {
+                font-size: 2rem;
+            }
+
+            .terms-nav {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                text-align: left;
+                border-bottom: 1px solid var(--glass-border);
+            }
+
+            .terms-content {
+                padding: 1.5rem;
+            }
+
+            .section-card {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .agreement-checkbox {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .header, .terms-nav, .agreement-section, #particles-js {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .terms-container {
+                background: white !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
+    <!-- Reading Progress -->
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-container">
+                    <img src="https://i.postimg.cc/brfXwKJR/DALL-E-2024-11-16-14-19-55-A-modern-and-stylish-3-D-logo-with-the-name-Alpha-Fox-XP-in-bold-sleek.webp" 
+                         alt="AlphaFoxXP Logo" class="logo-image">
+                </div>
+                <div class="title">AlphaFoxXP</div>
+            </a>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Voltar
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <div class="terms-container">
+            <!-- Hero Section -->
+            <section class="terms-hero">
+                <div class="terms-hero-content">
+                    <h1>Termos de Serviço</h1>
+                    <p class="subtitle">Acordo de Uso da Plataforma AlphaFoxXP</p>
+                    <div class="version-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Versão 2.1 - Atualizado em Janeiro 2024
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <a href="#" class="quick-action" onclick="showSection('overview')">
+                            <i class="fas fa-eye"></i>
+                            Resumo Executivo
+                        </a>
+                        <a href="#" class="quick-action" onclick="showSection('privacy')">
+                            <i class="fas fa-shield-check"></i>
+                            Privacidade
+                        </a>
+                        <a href="#" class="quick-action" onclick="downloadPDF()">
+                            <i class="fas fa-download"></i>
+                            Baixar PDF
+                        </a>
+                        <a href="#" class="quick-action" onclick="printTerms()">
+                            <i class="fas fa-print"></i>
+                            Imprimir
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs -->
+            <nav class="terms-nav">
+                <button class="nav-tab active" onclick="showSection('overview')">
+                    <i class="fas fa-info-circle"></i>
+                    Visão Geral
+                </button>
+                <button class="nav-tab" onclick="showSection('terms')">
+                    <i class="fas fa-file-contract"></i>
+                    Termos de Uso
+                </button>
+                <button class="nav-tab" onclick="showSection('privacy')">
+                    <i class="fas fa-user-shield"></i>
+                    Privacidade
+                </button>
+                <button class="nav-tab" onclick="showSection('commerce')">
+                    <i class="fas fa-shopping-cart"></i>
+                    E-commerce
+                </button>
+                <button class="nav-tab" onclick="showSection('legal')">
+                    <i class="fas fa-gavel"></i>
+                    Aspectos Legais
+                </button>
+            </nav>
+
+            <!-- Content Sections -->
+            <div class="terms-content">
+                <!-- Overview Section -->
+                <section id="overview" class="content-section active">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Visão Geral do Serviço
+                    </h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-value">50K+</div>
+                            <div class="stat-label">Usuários Ativos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shield-check"></i>
+                            </div>
+                            <div class="stat-value">99.9%</div>
+                            <div class="stat-label">Uptime Garantido</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="stat-value">compra segura</div>
+                            <div class="stat-label">comprar contas com segurança</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">Suporte Técnico</div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-rocket"></i>
+                            Bem-vindo à AlphaFoxXP
+                        </h3>
+                        <div class="card-content">
+                            <p>A AlphaFoxXP é uma plataforma de e-commerce premium que oferece uma experiência de compra revolucionária, combinando tecnologia de ponta com design moderno e funcionalidades avançadas.</p>
+                            
+                            <div class="highlight-box">
+                                <div class="title">🎯 Nossa Missão</div>
+                                <p>Democratizar o acesso a produtos de qualidade através de uma plataforma segura, intuitiva e inovadora, proporcionando a melhor experiência de compra online do mercado.</p>
+                            </div>
+                            
+                            <p>Ao utilizar nossos serviços, você concorda com os termos estabelecidos neste documento, que foram elaborados em conformidade com as leis brasileiras e internacionais de proteção ao consumidor e comércio eletrônico.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-star"></i>
+                            Recursos Premium
+                        </h3>
+                        <div class="card-content">
+                            <ul class="list-styled">
+                                <li>Interface moderna com tecnologia Glass Morphism</li>
+                                <li>Sistema de pagamento seguro com múltiplas opções</li>
+                                <li>Carrinho inteligente com sincronização em tempo real</li>
+                                <li>Painel administrativo avançado para gestão completa</li>
+                                <li>Notificações push personalizadas</li>
+                                <li>Sistema de avaliações e reviews verificados</li>
+                                <li>Programa de fidelidade com pontos e recompensas</li>
+                                <li>Suporte ao cliente 24/7 via chat, email e telefone</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Terms Section -->
+                <section id="terms" class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-contract"></i>
+                        Termos e Condições de Uso
+                    </h2>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-check"></i>
+                            1. Aceitação dos Termos
+                        </h3>
+                        <div class="card-content">
+                            <p>Ao acessar e utilizar a plataforma AlphaFoxXP, você declara ter lido, compreendido e concordado integralmente com todos os termos e condições aqui estabelecidos.</p>
+                            
+                            <div class="highlight-box">
+                                <div class="title">⚠️ Importante</div>
+                                <p>Caso não concorde com qualquer disposição destes termos, você deve interromper imediatamente o uso da plataforma.</p>
+                            </div>
+                            
+                            <p>Estes termos constituem um acordo legal vinculativo entre você e a AlphaFoxXP, sendo aplicáveis a todos os usuários da plataforma, incluindo visitantes, compradores e vendedores.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-users-cog"></i>
+                            2. Elegibilidade e Cadastro
+                        </h3>
+                        <div class="card-content">
+                            <p>Para utilizar nossos serviços, você deve:</p>
+                            <ul class="list-styled">
+                                <li>Ter pelo menos 18 anos de idade ou ser emancipado</li>
+                                <li>Possuir capacidade legal para celebrar contratos</li>
+                                <li>Fornecer informações verdadeiras e atualizadas</li>
+                                <li>Manter a confidencialidade de suas credenciais de acesso</li>
+                                <li>Ser responsável por todas as atividades em sua conta</li>
+                            </ul>
+                            
+                            <div class="highlight-box">
+                                <div class="title">🔐 Segurança da Conta</div>
+                                <p>Você é inteiramente responsável pela segurança de sua conta e deve notificar-nos imediatamente sobre qualquer uso não autorizado.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-ban"></i>
+                            3. Condutas Proibidas
+                        </h3>
+                        <div class="card-content">
+                            <p>É expressamente proibido:</p>
+                            <ul class="list-styled warning-list">
+                                <li>Utilizar a plataforma para atividades ilegais ou fraudulentas</li>
+                                <li>Tentar acessar sistemas ou dados não autorizados</li>
+                                <li>Interferir no funcionamento normal da plataforma</li>
+                                <li>Criar múltiplas contas para contornar limitações</li>
+                                <li>Utilizar bots ou scripts automatizados não autorizados</li>
+                                <li>Violar direitos de propriedade intelectual</li>
+                                <li>Publicar conteúdo ofensivo, difamatório ou inadequado</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                              <!-- Privacy Section -->
+                <section id="privacy" class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-shield"></i>
+                        Política de Privacidade e Proteção de Dados
+                    </h2>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-database"></i>
+                            1. Coleta e Uso de Dados
+                        </h3>
+                        <div class="card-content">
+                            <p>Coletamos e processamos seus dados pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD) e regulamentações internacionais como GDPR.</p>
+                            
+                            <div class="highlight-box">
+                                <div class="title">📊 Dados Coletados</div>
+                                <ul class="list-styled">
+                                    <li>Informações de identificação (nome, email, telefone)</li>
+                                    <li>Dados de navegação e comportamento na plataforma</li>
+                                    <li>Informações de pagamento (processadas por terceiros seguros)</li>
+                                    <li>Preferências e histórico de compras</li>
+                                    <li>Dados de localização (quando autorizado)</li>
+                                </ul>
+                            </div>
+                            
+                            <p>Utilizamos seus dados exclusivamente para melhorar sua experiência, processar pedidos, fornecer suporte e cumprir obrigações legais.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-shield-alt"></i>
+                            2. Proteção e Segurança
+                        </h3>
+                        <div class="card-content">
+                            <p>Implementamos medidas técnicas e organizacionais avançadas para proteger seus dados:</p>
+                            <ul class="list-styled">
+                                <li>Criptografia SSL/TLS 256-bit em todas as transmissões</li>
+                                <li>Servidores seguros com certificação ISO 27001</li>
+                                <li>Autenticação de dois fatores (2FA) disponível</li>
+                                <li>Monitoramento 24/7 contra ameaças cibernéticas</li>
+                                <li>Backups automáticos e redundância de dados</li>
+                                <li>Auditoria regular de segurança por terceiros</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-cog"></i>
+                            3. Seus Direitos
+                        </h3>
+                        <div class="card-content">
+                            <p>Você possui os seguintes direitos sobre seus dados pessoais:</p>
+                            <ul class="list-styled">
+                                <li>Acesso: Consultar quais dados possuímos sobre você</li>
+                                <li>Retificação: Corrigir informações incorretas ou desatualizadas</li>
+                                <li>Exclusão: Solicitar a remoção de seus dados pessoais</li>
+                                <li>Portabilidade: Receber seus dados em formato estruturado</li>
+                                <li>Oposição: Opor-se ao processamento de seus dados</li>
+                                <li>Limitação: Restringir o processamento em certas situações</li>
+                            </ul>
+                            
+                            <div class="highlight-box">
+                                <div class="title">📧 Exercer Seus Direitos</div>
+                                <p>Para exercer qualquer destes direitos, entre em contato conosco através do email: privacidade@alphafoxXP.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Commerce Section -->
+                <section id="commerce" class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-shopping-cart"></i>
+                        Políticas de E-commerce
+                    </h2>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-credit-card"></i>
+                            1. Pagamentos e Transações
+                        </h3>
+                        <div class="card-content">
+                            <p>A AlphaFoxXP oferece múltiplas opções de pagamento seguras e confiáveis:</p>
+                            <ul class="list-styled">
+                                <li>Cartões de crédito e débito (Visa, Mastercard, Elo, American Express)</li>
+                                <li>PIX - Pagamento instantâneo 24/7</li>
+                                <li>Boleto bancário com vencimento em até 3 dias úteis</li>
+                                <li>Carteiras digitais (PayPal, PagSeguro, Mercado Pago)</li>
+                                <li>Parcelamento em até 12x sem juros (cartão de crédito)</li>
+                            </ul>
+                            
+                            <div class="highlight-box">
+                                <div class="title">🔒 Segurança nos Pagamentos</div>
+                                <p>Todos os pagamentos são processados através de gateways certificados PCI DSS, garantindo máxima segurança em suas transações.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-truck"></i>
+                            2. Entrega e Logística
+                        </h3>
+                        <div class="card-content">
+                            <p>Trabalhamos com as principais transportadoras do país para garantir entregas rápidas e seguras:</p>
+                            <ul class="list-styled">
+                                <li>Entrega expressa em até 24h para capitais (produtos em estoque)</li>
+                                <li>Entrega padrão em 3-7 dias úteis para todo o Brasil</li>
+                                <li>Frete grátis para compras acima de R$ 199,00</li>
+                                <li>Rastreamento em tempo real via SMS e email</li>
+                                <li>Seguro automático para todos os produtos</li>
+                                <li>Opção de retirada em pontos parceiros</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-undo"></i>
+                            3. Trocas e Devoluções
+                        </h3>
+                        <div class="card-content">
+                            <p>Garantimos seu direito de arrependimento conforme o Código de Defesa do Consumidor:</p>
+                            <ul class="list-styled">
+                                <li>Prazo de 7 dias corridos para desistência (sem necessidade de justificativa)</li>
+                                <li>Prazo de 30 dias para troca por defeito ou produto divergente</li>
+                                <li>Estorno integral em até 5 dias úteis após confirmação</li>
+                                <li>Coleta gratuita para produtos com defeito</li>
+                                <li>Processo simplificado através do painel do cliente</li>
+                            </ul>
+                            
+                            <div class="highlight-box">
+                                <div class="title">📦 Condições para Troca</div>
+                                <p>O produto deve estar em sua embalagem original, sem sinais de uso, acompanhado de todos os acessórios e nota fiscal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Legal Section -->
+                <section id="legal" class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-gavel"></i>
+                        Aspectos Legais e Jurisdição
+                    </h2>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-balance-scale"></i>
+                            1. Lei Aplicável
+                        </h3>
+                        <div class="card-content">
+                            <p>Este acordo é regido pelas leis da República Federativa do Brasil, incluindo:</p>
+                            <ul class="list-styled">
+                                <li>Código de Defesa do Consumidor (Lei 8.078/90)</li>
+                                <li>Lei Geral de Proteção de Dados (Lei 13.709/18)</li>
+                                <li>Marco Civil da Internet (Lei 12.965/14)</li>
+                                <li>Código Civil Brasileiro (Lei 10.406/02)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-handshake"></i>
+                            2. Resolução de Conflitos
+                        </h3>
+                        <div class="card-content">
+                            <p>Para resolução de eventuais conflitos, seguimos a seguinte ordem de preferência:</p>
+                            <ul class="list-styled">
+                                <li>Negociação direta através de nosso atendimento ao cliente</li>
+                                <li>Mediação através de plataformas como Consumidor.gov.br</li>
+                                <li>Arbitragem, quando aplicável e acordada entre as partes</li>
+                                <li>Jurisdição dos tribunais brasileiros competentes</li>
+                            </ul>
+                            
+                            <div class="highlight-box">
+                                <div class="title">🤝 Compromisso com a Solução</div>
+                                <p>Nosso objetivo é sempre resolver questões de forma amigável e eficiente, priorizando a satisfação do cliente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle"></i>
+                            3. Informações da Empresa
+                        </h3>
+                        <div class="card-content">
+                            <p><strong>AlphaFoxXP Comércio Eletrônico Ltda.</strong></p>
+                            <ul class="list-styled">
+                                <li>CNPJ: 12.345.678/0001-90</li>
+                                <li>Endereço: Av. Tecnologia, 1000 - São Paulo/SP</li>
+                                <li>CEP: 01234-567</li>
+                                <li>Email: contato@alphafoxXP.com</li>
+                                <li>Telefone: (11) 4000-0000</li>
+                                <li>Horário de atendimento: Segunda a Sexta, 8h às 18h</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Agreement Section -->
+            <section class="agreement-section">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-color);">
+                    <i class="fas fa-file-signature"></i>
+                    Concordância com os Termos
+                </h2>
+                
+                <label class="agreement-checkbox" for="agreeTerms">
+                    <div class="custom-checkbox">
+                        <input type="checkbox" id="agreeTerms" onchange="toggleAcceptButton()">
+                        <span class="checkmark"></span>
+                    </div>
+                    <span>Li e concordo com todos os Termos de Serviço e Política de Privacidade da AlphaFoxXP</span>
+                </label>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="acceptBtn" disabled onclick="acceptTerms()">
+                        <i class="fas fa-check-circle"></i>
+                        Aceitar e Continuar
+                    </button>
+                    <button class="btn btn-secondary" onclick="declineTerms()">
+                        <i class="fas fa-times-circle"></i>
+                        Não Aceito
+                    </button>
+                    <a href="#" class="btn btn-secondary" onclick="downloadPDF()">
+                        <i class="fas fa-download"></i>
+                        Baixar PDF
+                    </a>
+                </div>
+
+                <p style="margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted);">
+                    Última atualização: Janeiro de 2024 | 
+                    <a href="#" style="color: var(--primary-color);">Histórico de versões</a>
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Particles Animation
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles-js');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Navigation Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Scroll to top of content
+            document.querySelector('.terms-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Agreement Functions
+        function toggleAcceptButton() {
+            const checkbox = document.getElementById('agreeTerms');
+            const acceptBtn = document.getElementById('acceptBtn');
+            acceptBtn.disabled = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                acceptBtn.style.animation = 'pulse 0.5s ease';
+            }
+        }
+
+        function acceptTerms() {
+            const checkbox = document.getElementById('agreeTerms');
+            if (checkbox.checked) {
+                // Show success message
+                showNotification('✅ Termos aceitos com sucesso! Redirecionando...', 'success');
+                
+                // Simulate redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        }
+
+        function declineTerms() {
+            showNotification('❌ Você optou por não aceitar os termos. Redirecionando para a página inicial...', 'warning');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        // Utility Functions
+        function downloadPDF() {
+            showNotification('📄 Preparando download do PDF...', 'info');
+            // Simulate PDF download
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = 'Termos-AlphaFoxXP.pdf';
+                link.click();
+            }, 1000);
+        }
+
+        function printTerms() {
+            window.print();
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--success-color)' : 
+                           type === 'warning' ? 'var(--warning-color)' : 
+                           'var(--primary-color)'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Reading Progress
+        function updateReadingProgress() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('readingProgress').style.width = scrollPercent + '%';
+        }
+
+        // Event Listeners
+        window.addEventListener('scroll', updateReadingProgress);
+        window.addEventListener('load', () => {
+            createParticles();
+            updateReadingProgress();
+        });
+
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case 'p':
+                        e.preventDefault();
+                        printTerms();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        downloadPDF();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
